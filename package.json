@@ -1,0 +1,27 @@
+{
+  "name": "elastic-api",
+  "version": "1.0.0",
+  "description": "- name\r - owner\r - created\r - definition",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "start:watch": "nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DJBnjack/elastic-api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DJBnjack/elastic-api/issues"
+  },
+  "homepage": "https://github.com/DJBnjack/elastic-api#readme",
+  "devDependencies": {
+    "nodemon": "latest"  
+  },
+  "dependencies": {
+    "express": "latest"
+  }
+}
