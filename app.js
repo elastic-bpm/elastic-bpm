@@ -15,8 +15,10 @@ post_workflows = function(req, res) {
 
 // GET logic
 get_workflows = function (req, res) {
+    workflows.get_workflow(0, function(wf) {
         res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify(workflows, null, 3));
+        res.send(JSON.stringify(wf, null, 3));
+    });
 };
 
 // ROUTING

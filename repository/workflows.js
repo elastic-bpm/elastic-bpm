@@ -1,19 +1,6 @@
 var redis = require("redis"),
     client = redis.createClient();
 
-var workflows = [
-    {
-        name: "wf1", 
-        owner: "johannes",
-        description: "A -> B -> C"
-    },
-    {
-        name: "wf2", 
-        owner: "johannes",
-        description: "A -> B -> C"
-    },
-];
-
 add_workflow_to_redis = function(workflow, callback) {
     // Generate new id
     client.incr("id:workflows", function(err, id) {
