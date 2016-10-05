@@ -6,7 +6,7 @@
   "scripts": {
     "test": "mocha tests --recursive",
     "test:watch": "mocha tests --recursive --watch",
-    "start": "node app.js",
+    "start": "nodemon app.js",
     "start:watch": "nodemon app.js"
   },
   "repository": {
@@ -22,9 +22,11 @@
   "devDependencies": {
     "nodemon": "latest",
     "mocha": "latest",
-    "chai": "latest"
+    "chai": "latest",
+    "proxyquire": "latest"
   },
   "dependencies": {
+    "body-parser": "latest",
     "express": "latest",
     "redis": "latest"
   }
