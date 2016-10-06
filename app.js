@@ -15,14 +15,23 @@ post_workflows = function(req, res) {
 
 // GET logic
 get_workflows = function (req, res) {
-    workflows.get_workflow(0, function(wf) {
+    workflows.get_all_workflows(function(workflows) {
         res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify(wf, null, 3));
+        res.send(JSON.stringify(workflows, null, 3));
+    });
+};
+
+// GET logic
+get_workflow_at = function (req, res) {
+    workflows.get_workflow(req.params.workflowId, function(workflow) {
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify(workflow, null, 3));
     });
 };
 
 // ROUTING
 setup_routes = function() {
+    app.get('/workflows/:workflowId', get_workflow_at);
     app.get('/workflows', get_workflows); 
     app.post('/workflows', post_workflows);
 };
@@ -42,3 +51,4 @@ if (require.main === module) {
 
 exports.post_workflows = post_workflows;
 exports.get_workflows = get_workflows;
+exports.get_workflow_at = get_workflow_at;

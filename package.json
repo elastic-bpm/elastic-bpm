@@ -4,7 +4,7 @@
   "description": "- name\r - owner\r - created\r - definition",
   "main": "app.js",
   "scripts": {
-    "test": "mocha tests --recursive",
+    "test": "mocha tests --recursive --",
     "test:watch": "mocha tests --recursive --watch",
     "start": "nodemon app.js",
     "start:watch": "nodemon app.js"

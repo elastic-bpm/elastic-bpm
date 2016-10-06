@@ -19,6 +19,22 @@ add_workflow_to_redis = function(workflow, callback) {
     });
 };
 
+get_all_workflows_from_redis = function(callback) {
+    client.get("id:workflows", function(err, id) {
+        workflows = Array.apply(null, {length: parseInt(id)}).map(Number.call, Number);
+        count = 0;
+
+        workflows.forEach(function(element) {
+            get_workflow_from_redis(element+1, function(obj) {
+                workflows[parseInt(element)] = obj;
+                count++;
+
+                if (count == parseInt(id)) callback(workflows);
+            });
+        }, this);
+    });
+};
+
 get_workflow_from_redis = function(id, callback) {
     client.hgetall("workflows:" + id, function (err, obj) {
         if (err) {
@@ -39,5 +55,10 @@ get_workflow = function(id, callback) {
     get_workflow_from_redis(id, callback);
 };
 
+get_all_workflows = function(callback) {
+    get_all_workflows_from_redis(callback);
+};
+
 exports.create_workflow = create_workflow;
 exports.get_workflow = get_workflow;
+exports.get_all_workflows = get_all_workflows;

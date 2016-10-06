@@ -17,11 +17,15 @@ workflowsStub.create_workflow = function(wf, callback) {
   callback(wf);
 };
 
-workflowsStub.get_workflow = function(identifier, callback) {
+workflowsStub.get_all_workflows = function(callback) {
+  callback([test_flow, test_flow]);
+};
+
+workflowsStub.get_workflow = function(id, callback) {
   callback(test_flow);
 };
 
-describe('AppPostWorkflows', function() {
+describe('App', function() {
   it('app.post_workflows() should pass req.body, with created property', function(done) {
     
     req = {};
@@ -37,10 +41,24 @@ describe('AppPostWorkflows', function() {
 
     app.post_workflows(req, res);
   });
-});
 
-describe('AppGetWorkflows', function() {
-  it('app.get_workflows() should pass the first workflow back to res', function(done) {
+  it('app.get_workflows() should pass all workflows back to res', function(done) {
+
+    res = {};
+    res.setHeader = function (){};
+    res.send = function(obj) {
+        expect(obj).to.equal(JSON.stringify([test_flow, test_flow], null, 3));
+        done();
+    };
+
+    app.get_workflows(req, res);
+  });
+
+  it('app.get_workflow_at() should return the requested workflow back to res', function(done) {
+
+    req = {};
+    req.params = {};
+    req.params.workflowId = 0;
 
     res = {};
     res.setHeader = function (){};
@@ -49,6 +67,6 @@ describe('AppGetWorkflows', function() {
         done();
     };
 
-    app.get_workflows(req, res);
+    app.get_workflow_at(req, res);
   });
 });

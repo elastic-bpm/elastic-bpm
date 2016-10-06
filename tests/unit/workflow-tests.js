@@ -9,12 +9,15 @@ input_workflow =  {
 };
 
 wfs = {
-  'workflows:0': input_workflow
+  'workflows:0': input_workflow,
+  'workflows:1': input_workflow
 };
 
 var redisStub = {};
 redisStub.createClient = function(){return redisStub;};
-redisStub.incr = function (identifier, callback) {callback('0');};
+redisStub.incr = function (identifier, callback) {callback('1');};
+
+redisStub.get = function (identifier, callback) {callback(null, '2');};
 
 redisStub.hmset = function (identifier, item, callback) {
   wfs[identifier] = item;
@@ -26,18 +29,23 @@ redisStub.hgetall = function (identifier, callback) {
 };
 var workflows = proxyquire('../../repository/workflows', {'redis': redisStub});
 
-describe('CreateWorkflow', function() {
+describe('Workflows', function() {
   it('workflows.create_workflow() should have a created field', function() {
     workflows.create_workflow(input_workflow, function(output_workflow) {
       expect(output_workflow).to.have.property('created');
     }); 
   });
-});
 
-describe('GetWorkFlow', function() {
   it('workflows.get_workflow() should return the workflow required', function() {
     workflows.get_workflow('0', function(output_workflow) {
       expect(output_workflow).to.equal(input_workflow);
+    }); 
+  });
+
+  it('workflows.get_all_workflows() should return all the workflows', function() {
+    workflows.get_all_workflows(function(output_workflows) {
+      expect(output_workflows).to.have.lengthOf(2);
+      expect(output_workflows[0]).to.equal(input_workflow);
     }); 
   });
 });
