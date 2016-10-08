@@ -4,8 +4,8 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
-    "azure": "^1.2.0-preview",
-    "cross-spawn": "^4.0.2"
+    "azure": "latest",
+    "cross-spawn": "latest"
   },
   "devDependencies": {},
   "scripts": {
