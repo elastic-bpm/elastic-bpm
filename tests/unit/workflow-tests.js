@@ -16,6 +16,7 @@ wfs = {
 var redisStub = {};
 redisStub.createClient = function(){return redisStub;};
 redisStub.incr = function (identifier, callback) {callback('1');};
+redisStub.sadd = function(identifier, value) {return 'Ok.'};
 
 redisStub.get = function (identifier, callback) {callback(null, '2');};
 
