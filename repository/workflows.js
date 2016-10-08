@@ -8,6 +8,8 @@ add_workflow_to_redis = function(workflow, callback) {
 
         workflow.id = workflow_id;
         workflow.created = (new Date()).toJSON();
+        workflow.status = "Enabled";
+        workflow.state = "A";
 
         // Set the object in the new hash
         client.hmset(workflow_id, workflow, function (err, res) {
@@ -18,6 +20,8 @@ add_workflow_to_redis = function(workflow, callback) {
             }
 
             client.sadd("workflows", workflow_id);
+
+            client.publish("workflows", "CREATED " + workflow_id);
 
             // Give the REDIS-object back
             get_workflow_from_redis(workflow_id, callback);
