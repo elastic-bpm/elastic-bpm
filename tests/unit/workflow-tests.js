@@ -19,6 +19,7 @@ redisStub.incr = function (identifier, callback) {callback('1');};
 redisStub.sadd = function(identifier, value) {return 'Ok.'};
 
 redisStub.get = function (identifier, callback) {callback(null, '2');};
+redisStub.smembers = function (identifier, callback){ callback(null, ["workflows:0", "workflows:1"]);};
 
 redisStub.hmset = function (identifier, item, callback) {
   wfs[identifier] = item;
@@ -38,7 +39,7 @@ describe('Workflows', function() {
   });
 
   it('workflows.get_workflow() should return the workflow required', function() {
-    workflows.get_workflow('0', function(output_workflow) {
+    workflows.get_workflow('workflows:0', function(output_workflow) {
       expect(output_workflow).to.equal(input_workflow);
     }); 
   });
