@@ -1,0 +1,25 @@
+{
+  "name": "elastic-scaling",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "azure": "^1.2.0-preview",
+    "cross-spawn": "^4.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DJBnjack/elastic-scaling.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DJBnjack/elastic-scaling/issues"
+  },
+  "homepage": "https://github.com/DJBnjack/elastic-scaling#readme"
+}
