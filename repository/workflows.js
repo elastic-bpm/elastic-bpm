@@ -13,7 +13,9 @@ add_workflow_to_redis = function(workflow, callback) {
                 callback(null);
             }
 
-            // Get the REDIS-object back
+            client.sadd("workflows", "workflows:" + id);
+
+            // Give the REDIS-object back
             get_workflow_from_redis(id, callback);
         });
     });
