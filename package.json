@@ -4,8 +4,11 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
-    "azure": "latest",
-    "cross-spawn": "latest"
+    "azure-cli": "latest",
+    "body-parser": "^1.15.2",
+    "cross-spawn": "latest",
+    "events": "^1.1.1",
+    "express": "^4.14.0"
   },
   "devDependencies": {},
   "scripts": {
@@ -21,5 +24,8 @@
   "bugs": {
     "url": "https://github.com/DJBnjack/elastic-scaling/issues"
   },
-  "homepage": "https://github.com/DJBnjack/elastic-scaling#readme"
+  "homepage": "https://github.com/DJBnjack/elastic-scaling#readme",
+  "jshintConfig": {
+    "esversion": 6
+  }
 }

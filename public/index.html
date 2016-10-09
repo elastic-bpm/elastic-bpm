@@ -1,0 +1,30 @@
+<html>
+    <head>
+        <script   src="http://code.jquery.com/jquery-3.1.1.js"   integrity="sha256-16cdPddA6VdVInumRGo6IbivbERE8p7CQR3HzTBuELA="   crossorigin="anonymous"></script>
+    </head>
+    <body>
+        <h1>Hello, world!</h1>
+        <p id="login">Login? Click <a href="https://aka.ms/devicelogin" target="_new">here</a></p>
+        <p id="code"></p>
+        <p id="done" style="display: none;">Logged in!</p>
+    </body>
+    <script>
+        // A $( document ).ready() block.
+        var load_code = function () {
+            $.get( "/code", function( data ) {
+                if (data == "done!") {
+                    console.log("Done!");
+                    $("#login").hide();
+                    $("#code").hide();
+                    $("#done").show();
+                } else {
+                    console.log(data);
+                    $( "#code" ).html( data );
+                    setTimeout(load_code, 2000);
+                }
+            });            
+        }
+
+        $( document ).ready(load_code);
+    </script>
+</html>
