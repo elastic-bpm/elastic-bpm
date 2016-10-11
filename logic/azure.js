@@ -14,55 +14,60 @@ log_output = function (output) {
     }
 };
 
-eventEmitter.on('started', () => {
+azure_disable_telemetry = function(callback) {
   login = spawn('azure', ['telemetry', '--disable']);
   
   login.stdout.on('data', log_output);
   login.stderr.on('data', log_output);
 
-  login.on('close', (code) => {
-    eventEmitter.emit('login');
-  });
-});
+  login.on('close', (code) => callback());
+};
 
-eventEmitter.on('login', () => {
+azure_login = function(callback) {
   login = spawn('azure', ['login']);
   
   login.stdout.on('data', log_output);
   login.stderr.on('data', log_output);
 
-  login.on('close', (code) => {
-    eventEmitter.emit('logged_on');
-  });
-});
+  login.on('close', (code) => callback());
+};
 
-eventEmitter.on('logged_on', () => {
+azure_set_account = function(callback) {
   code = "done!";
   set_account = spawn('azure',['account','set', '4 - docker swarm']);
   
   set_account.stdout.on('data', log_output);
   set_account.stderr.on('data', log_output);
 
-  set_account.on('close', (code2) => {
-    eventEmitter.emit('account_set');
-  });
-});
+  set_account.on('close', (code2) => callback());
+};
 
-eventEmitter.on('account_set', () => {
+azure_load_vms = function(callback) {
   list_vms = spawn('azure',['vm','list', '--json']);
   
   list_vms.stdout.on('data', (data) => { vms = JSON.parse(data); });
   list_vms.stderr.on('data', log_output);
 
   list_vms.on('close', (code3) => {
-    eventEmitter.emit('vms_loaded');
+    setTimeout(() => azure_load_vms(callback), 10000);
+    callback();
   });
+};
+
+eventEmitter.on('started', () => {
+  azure_disable_telemetry(() => eventEmitter.emit('login'));
 });
 
-eventEmitter.on('vms_loaded', () => {
-  vms.forEach(function(element) {
-    console.log("Name: " + element.name + ", powerState: " + element.powerState);
-  }, this);
+eventEmitter.on('login', () => {
+  azure_login(() => eventEmitter.emit('logged_on'));
+});
+
+eventEmitter.on('logged_on', () => {
+  azure_set_account(() => eventEmitter.emit('account_set'));
+});
+
+eventEmitter.on('account_set', () => {
+  azure_load_vms(() => eventEmitter.emit('vms_loaded'));
 });
 
 start_events = function() {

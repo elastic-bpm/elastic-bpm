@@ -14,9 +14,9 @@ get_virtualmachines = function (req, res) {
 
 get_code = function(req, res) {
   code = azure.get_code();
-  res.send(JSON.stringify(code, null, 3));
+  res.setHeader('Content-Type', 'text/html');
+  res.send(code);
 };
-
 
 // ROUTING
 setup_routes = function() {
