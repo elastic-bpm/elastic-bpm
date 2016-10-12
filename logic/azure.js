@@ -34,8 +34,8 @@ azure_login = function(callback) {
 
 azure_set_account = function(callback) {
   code = "done!";
-  set_account = spawn('azure',['account','set', '4 - docker swarm']);
-  
+  set_account = spawn('azure',['account','set', process.env.subscriptionId]);
+
   set_account.stdout.on('data', log_output);
   set_account.stderr.on('data', log_output);
 
