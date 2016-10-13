@@ -38,4 +38,3 @@ if (require.main === module) {
 }
 
 azure.start_events();
-
