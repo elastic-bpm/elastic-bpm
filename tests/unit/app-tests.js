@@ -14,11 +14,11 @@ test_flow =  {
 
 workflowsStub.create_workflow = function(wf, callback) {
   wf.created = (new Date()).toJSON();
-  callback(wf);
+  callback(null, wf);
 };
 
 workflowsStub.get_all_workflows = function(callback) {
-  callback([test_flow, test_flow]);
+  callback(null, [test_flow, test_flow]);
 };
 
 workflowsStub.get_workflow = function(id, callback) {

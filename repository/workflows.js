@@ -1,5 +1,5 @@
 var redis = require("redis"),
-    client = redis.createClient();
+    client = redis.createClient(6379, process.env.REDIS_HOST);
 
 add_workflow_to_redis = function(workflow, callback) {
     // Generate new id
@@ -40,7 +40,7 @@ get_all_workflows_from_redis = function(callback) {
                 count++;
 
                 // Callback when we're done
-                if (count == workflows.length) callback(output_workflows);
+                if (count == workflows.length) callback(err, output_workflows);
             });
         }, this);
     });

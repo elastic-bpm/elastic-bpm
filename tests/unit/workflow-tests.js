@@ -45,7 +45,7 @@ describe('Workflows', function() {
   });
 
   it('workflows.get_all_workflows() should return all the workflows', function() {
-    workflows.get_all_workflows(function(output_workflows) {
+    workflows.get_all_workflows(function(err, output_workflows) {
       expect(output_workflows).to.have.lengthOf(2);
       expect(output_workflows[0]).to.equal(input_workflow);
     }); 

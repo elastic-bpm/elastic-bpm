@@ -6,12 +6,16 @@
   "scripts": {
     "test": "mocha tests --recursive --",
     "test:watch": "mocha tests --recursive --watch",
-    "start": "npm run docker:reload && npm run start:watch",
-    "docker:reload": "npm run docker:kill && npm run docker:wait && npm run docker:start",
-    "docker:kill": "docker rm some-redis --force || echo 'ok'",
-    "docker:wait": "timeout 3",
-    "docker:start": "docker run --name some-redis -d -p 6379:6379 redis",
-    "start:watch": "set DEBUG=express:* & nodemon app.js"
+    "start": "node app.js",
+    "start:local": "set DEBUG=express:* & set REDIS_HOST=localhost& nodemon app.js",
+    "redis:reload": "npm run redis:kill && npm run wait && npm run redis:start",
+    "redis:kill": "docker rm some-redis --force || echo 'ok'",
+    "wait": "timeout 3",
+    "redis:start": "docker run --name some-redis -d -p 6379:6379 redis",
+    "docker:reload": "npm run docker:kill && npm run docker:build && npm run wait && npm run docker:run",
+    "docker:kill": "docker rm elastic-api --force || echo 'ok'",
+    "docker:build": "docker build -t elastic-api .",
+    "docker:run": "docker run --name elastic-api -d -p 3000:3000 --link some-redis:redis elastic-api"
   },
   "repository": {
     "type": "git",

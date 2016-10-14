@@ -7,7 +7,7 @@ var workflows = require('./repository/workflows');
 
 // POST logic
 post_workflows = function(req, res) {
-    workflows.create_workflow(req.body, function(wf) {
+    workflows.create_workflow(req.body, function(err, wf) {
         res.setHeader('Content-Type', 'application/json'); 
         res.send(wf); 
     });
@@ -15,7 +15,7 @@ post_workflows = function(req, res) {
 
 // GET logic
 get_workflows = function (req, res) {
-    workflows.get_all_workflows(function(workflows) {
+    workflows.get_all_workflows(function(err, workflows) {
         res.setHeader('Content-Type', 'application/json');
         res.send(JSON.stringify(workflows, null, 3));
     });
