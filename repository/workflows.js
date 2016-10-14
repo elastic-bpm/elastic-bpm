@@ -31,18 +31,15 @@ add_workflow_to_redis = function(workflow, callback) {
 
 get_all_workflows_from_redis = function(callback) {
     client.smembers("workflows", function(err, workflows) {
-        //workflows = Array.apply(null, {length: parseInt(id)}).map(Number.call, Number);
-        // console.dir(workflows);
-        count = 0;
-
         output_workflows = [];
 
+        count = 0;
         workflows.forEach(function(element) {
-            // console.dir(element);
-            get_workflow_from_redis(element, function(obj) {
+            get_workflow_from_redis(element, function(err, obj) {
                 output_workflows.push(obj);
                 count++;
 
+                // Callback when we're done
                 if (count == workflows.length) callback(output_workflows);
             });
         }, this);
@@ -53,9 +50,9 @@ get_workflow_from_redis = function(id, callback) {
     client.hgetall(id, function (err, obj) {
         if (err) {
             console.dir(err);
-            callback(err);
+            callback(err, null);
         } else {
-            callback(obj);
+            callback(null, obj);
         }
     });
 };

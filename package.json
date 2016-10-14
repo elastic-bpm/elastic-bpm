@@ -6,8 +6,12 @@
   "scripts": {
     "test": "mocha tests --recursive --",
     "test:watch": "mocha tests --recursive --watch",
-    "start": "nodemon app.js",
-    "start:watch": "nodemon app.js"
+    "start": "npm run docker:reload && npm run start:watch",
+    "docker:reload": "npm run docker:kill && npm run docker:wait && npm run docker:start",
+    "docker:kill": "docker rm some-redis --force || echo 'ok'",
+    "docker:wait": "timeout 3",
+    "docker:start": "docker run --name some-redis -d -p 6379:6379 redis",
+    "start:watch": "set DEBUG=express:* & nodemon app.js"
   },
   "repository": {
     "type": "git",

@@ -33,13 +33,13 @@ var workflows = proxyquire('../../repository/workflows', {'redis': redisStub});
 
 describe('Workflows', function() {
   it('workflows.create_workflow() should have a created field', function() {
-    workflows.create_workflow(input_workflow, function(output_workflow) {
+    workflows.create_workflow(input_workflow, function(err, output_workflow) {
       expect(output_workflow).to.have.property('created');
     }); 
   });
 
   it('workflows.get_workflow() should return the workflow required', function() {
-    workflows.get_workflow('workflows:0', function(output_workflow) {
+    workflows.get_workflow('workflows:0', function(err, output_workflow) {
       expect(output_workflow).to.equal(input_workflow);
     }); 
   });

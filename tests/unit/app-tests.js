@@ -22,7 +22,7 @@ workflowsStub.get_all_workflows = function(callback) {
 };
 
 workflowsStub.get_workflow = function(id, callback) {
-  callback(test_flow);
+  callback(null, test_flow);
 };
 
 describe('App', function() {

@@ -23,9 +23,14 @@ get_workflows = function (req, res) {
 
 // GET logic
 get_workflow_at = function (req, res) {
-    workflows.get_workflow(req.params.workflowId, function(workflow) {
-        res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify(workflow, null, 3));
+    workflows.get_workflow(req.params.workflowId, function(err, workflow) {
+        if (err) {
+            console.dir(err);
+            res.status(404).send('Not found');
+        } else {
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify(workflow, null, 3));
+        }
     });
 };
 
