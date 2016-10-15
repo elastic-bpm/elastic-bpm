@@ -4,9 +4,15 @@ var express = require('express'),
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
+
+// GET logic
+get_timeline = function (req, res) {
+    res.sendFile(__dirname + '/public/parts/timeline.html');
+};
+
 // ROUTING
 setup_routes = function() {
-  /* no routes yet */
+  app.get('/timeline', get_timeline);
 };
 
 // Server startup
