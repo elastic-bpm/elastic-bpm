@@ -4,15 +4,9 @@ var express = require('express'),
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
-
-// GET logic
-get_timeline = function (req, res) {
-    res.sendFile(__dirname + '/public/parts/timeline.html');
-};
-
 // ROUTING
 setup_routes = function() {
-  app.get('/timeline', get_timeline);
+//   app.get('/timeline', get_timeline);
 };
 
 // Server startup
