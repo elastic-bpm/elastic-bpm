@@ -4,9 +4,17 @@ var express = require('express'),
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
+get_event = function (req, res) {
+    res.setHeader('Content-Type', 'application/json'); 
+    res.send({
+        time: (new Date()).toJSON(),
+        message: "Event message",
+    }); 
+};
+
 // ROUTING
 setup_routes = function() {
-//   app.get('/timeline', get_timeline);
+   app.get('/event', get_event);
 };
 
 // Server startup
