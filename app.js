@@ -40,7 +40,7 @@ setup_routes = function() {
 // Emit events
 start_casting = function () {
     send_event();
-    setTimeout(start_casting, 2000);
+    setTimeout(start_casting, 20000);
 };
 
 // Server startup

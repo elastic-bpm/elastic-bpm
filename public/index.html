@@ -39,11 +39,25 @@
 </div>
 
 <script src="js/jquery.min.js"></script>
+<script src="js/jquery.loadTemplate.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/metisMenu.min.js"></script>
 <script src="js/startmin.js"></script>
 
-<script src="js/fill-timeline.js"></script>
+<script>
+	var lastTimeLineInverted = false;
+    jQuery.fn.extend({
+        register_event: function(data) {
+            if (!lastTimeLineInverted) {
+                data.inverted = "timeline-inverted";
+            }
+            lastTimeLineInverted = !lastTimeLineInverted;
+
+            this.loadTemplate("templates/timeline-template.html", data, { prepend: true});
+        }
+    });
+</script>
+
 <script src="/socket.io/socket.io.js"></script>
 <script>
   	var socket = io();
