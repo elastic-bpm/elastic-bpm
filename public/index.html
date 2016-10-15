@@ -43,58 +43,10 @@
 <script src="js/metisMenu.min.js"></script>
 <script src="js/startmin.js"></script>
 
+<script src="js/fill-timeline.js"></script>
+<script src="/socket.io/socket.io.js"></script>
 <script>
-	var lastTimeLineInverted = false;
-	var get_timeline_html = function(data) {
-		var badge = $("<div></div>")
-			.addClass("timeline-badge")
-			.append($("<i></i>")
-				.addClass("fa fa-check")
-			);
-
-		var title = $("<h4></h4>")
-			.addClass("timeline-title")
-			.html("Title here");
-
-		var time = $("<p></p>")
-			.append($("<small></small>")
-				.addClass("text-muted")
-				.append($("<i></i>")
-					.addClass("fa fa-clock-o")
-				).append(" " + new Date(data.time).toLocaleString())
-			);
-		
-		var heading = $("<div></div>")
-			.addClass("timeline-heading")
-			.append(title)
-			.append(time); 
-
-		var body = $("<div></div>")
-			.addClass("timeline-body")
-			.append($("<p></p>")
-				.html(data.message)
-			); 
-
-		var panel = $("<div></div>").addClass("timeline-panel").append(heading).append(body);
-
-		var item = $("<li></li>").append(badge).append(panel) 
-
-		if (!lastTimeLineInverted) {
-			item.addClass("timeline-inverted");
-		}
-		lastTimeLineInverted = !lastTimeLineInverted;
-
-		return item;
-	}
-
-	var get_events = function(element) {
-		$.get("/event", (data) => {
-			element.prepend(get_timeline_html(data));
-		});
-
-		setTimeout(() => get_events(element), 20000);
-	};
-
+  	var socket = io();
 	$( document ).ready(function() {
 		$.get("/parts/navbar.html", (data) => {
 			$("#navbar").html(data);
@@ -113,7 +65,7 @@
 
 		$.get("/parts/timeline.html", (data) => {
 			$("#timeline").html(data);
-			get_events($("#timeline-list"));
+			socket.on('event', (event) => $("#timeline-list").register_event(event));
 		});
 
 		$.get("/parts/console.html", (data) => $("#console").html(data));
