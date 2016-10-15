@@ -1,13 +1,23 @@
-var http = require('http');
+var bodyParser = require('body-parser');
+var express = require('express'),
+    app = express();
+app.use(bodyParser.json());
+app.use(express.static('public'));
 
-var finalhandler = require('finalhandler');
-var serveStatic = require('serve-static');
+// ROUTING
+setup_routes = function() {
+  /* no routes yet */
+};
 
-var serve = serveStatic("./static");
+// Server startup
+start_server = function() {
+    app.listen(3000, function () {
+        console.log('Elastic-dashboard listening on port 3000!');
+    });
+};
 
-var server = http.createServer(function(req, res) {
-  var done = finalhandler(req, res);
-  serve(req, res, done);
-});
-
-server.listen(8080);
+// When run directly, serve the API
+if (require.main === module) {
+    setup_routes();
+    start_server();
+}
