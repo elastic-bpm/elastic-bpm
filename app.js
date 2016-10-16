@@ -7,17 +7,17 @@ var workflows = require('./repository/workflows');
 
 // POST logic
 post_workflows = function(req, res) {
-    workflows.create_workflow(req.body, function(err, wf) {
+    workflows.create_workflow(req.body, function(err, workflow) {
         res.setHeader('Content-Type', 'application/json'); 
-        res.send(wf); 
+        res.send(workflow); 
     });
 };
 
 // GET logic
 get_workflows = function (req, res) {
-    workflows.get_all_workflows(function(err, workflows) {
+    workflows.get_all_workflows(function(err, workflow_array) {
         res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify(workflows, null, 3));
+        res.send(JSON.stringify(workflow_array, null, 3));
     });
 };
 
