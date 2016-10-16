@@ -5,24 +5,17 @@ var express = require('express'),
     app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
+var listener = require('./listener/listener');
     
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
 var num_events = 0;
 var events = [];
-generate_event = function() {
+send_event = function (event) {
     num_events++;
-    event = {
-        time: (new Date()).toJSON(),
-        message: "Event message " + num_events,
-    };
-    events.push(event); 
-    return event;
-};
-
-send_event = function () {
-    io.emit('event', generate_event());
+    events.push(event);
+    io.emit('event', event);
 };
 
 // Send new connections EVERYTHING... muhahaha
@@ -39,8 +32,9 @@ setup_routes = function() {
 
 // Emit events
 start_casting = function () {
-    send_event();
-    setTimeout(start_casting, 20000);
+    //send_event(generate_event());
+    //setTimeout(start_casting, 20000);
+    listener.register_events(send_event);
 };
 
 // Server startup

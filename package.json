@@ -6,12 +6,12 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
-    "start:local": "set DEBUG=express:* & nodemon app.js",
+    "start:local": "set DEBUG=express:* & set REDIS_HOST=localhost& nodemon app.js",
     "wait": "timeout 3",
     "docker:reload": "npm run docker:kill && npm run docker:build && npm run wait && npm run docker:run",
     "docker:kill": "docker rm elastic-dashboard --force || echo 'ok'",
     "docker:build": "docker build -t elastic-dashboard .",
-    "docker:run": "docker run --name elastic-dashboard -d -p 3000:3000 elastic-dashboard"
+    "docker:run": "docker run --name elastic-dashboard -d -p 8080:8080 elastic-dashboard"
   },
   "repository": {
     "type": "git",
@@ -27,6 +27,7 @@
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
     "http": "0.0.0",
+    "redis": "^2.6.2",
     "socket.io": "^1.5.0"
   }
 }
