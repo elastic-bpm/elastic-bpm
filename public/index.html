@@ -44,7 +44,7 @@
 <script src="js/metisMenu.min.js"></script>
 <script src="js/startmin.js"></script>
 
-<script>
+<script id="extend_timeline">
 	var lastTimeLineInverted = false;
     jQuery.fn.extend({
         register_event: function(data) {
@@ -59,7 +59,7 @@
 </script>
 
 <script src="/socket.io/socket.io.js"></script>
-<script>
+<script id="main">
   	var socket = io();
 	$( document ).ready(function() {
 		$.get("/parts/navbar.html", (data) => {

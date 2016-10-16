@@ -45,7 +45,7 @@ start_casting = function () {
 
 // Server startup
 start_server = function() {
-    server.listen(3000, () => console.log('Elastic-dashboard listening on port 3000!'));
+    server.listen(8080, () => console.log('Elastic-dashboard listening on port 8080!'));
 };
 
 // When run directly, serve the API
