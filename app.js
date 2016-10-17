@@ -27,7 +27,6 @@ io.on('connect', (socket) => {
     });
 });
 
-
 redis_status = {
     name: "redis-listener",
     status: 0,
@@ -92,9 +91,20 @@ get_status = function(req, res) {
     res.send(JSON.stringify(status_data, null, 3));
 };
 
+get_virtualmachines = function(req, res) {
+    elastic_scaling.get_vms((err, success) => {
+        if (err) {
+            res.status(500).send(err);
+        } else {
+            res.send(success);
+        }
+    });
+};
+
 // ROUTING
 setup_routes = function() {
    app.get('/status', get_status);
+   app.get('/virtualmachines', get_virtualmachines);
 };
 
 // Emit events

@@ -11,7 +11,8 @@
     "docker:reload": "npm run docker:kill && npm run docker:build && npm run wait && npm run docker:run",
     "docker:kill": "docker rm elastic-dashboard --force || echo 'ok'",
     "docker:build": "docker build -t elastic-dashboard .",
-    "docker:run": "docker run --name elastic-dashboard -d -p 8080:8080 elastic-dashboard"
+    "docker:run": "docker run --name elastic-dashboard -d -p 8080:8080 elastic-dashboard",
+    "compose:restart": "docker-compose down && docker-compose build && docker-compose up"
   },
   "repository": {
     "type": "git",
