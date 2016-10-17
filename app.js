@@ -5,8 +5,8 @@ var express = require('express'),
     app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
-var listener = require('./listener/listener');
-var elastic_api = require('./api/elastic-api');
+var redis_listener = require('./components/redis-listener');
+var elastic_api = require('./components/elastic-api');
     
 app.use(bodyParser.json());
 app.use(express.static('public'));
@@ -28,7 +28,7 @@ io.on('connect', (socket) => {
 
 
 redis_status = {
-    name: "Redis",
+    name: "redis-listener",
     status: 0,
     message: "Not connected"
 };
@@ -40,7 +40,7 @@ elastic_api_status = {
 };
 
 start_check_status = function() {
-    listener.connect_client(
+    redis_listener.connect_client(
         () => {
             redis_status.status = 500;
             redis_status.message = "Error connecting to Redis";
@@ -80,7 +80,7 @@ setup_routes = function() {
 
 // Emit events
 start_casting = function () {
-    listener.register_events(send_event);
+    redis_listener.register_events(send_event);
 };
 
 // Server startup

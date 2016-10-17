@@ -398,7 +398,7 @@ table.dataTable thead .sorting:after {
 .hero-widget .value {
     display: block;
     height: 64px;
-    font-size: 64px;
+    font-size: 40px;
     line-height: 64px;
     font-style: normal;
 }
