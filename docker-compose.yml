@@ -7,6 +7,7 @@
      depends_on:
       - redis
       - api
+      - scaling
    api:
      image: djbnjack/elastic-api
      ports:
@@ -15,3 +16,7 @@
       - redis
    redis:
      image: redis
+   scaling:
+     image: djbnjack/elastic-scaling
+     ports:
+      - "8888:8888"

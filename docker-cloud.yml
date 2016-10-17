@@ -9,7 +9,12 @@ dashboard:
   links:
     - api
     - redis
+    - scaling
   ports:
     - '8080:8080'
 redis:
   image: 'redis:latest'
+scaling:
+  image: 'djbnjack/elastic-scaling:latest'
+  ports:
+    - '8888:8888'
