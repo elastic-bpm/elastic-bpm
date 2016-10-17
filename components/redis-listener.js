@@ -7,12 +7,12 @@ connect_client = function(err, ready) {
     client = redis.createClient(6379, process.env.REDIS_HOST);
     
     client.on("error", () => {
-        console.log("Error connecting to REDIS");
+        // console.log("Error connecting to REDIS");
         err();
     });
 
     client.on("ready", () => {
-        console.log("Connected to REDIS");
+        // console.log("Connected to REDIS");
         ready();
     });
 
@@ -20,7 +20,7 @@ connect_client = function(err, ready) {
 
 register_events = function(callback) {
     client.monitor(function (err, res) {
-        console.log("Entering monitoring mode.");
+        // console.log("Entering monitoring mode.");
     });
 
     client.on("monitor", function (time, args, raw_reply) {

@@ -385,6 +385,7 @@ table.dataTable thead .sorting:after {
 /* Hero Widgets */
 .hero-widget {
     text-align: center;
+    height: 300px;
     padding-top: 20px;
     padding-bottom: 20px;
 }
@@ -392,7 +393,7 @@ table.dataTable thead .sorting:after {
     display: block;
     font-size: 96px;
     line-height: 96px;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     text-align: center;
 }
 .hero-widget .value {
