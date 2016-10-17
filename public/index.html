@@ -35,6 +35,7 @@
         <div id="dashboard" class="container-fluid"></div>
 		<div id="timeline" class="container-fluid" style="display:none"></div>
 		<div id="console" class="container-fluid" style="display:none"></div>
+        <div id="machines" class="container-fluid" style="display:none"></div>
 	</div>
 
 </div>
@@ -81,36 +82,98 @@
     });
 </script>
 
+<script id="load_machines">
+    $.addTemplateFormatter({
+        ButtonId: function(value, template) {
+            return template + "-button-" + value;
+        },
+        StartIsDisabled: function(value, template) {
+            if (value === "VM running") {
+                return template + " disabled";
+            } else {
+                return template;
+            }
+        },
+        PauseIsDisabled: function(value, template) {
+            if (value === "VM running") {
+                return template;
+            } else {
+                return template + " disabled";
+            }
+        },
+        StopIsDisabled: function(value, template) {
+            return template + " disabled";
+        }
+    });
+
+    start_machine = function(machine_id) {
+        $.post( "/virtualmachines/"+machine_id+"/start" ).done(function( data ) {
+            console.log(data);
+        });
+    };
+
+    pause_machine = function(machine_id) {
+        $.post( "/virtualmachines/"+machine_id+"/stop" ).done(function( data ) {
+            console.log(data);
+        });
+    };
+
+    jQuery.fn.extend({
+        load_machines: function(location) {
+            $.get(location, (status_data) => {
+                this.loadTemplate("templates/machines-template.html", status_data, {success: () => {
+                    status_data.forEach((obj) => {
+                        $("#start-button-" + obj.name).on('click', () => start_machine(obj.vmId));
+                        $("#pause-button-" + obj.name).on('click', () => pause_machine(obj.vmId));
+                    });
+                }});
+            });
+
+            setTimeout(() => this.load_machines(location), 20000); // POLLING
+        }
+    });
+</script>
+
+<script id="selector_click">
+    jQuery.fn.extend({
+        show_item: function(content) {
+            this.on('click', () => {
+                hideAll();
+				content.show();
+            });
+        }
+    });
+</script>
+
 <script src="/socket.io/socket.io.js"></script>
 <script id="main">
+    var hideAll = function() {
+        $("#timeline").hide();
+        $("#dashboard").hide();
+        $("#console").hide();
+        $("#machines").hide();
+    };
   	var socket = io();
+
 	$( document ).ready(function() {
 		$.get("/parts/navbar.html", (data) => {
 			$("#navbar").html(data);
 
 			// Register clicks after loading the items :-)
-			$("#show-timeline").on('click', () => {
-				$("#timeline").show();
-                $("#dashboard").hide();
-				$("#console").hide();
-			});
-
-			$("#show-dashboard").on('click', () => {
-                $("#dashboard").show();
-				$("#timeline").hide();
-				$("#console").hide();
-			});
-
-			$("#show-console").on('click', () => {
-				$("#console").show();
-				$("#timeline").hide();
-                $("#dashboard").hide();
-			});
+			$("#show-timeline").show_item($("#timeline"));
+			$("#show-dashboard").show_item($("#dashboard"));
+			$("#show-console").show_item($("#console"));
+            $("#show-machines").show_item($("#machines"));
 		});
 
 		$.get("/parts/timeline.html", (data) => {
 			$("#timeline").html(data);
 			$("#timeline-list").register_events(socket);
+		});
+
+        $.get("/parts/machines.html", (data) => {
+			$("#machines").html(data);
+            $("#machines-table-body").load_machines('/virtualmachines');
 		});
 
 		$.get("/parts/console.html", (data) => {

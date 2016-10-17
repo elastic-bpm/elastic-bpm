@@ -1,10 +1,12 @@
 /*jshint esversion: 6 */
 
+var util = require('util');
 var bodyParser = require('body-parser');
 var express = require('express'),
     app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
+
 var redis_listener = require('./components/redis-listener');
 var elastic_api = require('./components/elastic-api');
 var elastic_scaling = require('./components/elastic-scaling');
@@ -101,10 +103,24 @@ get_virtualmachines = function(req, res) {
     });
 };
 
+start_virtualmachine = function(req, res) {
+    machine_id = req.params.machine_id;
+    res.send("Starting " + machine_id);    
+};
+
+stop_virtualmachine = function(req, res) {
+    machine_id = req.params.machine_id;
+    res.send("Stopping " + machine_id);    
+};
+
+
 // ROUTING
 setup_routes = function() {
    app.get('/status', get_status);
    app.get('/virtualmachines', get_virtualmachines);
+
+   app.post('/virtualmachines/:machine_id/start', start_virtualmachine);
+   app.post('/virtualmachines/:machine_id/stop', stop_virtualmachine);
 };
 
 // Emit events

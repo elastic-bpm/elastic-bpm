@@ -1,0 +1,26 @@
+<tr>
+    <td data-content="name"></td>
+    <td data-content="resourceGroupName"></td>
+    <td data-content="hardwareProfile.vmSize"></td>
+    <td data-content="powerState"></td>
+    <td>
+        <button 
+            data-template-bind='[
+                {"attribute": "id", "value": "name", "formatter": "ButtonId", "formatOptions": "start"},
+                {"attribute": "class", "value": "powerState", "formatter": "StartIsDisabled", "formatOptions": "btn btn-success btn-circle"}
+            ]'
+            type="button"><i class="fa fa-play"></i></button>
+        <button 
+            data-template-bind='[
+                {"attribute": "id", "value": "name", "formatter": "ButtonId", "formatOptions": "pause"},
+                {"attribute": "class", "value": "powerState", "formatter": "PauseIsDisabled", "formatOptions": "btn btn-warning btn-circle"}
+            ]'
+            type="button"><i class="fa fa-pause"></i></button>
+        <button 
+            data-template-bind='[
+                {"attribute": "id", "value": "name", "formatter": "ButtonId", "formatOptions": "stop"},
+                {"attribute": "class", "value": "powerState", "formatter": "StopIsDisabled", "formatOptions": "btn btn-danger btn-circle"}
+            ]'
+            type="button"><i class="fa fa-stop"></i></button>
+    </td>
+</tr>
