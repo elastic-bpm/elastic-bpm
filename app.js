@@ -52,9 +52,9 @@ start_check_status = function() {
     );
 
     elastic_api.check_status(
-        () => {
+        (err) => {
             elastic_api_status.status = 500;
-            elastic_api_status.message = "Error connecting to elastic-api";
+            elastic_api_status.message = "Error:" + err;
         },
         () => {
             elastic_api_status.status = 200;

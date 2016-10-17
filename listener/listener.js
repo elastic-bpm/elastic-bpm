@@ -1,3 +1,5 @@
+/*jshint esversion: 6 */
+
 var redis = require("redis");
 var client = {};
 
@@ -22,7 +24,7 @@ register_events = function(callback) {
     });
 
     client.on("monitor", function (time, args, raw_reply) {
-        timeMs = eval(time)*1000; // Convert the time to millisecons - maybe :-(
+        timeMs = Number(time)*1000; // Convert the time to millisecons - maybe :-(
         timeObj = new Date(timeMs);
         event = {time:timeObj.toJSON(), title:args[0], message:args.join(", ")};
         callback(event);
