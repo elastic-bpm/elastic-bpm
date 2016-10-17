@@ -9,7 +9,7 @@
       - api
       - scaling
    api:
-     image: djbnjack/elastic-api
+     image: djbnjack/elastic-api:latest
      ports:
       - "3000:3000"
      depends_on:
@@ -17,6 +17,6 @@
    redis:
      image: redis
    scaling:
-     image: djbnjack/elastic-scaling
+     image: djbnjack/elastic-scaling:latest
      ports:
       - "8888:8888"
