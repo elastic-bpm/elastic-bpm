@@ -16,12 +16,12 @@ var load_vms = function () {
         $( "#vms" ).html("");
 
         var table = $('<table></table>').addClass('table').addClass('table-hover').addClass('table-mc-light-blue').addClass('table-bordered').addClass('table-condensed').attr('id', 'table');
-        var head = $('<thead><tr><th>name</th><th>size</th><th>state</th></tr></thead>');
+        var head = $('<thead><tr><th>name</th><th>resource group</th><th>size</th><th>state</th></tr></thead>');
         table.append(head);
         var tbody = $('<tbody></tbody>');
         data.forEach(function(item, index) {
 
-            var row = $('<tr><td>' + item.name + '</td><td>' + item.hardwareProfile.vmSize  + '</td><td>' + item.powerState + '</td></tr>');
+            var row = $('<tr><td>' + item.name + '</td><td>' + item. resourceGroupName  + '</td><td>' + item.hardwareProfile.vmSize  + '</td><td>' + item.powerState + '</td></tr>');
             tbody.append(row);
 
         });

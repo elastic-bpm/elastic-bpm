@@ -46,7 +46,10 @@ azure_set_account = function(callback) {
 azure_load_vms = function(callback) {
   list_vms = spawn('azure',['vm','list', '--json']);
   
-  list_vms.stdout.on('data', (data) => { vms = JSON.parse(data); });
+  list_vms.stdout.on('data', (data) => { 
+    vms = JSON.parse(data);
+    console.dir(vms); 
+  });
   list_vms.stderr.on('data', log_output);
 
   list_vms.on('close', (code3) => {
