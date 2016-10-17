@@ -65,6 +65,14 @@
     jQuery.fn.extend({
         load_status: function(location) {
             $.get(location, (status_data) => {
+                status_data = status_data.map((obj) => {
+                    if (obj.status == 200) {
+                        obj.class = "glyphicon-ok-sign good";
+                    } else {
+                        obj.class = "glyphicon-remove-sign bad";
+                    }
+                    return obj;
+                });
                 this.loadTemplate("templates/widget-template.html", status_data);
             });
 
@@ -105,7 +113,12 @@
 			$("#timeline-list").register_events(socket);
 		});
 
-		$.get("/parts/console.html", (data) => $("#console").html(data));
+		$.get("/parts/console.html", (data) => {
+            $("#console").html(data);
+            socket.on('event', (event) => { 
+                $("#console-output").prepend(event.time + ":" + event.message + "\n");
+            });
+        });
         $.get("/parts/dashboard.html", (data) => {
             $("#dashboard").html(data);
             $("#dashboard-status").load_status('/status');

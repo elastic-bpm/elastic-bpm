@@ -1,5 +1,20 @@
-var redis = require("redis"),
+var redis = require("redis");
+var client = {};
+
+connect_client = function(err, ready) {
     client = redis.createClient(6379, process.env.REDIS_HOST);
+    
+    client.on("error", () => {
+        console.log("Error connecting to REDIS");
+        err();
+    });
+
+    client.on("ready", () => {
+        console.log("Connected to REDIS");
+        ready();
+    });
+
+};
 
 register_events = function(callback) {
     client.monitor(function (err, res) {
@@ -15,3 +30,4 @@ register_events = function(callback) {
 };
 
 exports.register_events = register_events;
+exports.connect_client = connect_client;

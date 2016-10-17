@@ -6,6 +6,7 @@ var express = require('express'),
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var listener = require('./listener/listener');
+var elastic_api = require('./api/elastic-api');
     
 app.use(bodyParser.json());
 app.use(express.static('public'));
@@ -25,17 +26,49 @@ io.on('connect', (socket) => {
     });
 });
 
+
+redis_status = {
+    name: "Redis",
+    status: 0,
+    message: "Not connected"
+};
+
+elastic_api_status = {
+    name: "elastic-api",
+    status: 0,
+    message: "Not connected"
+};
+
+start_check_status = function() {
+    listener.connect_client(
+        () => {
+            redis_status.status = 500;
+            redis_status.message = "Error connecting to Redis";
+        },
+        () => {
+            redis_status.status = 200;
+            redis_status.message = "Connected to Redis";
+        } 
+    );
+
+    elastic_api.check_status(
+        () => {
+            elastic_api_status.status = 500;
+            elastic_api_status.message = "Error connecting to elastic-api";
+        },
+        () => {
+            elastic_api_status.status = 200;
+            elastic_api_status.message = "Connected to elastic-api";
+        }
+    );
+    // Check other components here
+};
+
 get_status = function(req, res) {
     status_data = [
-        {
-            message: "Redis: ok"
-        },
-        {
-            message: "API: ok"
-        }
-
+        redis_status,
+        elastic_api_status
     ];
-
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(status_data, null, 3));
 };
@@ -47,8 +80,6 @@ setup_routes = function() {
 
 // Emit events
 start_casting = function () {
-    //send_event(generate_event());
-    //setTimeout(start_casting, 20000);
     listener.register_events(send_event);
 };
 
@@ -61,5 +92,6 @@ start_server = function() {
 if (require.main === module) {
     setup_routes();
     start_server();
+    start_check_status();
     start_casting();
 }
