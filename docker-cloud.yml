@@ -1,0 +1,15 @@
+api:
+  image: 'djbnjack/elastic-api:latest'
+  links:
+    - redis
+  ports:
+    - '3000:3000'
+dashboard:
+  image: 'djbnjack/elastic-dashboard:latest'
+  links:
+    - api
+    - redis
+  ports:
+    - '8080:8080'
+redis:
+  image: 'redis:latest'
