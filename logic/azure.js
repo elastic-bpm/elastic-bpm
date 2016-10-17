@@ -3,6 +3,7 @@ var events = require('events');
 var eventEmitter = new events.EventEmitter();
 var vms = {};
 var code = "";
+var status = "not_started";
 
 log_output = function (output) {
     process.stdout.write(output);
@@ -15,12 +16,12 @@ log_output = function (output) {
 };
 
 azure_disable_telemetry = function(callback) {
-  login = spawn('azure', ['telemetry', '--disable']);
+  disable_telemetry = spawn('azure', ['telemetry', '--disable']);
   
-  login.stdout.on('data', log_output);
-  login.stderr.on('data', log_output);
+  disable_telemetry.stdout.on('data', log_output);
+  disable_telemetry.stderr.on('data', log_output);
 
-  login.on('close', (code) => callback());
+  disable_telemetry.on('close', (code) => callback());
 };
 
 azure_login = function(callback) {
@@ -55,18 +56,22 @@ azure_load_vms = function(callback) {
 };
 
 eventEmitter.on('started', () => {
+  status = 'started';
   azure_disable_telemetry(() => eventEmitter.emit('login'));
 });
 
 eventEmitter.on('login', () => {
+  status = 'login';
   azure_login(() => eventEmitter.emit('logged_on'));
 });
 
 eventEmitter.on('logged_on', () => {
+  status = 'logged_on';
   azure_set_account(() => eventEmitter.emit('account_set'));
 });
 
 eventEmitter.on('account_set', () => {
+  status = 'done';
   azure_load_vms(() => eventEmitter.emit('vms_loaded'));
 });
 
@@ -78,6 +83,10 @@ get_vms = function() {
     return vms;
 };
 
+get_status = function() {
+    return status;
+};
+
 get_code = function () {
     return code;
 };
@@ -85,3 +94,4 @@ get_code = function () {
 exports.start_events = start_events;
 exports.get_vms = get_vms;
 exports.get_code = get_code;
+exports.get_status = get_status;
