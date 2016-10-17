@@ -32,7 +32,8 @@
 
     <!-- Page Content -->
     <div id="page-wrapper">
-		<div id="timeline" class="container-fluid"></div>
+        <div id="dashboard" class="container-fluid"></div>
+		<div id="timeline" class="container-fluid" style="display:none"></div>
 		<div id="console" class="container-fluid" style="display:none"></div>
 	</div>
 
@@ -47,13 +48,27 @@
 <script id="extend_timeline">
 	var lastTimeLineInverted = false;
     jQuery.fn.extend({
-        register_event: function(data) {
-            if (!lastTimeLineInverted) {
-                data.inverted = "timeline-inverted";
-            }
-            lastTimeLineInverted = !lastTimeLineInverted;
+        register_events: function(socket) {
+            socket.on('event', (event) => { 
+                if (!lastTimeLineInverted) {
+                    event.inverted = "timeline-inverted";
+                }
+                lastTimeLineInverted = !lastTimeLineInverted;
 
-            this.loadTemplate("templates/timeline-template.html", data, { prepend: true});
+                this.loadTemplate("templates/timeline-template.html", event, { prepend: true});
+            });
+        }
+    });
+</script>
+
+<script id="load_status">
+    jQuery.fn.extend({
+        load_status: function(location) {
+            $.get(location, (status_data) => {
+                this.loadTemplate("templates/widget-template.html", status_data);
+            });
+
+            setTimeout(() => this.load_status(location), 2000); // POLLING
         }
     });
 </script>
@@ -68,21 +83,33 @@
 			// Register clicks after loading the items :-)
 			$("#show-timeline").on('click', () => {
 				$("#timeline").show();
+                $("#dashboard").hide();
+				$("#console").hide();
+			});
+
+			$("#show-dashboard").on('click', () => {
+                $("#dashboard").show();
+				$("#timeline").hide();
 				$("#console").hide();
 			});
 
 			$("#show-console").on('click', () => {
-				$("#timeline").hide();
 				$("#console").show();
+				$("#timeline").hide();
+                $("#dashboard").hide();
 			});
 		});
 
 		$.get("/parts/timeline.html", (data) => {
 			$("#timeline").html(data);
-			socket.on('event', (event) => $("#timeline-list").register_event(event));
+			$("#timeline-list").register_events(socket);
 		});
 
 		$.get("/parts/console.html", (data) => $("#console").html(data));
+        $.get("/parts/dashboard.html", (data) => {
+            $("#dashboard").html(data);
+            $("#dashboard-status").load_status('/status');
+        });
 	});
 </script>
 

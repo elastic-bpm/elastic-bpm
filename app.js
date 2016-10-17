@@ -25,9 +25,24 @@ io.on('connect', (socket) => {
     });
 });
 
+get_status = function(req, res) {
+    status_data = [
+        {
+            message: "Redis: ok"
+        },
+        {
+            message: "API: ok"
+        }
+
+    ];
+
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify(status_data, null, 3));
+};
+
 // ROUTING
 setup_routes = function() {
-//   app.get('/event', get_event);
+   app.get('/status', get_status);
 };
 
 // Emit events
