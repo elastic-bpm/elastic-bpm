@@ -9,6 +9,8 @@
       - api
       - scaling
    api:
+     build:
+       context:  ..\elastic-api\
      image: djbnjack/elastic-api:latest
      ports:
       - "3000:3000"
@@ -17,6 +19,8 @@
    redis:
      image: redis
    scaling:
+     build:
+       context:  ..\elastic-scaling\
      image: djbnjack/elastic-scaling:latest
      ports:
       - "8888:8888"
