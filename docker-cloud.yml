@@ -15,6 +15,8 @@ dashboard:
 redis:
   image: 'redis:latest'
 scaling:
+  environment:
+    - subscriptionId=<add-subscription-id>
   image: 'djbnjack/elastic-scaling:latest'
   ports:
     - '8888:8888'
