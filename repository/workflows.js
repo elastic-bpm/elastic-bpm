@@ -32,6 +32,7 @@ add_workflow_to_redis = function(workflow, callback) {
 get_all_workflows_from_redis = function(callback) {
     client.smembers("workflows", function(err, workflows) {
         output_workflows = [];
+        if (workflows.length === 0) callback(err, output_workflows);
 
         count = 0;
         workflows.forEach(function(element) {
