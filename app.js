@@ -2,7 +2,6 @@ var bodyParser = require('body-parser');
 var express = require('express'),
     app = express();
 app.use(bodyParser.json());
-app.use(express.static('public'));
 
 var azure = require('./logic/azure.js');
 
@@ -10,12 +9,6 @@ get_virtualmachines = function (req, res) {
     vms = azure.get_vms();
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(vms, null, 3));
-};
-
-get_code = function(req, res) {
-    code = azure.get_code();
-    res.setHeader('Content-Type', 'text/html');
-    res.send(code);
 };
 
 get_status = function(req, res) {
@@ -32,13 +25,12 @@ get_status = function(req, res) {
     } 
 
     res.setHeader('Content-Type', 'application/json');
-    res.status(statusCode).send(JSON.stringify(msg, null, 3));
+    res.status(Number(statusCode)).send(JSON.stringify(msg, null, 3));
 };
 
 // ROUTING
 setup_routes = function() {
     app.get('/virtualmachines', get_virtualmachines);
-    app.get('/code', get_code);
     app.get('/status', get_status);
 };
 

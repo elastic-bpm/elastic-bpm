@@ -1,7 +1,7 @@
 var spawn = require('cross-spawn');
 var events = require('events');
 var eventEmitter = new events.EventEmitter();
-var vms = {};
+var vms = [];
 var code = "";
 var status = "not_started";
 
@@ -48,7 +48,6 @@ azure_load_vms = function(callback) {
   
   list_vms.stdout.on('data', (data) => { 
     vms = JSON.parse(data);
-    console.dir(vms); 
   });
   list_vms.stderr.on('data', log_output);
 
