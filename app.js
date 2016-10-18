@@ -117,6 +117,29 @@ get_workflows = function(req, res) {
     });
 };
 
+create_workflow = function(req, res) {
+    elastic_api.create_workflow(req.body, (err, success) => {
+        if (err) {
+            res.status(500).send(err);
+        } else {
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify(success, null, 3));
+        }
+    });
+};
+
+delete_workflow = function(req, res) {
+    workflow_id = req.params.workflow_id;
+    elastic_api.delete_workflow(workflow_id, (err, success) => {
+        if (err) {
+            res.status(500).send(err);
+        } else {
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify(success, null, 3));
+        }
+    });
+};
+
 start_virtualmachine = function(req, res) {
     machine_id = req.params.machine_id;
     res.send("Starting " + machine_id);    
@@ -131,9 +154,12 @@ stop_virtualmachine = function(req, res) {
 // ROUTING
 setup_routes = function() {
    app.get('/status', get_status);
-   app.get('/virtualmachines', get_virtualmachines);
-   app.get('/workflows', get_workflows);
 
+   app.get('/workflows', get_workflows);
+   app.post('/workflows', create_workflow);
+   app.delete('/workflows/:workflow_id', delete_workflow);
+
+   app.get('/virtualmachines', get_virtualmachines);
    app.post('/virtualmachines/:machine_id/start', start_virtualmachine);
    app.post('/virtualmachines/:machine_id/stop', stop_virtualmachine);
 };

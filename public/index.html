@@ -85,18 +85,59 @@
 </script>
 
 <script id="load_workflows">
+    $.addTemplateFormatter({
+        WorkflowDeleteButton: function(value, template) {
+            return "delete-workflow-" + value + "-button";
+        }
+    });
+
     workflow_template_shown = true;
+
+    submit_workflow = function() {
+        var name = $("#workflow-name").val();
+        var owner = $("#workflow-owner").val();
+        var description = $("#workflow-description").val();
+
+        // Elaborate post, because I want to use the body
+        $.ajax({
+            contentType: 'application/json',
+            data: JSON.stringify({"name": name, "owner": owner, "description": description}),
+            success: function(data){
+                console.log(data);
+                $('#workflow-create-form').trigger('reset');
+            },
+            error: function(error){
+                console.log(error);
+            },
+            type: 'POST',
+            url: '/workflows'
+        });
+    };
+
+    delete_workflow = function(workflow_id) {
+        $.ajax({
+            success: function(data){
+                console.log(data);
+            },
+            error: function(error){
+                console.log(error);
+            },
+            type: 'DELETE',
+            url: '/workflows/' + workflow_id
+        });
+    };
+
     jQuery.fn.extend({
-        load_workflows: function(location) {
-            $.get(location, (workflows) => {
+        load_workflows: function() {
+            $.get('/workflows', (workflows) => {
                 if (!workflow_template_shown) {
-                    $.get("/parts/workflows.html", (data) => {
-                        $("#workflows").html(data);
-                        $("#workflows-table-body").loadTemplate("templates/workflows-template.html", workflows);
-                    });
-                } else {
-                    this.loadTemplate("templates/workflows-template.html", workflows);
+                    show_workflows(workflows);     
                 }
+
+                this.loadTemplate("templates/workflows-template.html", workflows);
+                workflows.forEach((item) => {
+                    $("#delete-workflow-" + item.id + "-button").on('click',() => delete_workflow(item.id));
+                });
             }).fail(() => {
                 $.get("/parts/workflows_error.html", (data) => {
                         $("#workflows").html(data);
@@ -107,6 +148,17 @@
             setTimeout(() => this.load_workflows(location), 2000); // POLLING
         }
     });
+
+    show_workflows = function(workflows) {
+        $.get("/parts/workflows.html", (data) => {
+            $("#workflows").html(data);
+            $("#workflow-create-button").on('click', submit_workflow);
+            $("#workflows-table-body").load_workflows();
+            workflow_template_shown = true;       
+        });
+    };
+
+   
 </script>
 
 <script id="load_machines">
@@ -249,10 +301,7 @@
             $("#dashboard-status").load_status('/status');
         });
 
-        $.get("/parts/workflows.html", (data) => {
-            $("#workflows").html(data);
-            $("#workflows-table-body").load_workflows('/workflows');
-        });
+        show_workflows(null);
 
         show_machines_table();
 	});

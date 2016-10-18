@@ -6,4 +6,11 @@
     <td data-content="created"></td>
     <td data-content="status"></td>
     <td data-content="state"></td>
+    <td>
+        <button 
+            data-template-bind='[
+                {"attribute": "id", "value": "id", "formatter": "WorkflowDeleteButton"}
+            ]'
+            type="button" class="btn btn-danger btn-circle"><i class="fa fa-stop"></i></button>
+    </td>
 </tr>
