@@ -8,7 +8,7 @@ connected = false;
 get_vms = function(callback) {
     if (connected) {
         var req = client.get("http://" + host + ":8888/virtualmachines", (data, response) => {
-            console.log("Got response for vms: " + data);
+            // console.log("Got response for vms: " + data);
             if (response.statusCode == 200) {
                 callback(null, data);
             } else {
@@ -16,6 +16,13 @@ get_vms = function(callback) {
                 callback("not connected", null);
             }
         });
+
+        req.on('error', (error) =>{
+            connected = false;
+            callback(""+error, null);
+        });
+    } else {
+        callback("Not connected, check status", null);
     }
 };
 

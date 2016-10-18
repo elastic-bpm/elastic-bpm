@@ -72,7 +72,7 @@ start_check_status = function() {
 
     elastic_scaling.check_scaling_status(
         (status_code, message) => {
-            elastic_scaling_status.status = "" + status_code;
+            elastic_scaling_status.status = status_code;
             elastic_scaling_status.message = "" + message;
         },
         () => {
@@ -96,9 +96,12 @@ get_status = function(req, res) {
 get_virtualmachines = function(req, res) {
     elastic_scaling.get_vms((err, success) => {
         if (err) {
+            // console.log("Got error from elastic_scaling.get_vms:");
+            // console.dir(err);
             res.status(500).send(err);
         } else {
-            res.send(success);
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify(success, null, 3));
         }
     });
 };

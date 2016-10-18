@@ -40,8 +40,10 @@
 
 </div>
 
+
 <script src="js/jquery.min.js"></script>
 <script src="js/jquery.loadTemplate.js"></script>
+<script src="js/clipboard.min.js"></script>
 <script src="js/bootstrap.min.js"></script>
 <script src="js/metisMenu.min.js"></script>
 <script src="js/startmin.js"></script>
@@ -83,6 +85,58 @@
 </script>
 
 <script id="load_machines">
+    shown_machine_page = "";
+    show_machines_table = function () {
+        $.get("/status", (status) => {
+            status.forEach((item) => {
+                if (item.name === 'elastic-scaling' && item.status === 206) {
+                    if (shown_machine_page != "login") {
+                        // Show login
+                        $.get("/parts/machines_login.html", (data) => {
+                            $("#machines").html(data);
+                            new Clipboard('#azure_login_button');
+                            $("#azure_login_code").html(item.message);
+                        });
+                        shown_machine_page = "login";
+                    };
+                    $("#azure_login_code").html(item.message);
+                } else if (item.name === 'elastic-scaling' && item.status === 200) {
+                    if (shown_machine_page != "table") {
+                        // Show machines
+                        $.get("/parts/machines.html", (data) => {
+                            $("#machines").html(data);
+                        });
+                        shown_machine_page = "table";
+                    };
+                    fill_machines_table();
+                } else if (item.name === 'elastic-scaling'){
+                    if (shown_machine_page != "error") {
+                        // Can not connect
+                        $.get("/parts/machines_error.html", (data) => {
+                            $("#machines").html(data);
+                        });
+                        shown_machine_page = "error";
+                    };
+                }
+            });
+        });
+
+        setTimeout(show_machines_table, 2000);
+    };
+
+    fill_machines_table = function () {
+        $.get('/virtualmachines', (status_data) => {
+            $("#machines-table-body").loadTemplate("templates/machines-template.html", status_data, {success: () => {
+                status_data.forEach((obj) => {
+                    $("#start-button-" + obj.name).on('click', () => start_machine(obj.vmId));
+                    $("#pause-button-" + obj.name).on('click', () => pause_machine(obj.vmId));
+                });
+            }});
+        }).fail(() => {
+            console.log("unable to get VM data");
+        });
+    };
+
     $.addTemplateFormatter({
         ButtonId: function(value, template) {
             return template + "-button-" + value;
@@ -120,16 +174,7 @@
 
     jQuery.fn.extend({
         load_machines: function(location) {
-            $.get(location, (status_data) => {
-                this.loadTemplate("templates/machines-template.html", status_data, {success: () => {
-                    status_data.forEach((obj) => {
-                        $("#start-button-" + obj.name).on('click', () => start_machine(obj.vmId));
-                        $("#pause-button-" + obj.name).on('click', () => pause_machine(obj.vmId));
-                    });
-                }});
-            });
-
-            setTimeout(() => this.load_machines(location), 20000); // POLLING
+            
         }
     });
 </script>
@@ -171,21 +216,19 @@
 			$("#timeline-list").register_events(socket);
 		});
 
-        $.get("/parts/machines.html", (data) => {
-			$("#machines").html(data);
-            $("#machines-table-body").load_machines('/virtualmachines');
-		});
-
 		$.get("/parts/console.html", (data) => {
             $("#console").html(data);
             socket.on('event', (event) => { 
                 $("#console-output").prepend(event.time + ":" + event.message + "\n");
             });
         });
+
         $.get("/parts/dashboard.html", (data) => {
             $("#dashboard").html(data);
             $("#dashboard-status").load_status('/status');
         });
+
+        show_machines_table();
 	});
 </script>
 
