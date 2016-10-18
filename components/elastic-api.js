@@ -31,7 +31,7 @@ get_workflows = function(callback) {
 
     req.on('error', (error) => {
         // console.log("Got error for api: " + error);
-        callback(error, null);
+        callback(""+error, null);
     });
 };
 

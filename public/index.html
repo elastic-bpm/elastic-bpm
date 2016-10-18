@@ -85,10 +85,23 @@
 </script>
 
 <script id="load_workflows">
+    workflow_template_shown = true;
     jQuery.fn.extend({
         load_workflows: function(location) {
             $.get(location, (workflows) => {
-                this.loadTemplate("templates/workflows-template.html", workflows);
+                if (!workflow_template_shown) {
+                    $.get("/parts/workflows.html", (data) => {
+                        $("#workflows").html(data);
+                        $("#workflows-table-body").loadTemplate("templates/workflows-template.html", workflows);
+                    });
+                } else {
+                    this.loadTemplate("templates/workflows-template.html", workflows);
+                }
+            }).fail(() => {
+                $.get("/parts/workflows_error.html", (data) => {
+                        $("#workflows").html(data);
+                });
+                workflow_template_shown = false;
             });
 
             setTimeout(() => this.load_workflows(location), 2000); // POLLING
