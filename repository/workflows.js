@@ -54,6 +54,18 @@ get_workflow_from_redis = function(id, callback) {
     });
 };
 
+delete_workflow = function(id, callback) {
+    client.hdel(id, ['id', 'created', 'status','state','name','owner','description'], function (err, obj) {
+        if (err) {
+            console.dir(err);
+            callback(err, null);
+        } else {
+            client.srem("workflows", id);
+            callback(null, obj);
+        }
+    });
+};
+
 create_workflow = function(workflow, callback) {
     add_workflow_to_redis(workflow, callback);    
 };
@@ -67,5 +79,6 @@ get_all_workflows = function(callback) {
 };
 
 exports.create_workflow = create_workflow;
+exports.delete_workflow = delete_workflow;
 exports.get_workflow = get_workflow;
 exports.get_all_workflows = get_all_workflows;
