@@ -61,6 +61,9 @@ delete_workflow = function(id, callback) {
             callback(err, null);
         } else {
             client.srem("workflows", id);
+
+            client.publish("workflows", "DELETED " + id);
+
             callback(null, obj);
         }
     });
