@@ -36,10 +36,10 @@
 		<div id="timeline" class="container-fluid" style="display:none"></div>
 		<div id="console" class="container-fluid" style="display:none"></div>
         <div id="machines" class="container-fluid" style="display:none"></div>
+        <div id="workflows" class="container-fluid" style="display:none"></div>
 	</div>
 
 </div>
-
 
 <script src="js/jquery.min.js"></script>
 <script src="js/jquery.loadTemplate.js"></script>
@@ -80,6 +80,18 @@
             });
 
             setTimeout(() => this.load_status(location), 2000); // POLLING
+        }
+    });
+</script>
+
+<script id="load_workflows">
+    jQuery.fn.extend({
+        load_workflows: function(location) {
+            $.get(location, (workflows) => {
+                this.loadTemplate("templates/workflows-template.html", workflows);
+            });
+
+            setTimeout(() => this.load_workflows(location), 2000); // POLLING
         }
     });
 </script>
@@ -171,12 +183,6 @@
             console.log(data);
         });
     };
-
-    jQuery.fn.extend({
-        load_machines: function(location) {
-            
-        }
-    });
 </script>
 
 <script id="selector_click">
@@ -197,6 +203,7 @@
         $("#dashboard").hide();
         $("#console").hide();
         $("#machines").hide();
+        $("#workflows").hide();
     };
   	var socket = io();
 
@@ -209,6 +216,7 @@
 			$("#show-dashboard").show_item($("#dashboard"));
 			$("#show-console").show_item($("#console"));
             $("#show-machines").show_item($("#machines"));
+            $("#show-workflows").show_item($("#workflows"));
 		});
 
 		$.get("/parts/timeline.html", (data) => {
@@ -226,6 +234,11 @@
         $.get("/parts/dashboard.html", (data) => {
             $("#dashboard").html(data);
             $("#dashboard-status").load_status('/status');
+        });
+
+        $.get("/parts/workflows.html", (data) => {
+            $("#workflows").html(data);
+            $("#workflows-table-body").load_workflows('/workflows');
         });
 
         show_machines_table();
