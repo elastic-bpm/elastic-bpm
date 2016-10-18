@@ -6,6 +6,7 @@ var client = new Client();
 connected = false;
 
 get_vms = function(callback) {
+    host = process.env.SCALING_HOST;
     if (connected) {
         var req = client.get("http://" + host + ":8888/virtualmachines", (data, response) => {
             // console.log("Got response for vms: " + data);
