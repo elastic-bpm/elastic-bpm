@@ -1,11 +1,13 @@
 api:
   image: 'djbnjack/elastic-api:latest'
+  autoredeploy: true
   links:
     - redis
   ports:
     - '3000:3000'
 dashboard:
   image: 'djbnjack/elastic-dashboard:latest'
+  autoredeploy: true
   links:
     - api
     - redis
@@ -13,10 +15,12 @@ dashboard:
   ports:
     - '8080:8080'
 redis:
-  image: 'redis:latest'
+  image: 'redis:3.0.7'
+  autoredeploy: true
 scaling:
   environment:
     - subscriptionId=<add-subscription-id>
   image: 'djbnjack/elastic-scaling:latest'
+  autoredeploy: true
   ports:
     - '8888:8888'
