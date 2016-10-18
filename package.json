@@ -36,6 +36,7 @@
   "dependencies": {
     "body-parser": "latest",
     "express": "latest",
+    "node-uuid": "^1.4.7",
     "redis": "latest"
   }
 }

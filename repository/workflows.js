@@ -1,31 +1,27 @@
 var redis = require("redis"),
     client = redis.createClient(6379, process.env.REDIS_HOST);
+var uuid = require('node-uuid');
 
 add_workflow_to_redis = function(workflow, callback) {
-    // Generate new id
-    client.incr("id:workflows", function(err, id) {
-        workflow_id = "workflows:" + id;
+    workflow.id = uuid.v1();
+    workflow.created = (new Date()).toJSON();
+    workflow.status = "Enabled";
+    workflow.state = "A";
 
-        workflow.id = workflow_id;
-        workflow.created = (new Date()).toJSON();
-        workflow.status = "Enabled";
-        workflow.state = "A";
+    // Set the object in the new hash
+    client.hmset(workflow.id, workflow, function (err, res) {
+        if (err) {
+            console.log("Error setting workflow for id: " + workflow.id);
+            console.dir(err);
+            callback(null);
+        }
 
-        // Set the object in the new hash
-        client.hmset(workflow_id, workflow, function (err, res) {
-            if (err) {
-                console.log("Error setting workflow for id: " + id);
-                console.dir(err);
-                callback(null);
-            }
+        client.sadd("workflows", workflow.id);
 
-            client.sadd("workflows", workflow_id);
+        client.publish("workflows", "CREATED " + workflow.id);
 
-            client.publish("workflows", "CREATED " + workflow_id);
-
-            // Give the REDIS-object back
-            get_workflow_from_redis(workflow_id, callback);
-        });
+        // Give the REDIS-object back
+        get_workflow_from_redis(workflow.id, callback);
     });
 };
 
