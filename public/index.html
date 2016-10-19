@@ -28,7 +28,55 @@
 <div id="wrapper">
 
     <!-- Navigation -->
-    <nav id="navbar" class="navbar navbar-inverse navbar-fixed-top" role="navigation"></nav>
+    <nav id="navbar" class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+        <!-- Top Navigation: Left Menu -->
+        <ul class="nav navbar-nav navbar-left navbar-top-links">
+            <li><a href="#"><i class="fa fa-home fa-fw"></i> Elastic BPM</a></li>
+        </ul>
+
+        <!-- Top Navigation: Right Menu -->
+        <ul class="nav navbar-right navbar-top-links">
+            <li class="dropdown">
+                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                    <i class="fa fa-user fa-fw"></i> admin <b class="caret"></b>
+                </a>
+                <ul class="dropdown-menu dropdown-user">
+                    <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                    </li>
+                    <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
+                    </li>
+                    <li class="divider"></li>
+                    <li><a href="#"><i class="fa fa-sign-out fa-fw"></i> Logout</a>
+                    </li>
+                </ul>
+            </li>
+        </ul>
+
+        <!-- Sidebar -->
+        <div class="navbar-default sidebar" role="navigation">
+            <div class="sidebar-nav navbar-collapse">
+
+                <ul class="nav" id="side-menu">
+                    <li class="sidebar-search">
+                        <div class="input-group custom-search-form">
+                            <input type="text" class="form-control" placeholder="Search...">
+                                <span class="input-group-btn">
+                                    <button class="btn btn-primary" type="button">
+                                        <i class="fa fa-search"></i>
+                                    </button>
+                                </span>
+                        </div>
+                    </li>
+                    <li><a id="show-dashboard" href="#"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a></li>
+                    <li><a id="show-timeline" href="#"><i class="fa fa-calendar fa-fw"></i> Timeline</a></li>
+                    <li><a id="show-console" href="#"><i class="fa fa-terminal fa-fw"></i> Console</a></li>
+                    <li><a id="show-machines" href="#"><i class="fa fa-laptop fa-fw"></i> Machines</a></li>
+                    <li><a id="show-workflows" href="#"><i class="fa fa-sitemap fa-fw"></i> Workflows</a></li>
+                </ul>
+
+            </div>
+        </div>
+    </nav>
 
     <!-- Page Content -->
     <div id="page-wrapper">
@@ -53,277 +101,34 @@
 <script src="js/vendor/cytoscape.js"></script>
 <script src="js/vendor/cytoscape-dagre.js"></script>
 
-<script id="extend_timeline">
-	var lastTimeLineInverted = false;
-    jQuery.fn.extend({
-        register_events: function(socket) {
-            socket.on('event', (event) => {
-                if (event.title === "publish") { 
-                    if (!lastTimeLineInverted) {
-                        event.inverted = "timeline-inverted";
-                    }
-                    lastTimeLineInverted = !lastTimeLineInverted;
+<!-- Socket.io websockets -->
+<script src="/socket.io/socket.io.js"></script>
 
-                    this.loadTemplate("templates/timeline-template.html", event, { prepend: true});
-                }
-            });
-        }
-    });
-</script>
+<!-- my scripts -->
+<script src="js/timeline.js"></script>
+<script src="js/status.js"></script>
+<script src="js/workflows.js"></script>
+<script src="js/machines.js"></script>
 
-<script id="load_status">
-    var global_status_data = [];
-    load_status = function () {
-        $.get('/status', (status_data) => {
-            global_status_data = status_data.map((obj) => {
-                if (obj.status == 200) {
-                    obj.class = "glyphicon-ok-sign good";
-                } else {
-                    obj.class = "glyphicon-remove-sign bad";
-                }
-                return obj;
-            });
-            $("#dashboard-status").loadTemplate("templates/widget-template.html", global_status_data);
-        });
-    };
-</script>
-
-<script id="load_workflows">
-    $.addTemplateFormatter({
-        WorkflowDeleteButton: function(value, template) {
-            return "delete-workflow-" + value + "-button";
-        }
-    });
-
-    create_workflow = function() {
-        var name = $("#workflow-name").val();
-        var owner = $("#workflow-owner").val();
-        var info = $("#workflow-info").val();
-
-        // Elaborate post, because I want to use the body
-        $.ajax({
-            contentType: 'application/json',
-            data: JSON.stringify({"name": name, "owner": owner, "info": info}),
-            success: function(data){
-                console.log(data);
-                $('#workflow-create-form').trigger('reset');
-                show_workflows();
-            },
-            error: function(error){
-                console.log(error);
-            },
-            type: 'POST',
-            url: '/workflows'
-        });
-    };
-
-    delete_workflow = function(workflow_id) {
-        $.ajax({
-            success: function(data){
-                console.log(data);
-                show_workflows();
-            },
-            error: function(error){
-                console.log(error);
-            },
-            type: 'DELETE',
-            url: '/workflows/' + workflow_id
-        });
-    };
-
-    init_graph = function(elementId, nodes, edges) {
-        var cy = window.cy = cytoscape({
-            container: document.getElementById(elementId),
-
-            boxSelectionEnabled: false,
-            autounselectify: true,
-
-            layout: {
-                name: 'dagre'
-            },
-
-            style: [
-                {
-                    selector: 'node',
-                    style: {
-                        'content': 'data(id)',
-                        'text-opacity': 0.5,
-                        'text-valign': 'center',
-                        'text-halign': 'right',
-                        'background-color': '#11479e'
-                    }
-                },
-                {
-                    selector: 'edge',
-                    style: {
-                        'width': 4,
-                        'target-arrow-shape': 'triangle',
-                        'line-color': '#9dbaea',
-                        'target-arrow-color': '#9dbaea',
-                        'curve-style': 'bezier'
-                    }
-                }
-            ],
-
-            elements: {nodes: nodes, edges: edges},
-        });
-    };
-
-    workflow_template_shown = false;
-    show_workflows = function() {
-        $.get('/workflows', (workflows) => {
-            if (!workflow_template_shown) {
-                $.get("/parts/workflows.html", (data) => {
-                    $("#workflows").html(data);
-                    $("#workflow-create-button").on('click', create_workflow);
-                    workflow_template_shown = true;       
-                });
-            } else {
-                $("#workflows-table-body").loadTemplate("templates/workflows-template.html", workflows);
-                workflows.forEach((item) => {
-                    $("#delete-workflow-" + item.id + "-button").on('click', (event) => delete_workflow(item.id));
-                });
-
-                nodes = [
-                    { data: { id: 'n0' } },
-                    { data: { id: 'n1' } },
-                    { data: { id: 'n2' } },
-                    { data: { id: 'n3' } }
-                ];
-                edges = [
-                    { data: { source: 'n0', target: 'n1' } },
-                    { data: { source: 'n1', target: 'n2' } },
-                    { data: { source: 'n1', target: 'n3' } }
-                ];
-                init_graph('cy', nodes, edges);
-            }
-        }).fail(() => {
-            $.get("/parts/workflows_error.html", (data) => {
-                    $("#workflows").html(data);
-            });
-            workflow_template_shown = false;
-        });
-    };
-</script>
-
-<script id="load_machines">
-    shown_machine_page = "";
-    show_machines_table = function () {
-        global_status_data.forEach((item) => {
-            if (item.name === 'elastic-scaling' && item.status === 206) {
-                if (shown_machine_page != "login") {
-                    // Show login
-                    $.get("/parts/machines_login.html", (data) => {
-                        $("#machines").html(data);
-                        new Clipboard('#azure_login_button');
-                        $("#azure_login_code").html(item.message);
-                    });
-                    shown_machine_page = "login";
-                };
-                $("#azure_login_code").html(item.message);
-            } else if (item.name === 'elastic-scaling' && item.status === 200) {
-                if (shown_machine_page != "table") {
-                    // Show machines
-                    $.get("/parts/machines.html", (data) => {
-                        $("#machines").html(data);
-                    });
-                    shown_machine_page = "table";
-                };
-                fill_machines_table();
-            } else if (item.name === 'elastic-scaling'){
-                if (shown_machine_page != "error") {
-                    // Can not connect
-                    $.get("/parts/machines_error.html", (data) => {
-                        $("#machines").html(data);
-                    });
-                    shown_machine_page = "error";
-                };
-            }
-        });
-    };
-
-    fill_machines_table = function () {
-        $.get('/virtualmachines', (status_data) => {
-            $("#machines-table-body").loadTemplate("templates/machines-template.html", status_data, {success: () => {
-                status_data.forEach((obj) => {
-                    $("#start-button-" + obj.name).on('click', () => start_machine(obj.vmId));
-                    $("#pause-button-" + obj.name).on('click', () => pause_machine(obj.vmId));
-                });
-            }});
-        }).fail(() => {
-            console.log("unable to get VM data");
-        });
-    };
-
-    $.addTemplateFormatter({
-        ButtonId: function(value, template) {
-            return template + "-button-" + value;
-        },
-        StartIsDisabled: function(value, template) {
-            if (value === "VM running") {
-                return template + " disabled";
-            } else {
-                return template;
-            }
-        },
-        PauseIsDisabled: function(value, template) {
-            if (value === "VM running") {
-                return template;
-            } else {
-                return template + " disabled";
-            }
-        },
-        StopIsDisabled: function(value, template) {
-            return template + " disabled";
-        }
-    });
-
-    start_machine = function(machine_id) {
-        $.post( "/virtualmachines/"+machine_id+"/start" ).done(function( data ) {
-            console.log(data);
-        });
-    };
-
-    pause_machine = function(machine_id) {
-        $.post( "/virtualmachines/"+machine_id+"/stop" ).done(function( data ) {
-            console.log(data);
-        });
-    };
-</script>
-
-<script id="selector_click">
+<script id="main">
     jQuery.fn.extend({
         show_item: function(content) {
             this.on('click', () => {
-                hideAll();
-				content.show();
+                $("#page-wrapper > div").hide();
+                content.show();
             });
         }
     });
-</script>
 
-<script src="/socket.io/socket.io.js"></script>
-<script id="main">
-    var hideAll = function() {
-        $("#timeline").hide();
-        $("#dashboard").hide();
-        $("#console").hide();
-        $("#machines").hide();
-        $("#workflows").hide();
-    };
   	var socket = io();
 
 	$( document ).ready(function() {
-		$.get("/parts/navbar.html", (data) => {
-			$("#navbar").html(data);
-
-			// Register clicks after loading the items :-)
-			$("#show-timeline").show_item($("#timeline"));
-			$("#show-dashboard").show_item($("#dashboard"));
-			$("#show-console").show_item($("#console"));
-            $("#show-machines").show_item($("#machines"));
-            $("#show-workflows").show_item($("#workflows"));
-		});
+        // Register clicks after loading the items :-)
+        $("#show-timeline").show_item($("#timeline"));
+        $("#show-dashboard").show_item($("#dashboard"));
+        $("#show-console").show_item($("#console"));
+        $("#show-machines").show_item($("#machines"));
+        $("#show-workflows").show_item($("#workflows"));
 
 		$.get("/parts/timeline.html", (data) => {
 			$("#timeline").html(data);
