@@ -25,7 +25,7 @@ create_workflow = function(body, callback) {
 
     // set content-type header and data as json in args parameter 
     var args = {
-        data: { name: body.name, owner: body.owner, description: body.description },
+        data: body,
         headers: { "Content-Type": "application/json" }
     };
 
