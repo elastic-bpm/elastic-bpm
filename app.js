@@ -24,7 +24,7 @@ send_event = function (event) {
 
 // Send new connections EVERYTHING... muhahaha
 io.on('connect', (socket) => {
-    events.forEach((event) => {
+    events.slice(-100).forEach((event) => {
         socket.emit('event', event);
     });
 });
