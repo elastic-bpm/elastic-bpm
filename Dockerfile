@@ -6,8 +6,10 @@ WORKDIR /usr/src/app
 ARG NODE_ENV
 ENV NODE_ENV=$NODE_ENV DEBUG=express:* REDIS_HOST=redis API_HOST=api SCALING_HOST=scaling
 
+COPY node_modules.tar.gz /usr/src/app
 COPY package.json /usr/src/app/
-RUN npm install
+RUN npm run install:cache
+
 COPY . /usr/src/app
 
 CMD [ "npm", "start" ]
