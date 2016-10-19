@@ -67,23 +67,20 @@
 </script>
 
 <script id="load_status">
-    jQuery.fn.extend({
-        load_status: function(location) {
-            $.get(location, (status_data) => {
-                status_data = status_data.map((obj) => {
-                    if (obj.status == 200) {
-                        obj.class = "glyphicon-ok-sign good";
-                    } else {
-                        obj.class = "glyphicon-remove-sign bad";
-                    }
-                    return obj;
-                });
-                this.loadTemplate("templates/widget-template.html", status_data);
+    var global_status_data = [];
+    load_status = function () {
+        $.get('/status', (status_data) => {
+            global_status_data = status_data.map((obj) => {
+                if (obj.status == 200) {
+                    obj.class = "glyphicon-ok-sign good";
+                } else {
+                    obj.class = "glyphicon-remove-sign bad";
+                }
+                return obj;
             });
-
-            setTimeout(() => this.load_status(location), 2000); // POLLING
-        }
-    });
+            $("#dashboard-status").loadTemplate("templates/widget-template.html", global_status_data);
+        });
+    };
 </script>
 
 <script id="load_workflows">
@@ -105,6 +102,7 @@
             success: function(data){
                 console.log(data);
                 $('#workflow-create-form').trigger('reset');
+                show_workflows();
             },
             error: function(error){
                 console.log(error);
@@ -118,6 +116,7 @@
         $.ajax({
             success: function(data){
                 console.log(data);
+                show_workflows();
             },
             error: function(error){
                 console.log(error);
@@ -148,49 +147,43 @@
             });
             workflow_template_shown = false;
         });
-
-        setTimeout(show_workflows, 2000); // POLLING
     };
 </script>
 
 <script id="load_machines">
     shown_machine_page = "";
     show_machines_table = function () {
-        $.get("/status", (status) => {
-            status.forEach((item) => {
-                if (item.name === 'elastic-scaling' && item.status === 206) {
-                    if (shown_machine_page != "login") {
-                        // Show login
-                        $.get("/parts/machines_login.html", (data) => {
-                            $("#machines").html(data);
-                            new Clipboard('#azure_login_button');
-                            $("#azure_login_code").html(item.message);
-                        });
-                        shown_machine_page = "login";
-                    };
-                    $("#azure_login_code").html(item.message);
-                } else if (item.name === 'elastic-scaling' && item.status === 200) {
-                    if (shown_machine_page != "table") {
-                        // Show machines
-                        $.get("/parts/machines.html", (data) => {
-                            $("#machines").html(data);
-                        });
-                        shown_machine_page = "table";
-                    };
-                    fill_machines_table();
-                } else if (item.name === 'elastic-scaling'){
-                    if (shown_machine_page != "error") {
-                        // Can not connect
-                        $.get("/parts/machines_error.html", (data) => {
-                            $("#machines").html(data);
-                        });
-                        shown_machine_page = "error";
-                    };
-                }
-            });
+        global_status_data.forEach((item) => {
+            if (item.name === 'elastic-scaling' && item.status === 206) {
+                if (shown_machine_page != "login") {
+                    // Show login
+                    $.get("/parts/machines_login.html", (data) => {
+                        $("#machines").html(data);
+                        new Clipboard('#azure_login_button');
+                        $("#azure_login_code").html(item.message);
+                    });
+                    shown_machine_page = "login";
+                };
+                $("#azure_login_code").html(item.message);
+            } else if (item.name === 'elastic-scaling' && item.status === 200) {
+                if (shown_machine_page != "table") {
+                    // Show machines
+                    $.get("/parts/machines.html", (data) => {
+                        $("#machines").html(data);
+                    });
+                    shown_machine_page = "table";
+                };
+                fill_machines_table();
+            } else if (item.name === 'elastic-scaling'){
+                if (shown_machine_page != "error") {
+                    // Can not connect
+                    $.get("/parts/machines_error.html", (data) => {
+                        $("#machines").html(data);
+                    });
+                    shown_machine_page = "error";
+                };
+            }
         });
-
-        setTimeout(show_machines_table, 2000);
     };
 
     fill_machines_table = function () {
@@ -290,11 +283,11 @@
 
         $.get("/parts/dashboard.html", (data) => {
             $("#dashboard").html(data);
-            $("#dashboard-status").load_status('/status');
         });
 
-        show_workflows();
-        show_machines_table();
+        setInterval(load_status, 2000);
+        setInterval(show_workflows, 2000);
+        setInterval(show_machines_table, 2000);
 	});
 </script>
 
