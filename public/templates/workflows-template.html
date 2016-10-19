@@ -2,10 +2,13 @@
     <td data-content="id"></td>
     <td data-content="name"></td>
     <td data-content="owner"></td>
-    <td><span data-content="info"></span>
+    <td>Nodes: <span data-content="nodes"></span>, Edges: <span data-content="edges"></span>
         <!-- Button trigger modal -->
-        <button class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">
-            Show graph
+        <button data-template-bind='[
+                {"attribute": "data-target", "value": "id", "formatter": "WorkflowModal", "formatOptions": "#"}
+            ]' 
+            class="btn btn-primary btn-sm" data-toggle="modal" data-target="#myModal">
+            graph
         </button>
     </td>
     <td data-content="created"></td>
