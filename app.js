@@ -14,17 +14,10 @@ var elastic_scaling = require('./components/elastic-scaling');
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
-var num_events = 0;
 var events = [];
-send_event = function (event) {
-    num_events++;
-    events.push(event);
-    io.emit('event', event);
-};
-
-// Send new connections EVERYTHING... muhahaha
+var events_max_send = 100;
 io.on('connect', (socket) => {
-    events.slice(-100).forEach((event) => {
+    events.slice(-events_max_send).forEach((event) => {
         socket.emit('event', event);
     });
 });
@@ -150,10 +143,16 @@ stop_virtualmachine = function(req, res) {
     res.send("Stopping " + machine_id);    
 };
 
+get_events = function(req,res) {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify(events, null, 3));
+};
 
 // ROUTING
 setup_routes = function() {
    app.get('/status', get_status);
+
+   app.get('/events', get_events);
 
    app.get('/workflows', get_workflows);
    app.post('/workflows', create_workflow);
@@ -166,7 +165,10 @@ setup_routes = function() {
 
 // Emit events
 start_casting = function () {
-    redis_listener.register_events(send_event);
+    redis_listener.register_events( (event) => {
+        events.push(event);
+        io.emit('event', event);
+    });
 };
 
 // Server startup
