@@ -4,8 +4,6 @@
   "description": "Dashboard for the Elastic BPM implementation",
   "main": "app.js",
   "scripts": {
-    "install:cache": "tar xf node_modules.tar.gz && npm prune --production && npm install --production",
-    "install:cache:local": "targz e node_modules.tar.gz . && npm prune && npm install",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
     "start:local": "set DEBUG=express:* & set REDIS_HOST=localhost& set API_HOST=localhost& set SCALING_HOST=localhost& nodemon app.js",
@@ -14,8 +12,7 @@
     "docker:kill": "docker rm elastic-dashboard --force || echo 'ok'",
     "docker:build": "docker build -t elastic-dashboard .",
     "docker:run": "docker run --name elastic-dashboard -d -p 8080:8080 elastic-dashboard",
-    "compose:restart": "docker-compose down && docker-compose build && docker-compose up",
-    "cache": "targz c node_modules/ node_modules.tar.gz"
+    "compose:restart": "docker-compose down && docker-compose build && docker-compose up"
   },
   "repository": {
     "type": "git",
@@ -27,9 +24,6 @@
     "url": "https://github.com/DJBnjack/elastic-dashboard/issues"
   },
   "homepage": "https://github.com/DJBnjack/elastic-dashboard#readme",
-  "devDependencies": {
-    "tar.gz": "1.0.5"
-  },
   "dependencies": {
     "body-parser": "^1.15.2",
     "express": "^4.14.0",
