@@ -1,6 +1,14 @@
 /*jshint esversion: 6 */
 
-var global_status_data = [];
+dashboard_init = function (socket, interval) {
+    $.get("/parts/dashboard.html", (data) => {
+        $("#dashboard").html(data);
+    });
+
+    load_status();
+    setInterval(load_status, interval);
+};
+
 load_status = function () {
     $.get('/status', (status_data) => {
         global_status_data = status_data.map((obj) => {

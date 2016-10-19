@@ -1,5 +1,10 @@
 /*jshint esversion: 6 */
 
+workflows_init = function (socket, interval) {
+    show_workflows();
+    setInterval(show_workflows, interval);
+};
+
 $.addTemplateFormatter({
     WorkflowDeleteButton: function(value, template) {
         return "delete-workflow-" + value + "-button";

@@ -106,38 +106,23 @@
 
 <!-- my scripts -->
 <script src="js/timeline.js"></script>
-<script src="js/status.js"></script>
+<script src="js/dashboard.js"></script>
 <script src="js/workflows.js"></script>
 <script src="js/machines.js"></script>
+<script src="js/console.js"></script>
 
 <script id="main">
-  	var socket = io();
+    var global_status_data = [];
 
 	$( document ).ready(function() {
-       $.get("/parts/timeline.html", (data) => {
-			$("#timeline").html(data);
-			$("#timeline-list").register_events(socket);
-		});
+        interval = 2000;
+        socket = io();
 
-		$.get("/parts/console.html", (data) => {
-            $("#console").html(data);
-            socket.on('event', (event) => { 
-                $("#console-output").prepend(event.time + ":" + event.message + "\n");
-            });
-        });
-
-        $.get("/parts/dashboard.html", (data) => {
-            $("#dashboard").html(data);
-        });
-
-        load_status();
-        setInterval(load_status, 2000);
-
-        show_workflows();
-        setInterval(show_workflows, 2000);
-
-        show_machines_table();
-        setInterval(show_machines_table, 2000);
+        timeline_init(socket, interval);
+        console_init(socket, interval);
+        dashboard_init(socket, interval);
+        workflows_init(socket, interval);
+        machines_init(socket, interval);
 	});
 </script>
 

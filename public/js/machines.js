@@ -1,5 +1,10 @@
 /*jshint esversion: 6 */
 
+machines_init = function(socket, interval) {
+    show_machines_table();
+    setInterval(show_machines_table, interval);
+};
+
 shown_machine_page = "";
 show_machines_table = function () {
     global_status_data.forEach((item) => {
