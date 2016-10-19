@@ -130,8 +130,13 @@
             $("#dashboard").html(data);
         });
 
+        load_status();
         setInterval(load_status, 2000);
+
+        show_workflows();
         setInterval(show_workflows, 2000);
+
+        show_machines_table();
         setInterval(show_machines_table, 2000);
 	});
 </script>
