@@ -67,11 +67,11 @@
                                 </span>
                         </div>
                     </li>
-                    <li><a id="show-dashboard" href="#"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a></li>
-                    <li><a id="show-timeline" href="#"><i class="fa fa-calendar fa-fw"></i> Timeline</a></li>
-                    <li><a id="show-console" href="#"><i class="fa fa-terminal fa-fw"></i> Console</a></li>
-                    <li><a id="show-machines" href="#"><i class="fa fa-laptop fa-fw"></i> Machines</a></li>
-                    <li><a id="show-workflows" href="#"><i class="fa fa-sitemap fa-fw"></i> Workflows</a></li>
+                    <li><a href="#dashboard" data-toggle="tab"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a></li>
+                    <li><a href="#timeline" data-toggle="tab"><i class="fa fa-calendar fa-fw"></i> Timeline</a></li>
+                    <li><a href="#console" data-toggle="tab"><i class="fa fa-terminal fa-fw"></i> Console</a></li>
+                    <li><a href="#machines" data-toggle="tab"><i class="fa fa-laptop fa-fw"></i> Machines</a></li>
+                    <li><a href="#workflows" data-toggle="tab"><i class="fa fa-sitemap fa-fw"></i> Workflows</a></li>
                 </ul>
 
             </div>
@@ -79,12 +79,12 @@
     </nav>
 
     <!-- Page Content -->
-    <div id="page-wrapper">
-        <div id="dashboard" class="container-fluid"></div>
-		<div id="timeline" class="container-fluid" style="display:none"></div>
-		<div id="console" class="container-fluid" style="display:none"></div>
-        <div id="machines" class="container-fluid" style="display:none"></div>
-        <div id="workflows" class="container-fluid" style="display:none"></div>
+    <div id="page-wrapper" class="tab-content">
+        <div id="dashboard" class="container-fluid tab-pane active"></div>
+		<div id="timeline" class="container-fluid tab-pane"></div>
+		<div id="console" class="container-fluid tab-pane"></div>
+        <div id="machines" class="container-fluid tab-pane"></div>
+        <div id="workflows" class="container-fluid tab-pane"></div>
 	</div>
 
 </div>
@@ -111,26 +111,10 @@
 <script src="js/machines.js"></script>
 
 <script id="main">
-    jQuery.fn.extend({
-        show_item: function(content) {
-            this.on('click', () => {
-                $("#page-wrapper > div").hide();
-                content.show();
-            });
-        }
-    });
-
   	var socket = io();
 
 	$( document ).ready(function() {
-        // Register clicks after loading the items :-)
-        $("#show-timeline").show_item($("#timeline"));
-        $("#show-dashboard").show_item($("#dashboard"));
-        $("#show-console").show_item($("#console"));
-        $("#show-machines").show_item($("#machines"));
-        $("#show-workflows").show_item($("#workflows"));
-
-		$.get("/parts/timeline.html", (data) => {
+       $.get("/parts/timeline.html", (data) => {
 			$("#timeline").html(data);
 			$("#timeline-list").register_events(socket);
 		});
