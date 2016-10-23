@@ -2,17 +2,22 @@
 <div data-template-bind='[
                 {"attribute": "id", "value": "id", "formatter": "WorkflowModal"}
             ]' 
-    class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    class="modal fade" tabindex="-1" role="dialog">
     
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 data-content="name" class="modal-title" id="myModalLabel"></h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+                <h4 data-content="name" class="modal-title"></h4>
             </div>
-            <div style="width: 500px; height: 500px;" id="cy" class="modal-body">
+            
+            <div data-template-bind='[
+                    {"attribute": "id", "value": "id", "formatter": "WorkflowGraph"}
+                ]' 
+                style="width: 500px; height: 450px;" class="modal-body">
             </div>
-            <div class="modal-footer">
+
+            <div class="modal-footer" style="margin:50px 0px 0px 0px">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
             </div>
         </div>
