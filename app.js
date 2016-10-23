@@ -72,7 +72,7 @@ setup_routes = function() {
 
     app.post('/workflows', post_workflows);
 
-    app.patch('/workflow/:workflow_id', update_workflow);
+    app.patch('/workflows/:workflow_id', update_workflow);
 
     app.delete('/workflows/:workflow_id',delete_workflow);
 
