@@ -7,7 +7,6 @@ app.use(bodyParser.json());
 
 var workflows = require('./repository/workflows');
 
-// POST logic
 post_workflows = function(req, res) {
     workflows.create_workflow(req.body, (err, workflow) => {
         if (err) {
@@ -20,7 +19,6 @@ post_workflows = function(req, res) {
     });
 };
 
-// GET logic
 get_workflows = function (req, res) {
     workflows.get_all_workflows((err, workflow_array) => {
         res.setHeader('Content-Type', 'application/json');
@@ -28,7 +26,6 @@ get_workflows = function (req, res) {
     });
 };
 
-// GET logic
 get_workflow_at = function (req, res) {
     workflows.get_workflow(req.params.workflow_id, (err, workflow) => {
         if (err) {
@@ -67,13 +64,11 @@ update_workflow = function(req, res) {
 
 // ROUTING
 setup_routes = function() {
-    app.get('/workflows/:workflow_id', get_workflow_at);
     app.get('/workflows', get_workflows); 
-
     app.post('/workflows', post_workflows);
 
+    app.get('/workflows/:workflow_id', get_workflow_at);
     app.patch('/workflows/:workflow_id', update_workflow);
-
     app.delete('/workflows/:workflow_id',delete_workflow);
 
     app.get('/status', (req, res) => res.send('ok'));
