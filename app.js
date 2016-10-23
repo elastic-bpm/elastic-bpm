@@ -93,3 +93,4 @@ if (require.main === module) {
 exports.post_workflows = post_workflows;
 exports.get_workflows = get_workflows;
 exports.get_workflow_at = get_workflow_at;
+exports.update_workflow = update_workflow;

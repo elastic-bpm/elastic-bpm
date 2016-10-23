@@ -25,6 +25,10 @@ workflowsStub.get_workflow = function(id, callback) {
   callback(null, test_flow);
 };
 
+workflowsStub.update_workflow = function(workflow, callback) {
+  callback(null, workflow);
+};
+
 describe('App', function() {
   it('app.post_workflows() should pass req.body, with created property', function(done) {
     
@@ -69,5 +73,23 @@ describe('App', function() {
     };
 
     app.get_workflow_at(req, res);
+  });
+
+  it('app.update_workflow() should update the workflow and send it back to res', function(done) {
+
+    req = {};
+    req.body = test_flow;
+    req.body.id = "workflow:0";
+    req.params = {};
+    req.params.workflowId = "workflow:0";
+
+    res = {};
+    res.setHeader = function (){};
+    res.send = function(obj) {
+        expect(obj).to.equal(JSON.stringify(test_flow, null, 3));
+        done();
+    };
+
+    app.update_workflow(req, res);
   });
 });
