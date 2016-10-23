@@ -33,7 +33,8 @@ describe('App', function() {
     
     res = {};
     res.setHeader = function (){};
-    res.send = function(obj) {
+    res.send = function(obj_json) {
+        obj = JSON.parse(obj_json);
         expect(obj).to.have.property('created');
         expect(obj.name).to.equal(req.body.name);
         done();

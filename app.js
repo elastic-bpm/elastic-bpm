@@ -10,8 +10,13 @@ var workflows = require('./repository/workflows');
 // POST logic
 post_workflows = function(req, res) {
     workflows.create_workflow(req.body, (err, workflow) => {
-        res.setHeader('Content-Type', 'application/json'); 
-        res.send(workflow); 
+        if (err) {
+            console.dir(err);
+            res.status(404).send('Not found');
+        } else {
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify(workflow, null, 3));
+        }
     });
 };
 
@@ -48,13 +53,27 @@ delete_workflow = function (req, res) {
     });
 };
 
+update_workflow = function(req, res) {
+    workflows.update_workflow(req.body, (err, workflow) => {
+        if (err) {
+            console.dir(err);
+            res.status(404).send('Not found');
+        } else {
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify(workflow, null, 3));
+        }
+    });
+};
+
 // ROUTING
 setup_routes = function() {
     app.get('/workflows/:workflow_id', get_workflow_at);
     app.get('/workflows', get_workflows); 
 
     app.post('/workflows', post_workflows);
-    
+
+    app.patch('/workflow/:workflow_id', update_workflow);
+
     app.delete('/workflows/:workflow_id',delete_workflow);
 
     app.get('/status', (req, res) => res.send('ok'));
