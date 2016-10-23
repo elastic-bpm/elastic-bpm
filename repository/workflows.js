@@ -1,3 +1,5 @@
+/*jshint esversion: 6 */
+
 var redis = require("redis"),
     client = redis.createClient(6379, process.env.REDIS_HOST);
 var uuid = require('node-uuid');

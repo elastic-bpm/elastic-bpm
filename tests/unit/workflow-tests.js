@@ -1,3 +1,5 @@
+/*jshint esversion: 6 */
+
 var proxyquire = require('proxyquire');
 var chai = require('chai');
 var expect = chai.expect; // we are using the "expect" style of Chai
