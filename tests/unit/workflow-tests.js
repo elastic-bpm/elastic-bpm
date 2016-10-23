@@ -16,8 +16,8 @@ wfs = {
 var redisStub = {};
 redisStub.createClient = function(){return redisStub;};
 redisStub.incr = function (identifier, callback) {callback('1');};
-redisStub.sadd = function(identifier, value) {return 'Ok.'};
-redisStub.publish = function (channel, message) {return 'Ok.'};
+redisStub.sadd = function(identifier, value) {return 'Ok.';};
+redisStub.publish = function (channel, message) {return 'Ok.';};
 redisStub.get = function (identifier, callback) {callback(null, '2');};
 redisStub.smembers = function (identifier, callback){ callback(null, ["workflows:0", "workflows:1"]);};
 
@@ -49,5 +49,11 @@ describe('Workflows', function() {
       expect(output_workflows).to.have.lengthOf(2);
       expect(output_workflows[0]).to.equal(input_workflow);
     }); 
+  });
+
+  it('workflows.update_workflow() should update the workflow', function() {
+    workflows.update_workflow(input_workflow, function(err, output_workflow) {
+      expect(output_workflow).to.equal(input_workflow);
+    });
   });
 });

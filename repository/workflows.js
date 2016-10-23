@@ -25,6 +25,21 @@ add_workflow_to_redis = function(workflow, callback) {
     });
 };
 
+update_workflow_to_redis = function(workflow, callback) {
+    client.hmset(workflow.id, workflow, function (err, res) {
+        if (err) {
+            console.log("Error setting workflow for id: " + workflow.id);
+            console.dir(err);
+            callback(null);
+        }
+
+        client.publish("workflows", "UPDATED " + workflow.id);
+
+        // Give the REDIS-object back
+        get_workflow_from_redis(workflow.id, callback);
+    });
+};
+
 get_all_workflows_from_redis = function(callback) {
     client.smembers("workflows", function(err, workflows) {
         output_workflows = [];
@@ -81,7 +96,12 @@ get_all_workflows = function(callback) {
     get_all_workflows_from_redis(callback);
 };
 
+update_workflow = function(workflow, callback) {
+    update_workflow_to_redis(workflow, callback);
+};
+
 exports.create_workflow = create_workflow;
+exports.update_workflow = update_workflow;
 exports.delete_workflow = delete_workflow;
 exports.get_workflow = get_workflow;
 exports.get_all_workflows = get_all_workflows;
