@@ -6,6 +6,7 @@ var express = require('express'),
 app.use(bodyParser.json());
 
 var workflows = require('./repository/workflows');
+var tasks = require('./logic/tasks');
 
 post_workflows = function(req, res) {
     workflows.create_workflow(req.body, (err, workflow) => {
@@ -62,6 +63,18 @@ update_workflow = function(req, res) {
     });
 };
 
+get_tasks = function(req, res) {
+    tasks.get_task((err, task) => {
+        if (err) {
+            console.dir(err);
+            res.status(404).send('Not found');
+        } else {
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify(task, null, 3));
+        }
+    });
+};
+
 // ROUTING
 setup_routes = function() {
     app.get('/workflows', get_workflows); 
@@ -70,6 +83,8 @@ setup_routes = function() {
     app.get('/workflows/:workflow_id', get_workflow_at);
     app.patch('/workflows/:workflow_id', update_workflow);
     app.delete('/workflows/:workflow_id',delete_workflow);
+
+    app.get('/tasks', get_tasks);
 
     app.get('/status', (req, res) => res.send('ok'));
 };

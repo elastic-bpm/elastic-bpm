@@ -8,7 +8,8 @@ create_workflow = function(workflow, callback) {
     workflow.id = uuid.v1();
     workflow.created = (new Date()).toJSON();
     workflow.status = "Enabled";
-    workflow.state = "A";
+    workflow.busy_nodes = "";
+    workflow.done_nodes = "";
 
     // Set the object in the new hash
     client.hmset(workflow.id, workflow, function (err, res) {

@@ -9,7 +9,9 @@ input_workflow_tasks =  {
     id: "unique-guid",
     name: "wf1", 
     owner: "johannes",
-    nodes: "A, B, C"
+    nodes: "A, B, C",
+    done_nodes: "",
+    busy_nodes: ""
 };
 var workflowStub = {};
 var tasks = proxyquire('../../logic/tasks', {'../repository/workflows': workflowStub});
@@ -32,7 +34,7 @@ describe('Tasks', function() {
         });
     });
 
-    it('tasks.get_task() should give a message when not tasks', function(done){
+    it('tasks.get_task() should give a message when there are no tasks', function(done){
         workflowStub.get_all_workflows = function(callback) {
             callback(null, []);
         };
