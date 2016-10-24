@@ -1,0 +1,31 @@
+{
+  "name": "elastic-scheduler",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start:local": "set DEBUG=express:* & nodemon app.js",
+    "start": "node app.js",
+    "wait": "timeout 3",
+    "docker:reload": "npm run docker:kill && npm run docker:build && npm run wait && npm run docker:run",
+    "docker:kill": "docker rm elastic-scheduler --force || echo 'ok'",
+    "docker:build": "docker build -t elastic-scheduler .",
+    "docker:run": "docker run --name elastic-scheduler -d -p 3210:3210 elastic-scheduler"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DJBnjack/elastic-scheduler.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DJBnjack/elastic-scheduler/issues"
+  },
+  "homepage": "https://github.com/DJBnjack/elastic-scheduler#readme",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0",
+    "nodemon": "^1.11.0"
+  }
+}
