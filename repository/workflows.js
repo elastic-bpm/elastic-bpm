@@ -4,15 +4,25 @@ var redis = require("redis"),
     client = redis.createClient(6379, process.env.REDIS_HOST);
 var uuid = require('node-uuid');
 
+to_list = function(element_string) {
+    return element_string.split(',').map((e) => e.trim());
+};
+
 create_workflow = function(workflow, callback) {
     workflow.id = uuid.v1();
     workflow.created = (new Date()).toJSON();
     workflow.status = "Enabled";
-    workflow.busy_nodes = "";
-    workflow.done_nodes = "";
+    workflow.todo_nodes = [];
+    workflow.busy_nodes = [];
+    workflow.done_nodes = [];
+
+    // Set all nodes in TODO
+    if (workflow.nodes && workflow.nodes.length > 0) {
+        to_list(workflow.nodes);
+    }
 
     // Set the object in the new hash
-    client.hmset(workflow.id, workflow, function (err, res) {
+    client.set(workflow.id, JSON.stringify(workflow), function (err, res) {
         if (err) {
             console.log("Error setting workflow for id: " + workflow.id);
             console.dir(err);
@@ -29,7 +39,7 @@ create_workflow = function(workflow, callback) {
 };
 
 update_workflow = function(workflow, callback) {
-    client.hmset(workflow.id, workflow, function (err, res) {
+    client.set(workflow.id, JSON.stringify(workflow), function (err, res) {
         if (err) {
             console.log("Error setting workflow for id: " + workflow.id);
             console.dir(err);
@@ -62,12 +72,12 @@ get_all_workflows = function(callback) {
 };
 
 get_workflow = function(id, callback) {
-    client.hgetall(id, function (err, obj) {
+    client.get(id, function (err, obj) {
         if (err) {
             console.dir(err);
             callback(err, null);
         } else {
-            callback(null, obj);
+            callback(null, JSON.parse(obj));
         }
     });
 };
