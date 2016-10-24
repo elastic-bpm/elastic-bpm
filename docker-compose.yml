@@ -24,3 +24,9 @@
      image: djbnjack/elastic-scaling:latest
      ports:
       - "8888:8888"
+   scheduler:
+     build:
+       context:  ..\elastic-scheduler\
+     image: djbnjack/elastic-scheduler:latest
+     ports:
+      - "3210:3210"
