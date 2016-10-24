@@ -24,3 +24,8 @@ scaling:
   autoredeploy: true
   ports:
     - '8888:8888'
+scheduler:
+  image: 'djbnjack/elastic-scheduler:latest'
+  autoredeploy: true
+  ports:
+    - '3210:3210'
