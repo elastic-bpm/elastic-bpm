@@ -18,7 +18,7 @@ create_workflow = function(workflow, callback) {
 
     // Set all nodes in TODO
     if (workflow.nodes && workflow.nodes.length > 0) {
-        to_list(workflow.nodes);
+        workflow.todo_nodes = to_list(workflow.nodes);
     }
 
     // Set the object in the new hash
