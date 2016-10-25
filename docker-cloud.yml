@@ -27,5 +27,7 @@ scaling:
 scheduler:
   image: 'djbnjack/elastic-scheduler:latest'
   autoredeploy: true
+  links:
+    - api
   ports:
     - '3210:3210'

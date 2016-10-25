@@ -28,5 +28,7 @@
      build:
        context:  ..\elastic-scheduler\
      image: djbnjack/elastic-scheduler:latest
+     depends_on:
+      - api
      ports:
       - "3210:3210"
