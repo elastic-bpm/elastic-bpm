@@ -100,12 +100,12 @@ init_graph = function(elementId, nodes, edges) {
 workflow_template_shown = false;
 workflow_graphs_shown = false;
 
-get_nodes = function(node_string) {
+get_nodes = function(node_string, busy, done) {
     nodes = [];
     
-    node_words = node_string.split(",");
+    node_words = node_string.split(",").map(w => w.trim());
     node_words.forEach((word) => {
-        node = {data: {id : word.trim()}};
+        node = {data: {id : word}};
         nodes.push(node);
     });
 
@@ -116,11 +116,11 @@ get_nodes = function(node_string) {
 get_edges = function(edges_string) {
     edges = [];
 
-    edge_words = edges_string.split(",");
+    edge_words = edges_string.split(",").map(w => w.trim());
     edge_words.forEach((word) => {
-        elements = word.split("->");
+        elements = word.split("->").map(w => w.trim());
 
-        edge = {data:{source: elements[0].trim(), target: elements[1].trim()}};
+        edge = {data:{source: elements[0], target: elements[1]}};
         edges.push(edge);
     });
 
