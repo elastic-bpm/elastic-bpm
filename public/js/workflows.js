@@ -82,6 +82,26 @@ init_graph = function(elementId, nodes, edges) {
                 }
             },
             {
+                selector: '.busy',
+                style: {
+                    'content': 'data(id)',
+                    'text-opacity': 0.5,
+                    'text-valign': 'center',
+                    'text-halign': 'right',
+                    'background-color': '#FF479e'
+                }
+            },            
+            {
+                selector: '.done',
+                style: {
+                    'content': 'data(id)',
+                    'text-opacity': 0.5,
+                    'text-valign': 'center',
+                    'text-halign': 'right',
+                    'background-color': '#11FF9e'
+                }
+            },            
+            {
                 selector: 'edge',
                 style: {
                     'width': 4,
@@ -105,7 +125,19 @@ get_nodes = function(node_string, busy, done) {
     
     node_words = node_string.split(",").map(w => w.trim());
     node_words.forEach((word) => {
-        node = {data: {id : word}};
+        classes = '';
+        if (busy.indexOf(word) > -1) {
+            classes = 'busy';
+        }
+
+        if (done.indexOf(word) > -1) {
+            classes = 'done';
+        }
+
+        node = {
+            data: {id : word},
+            classes: classes,
+        };
         nodes.push(node);
     });
 
@@ -132,7 +164,7 @@ fill_template = function (workflows) {
     if (!workflow_graphs_shown) {
         $("#workflows-modal").loadTemplate("templates/workflow-graph-template.html", workflows, {success: () => {
             workflows.forEach((item) => {
-                nodes = get_nodes(item.nodes);
+                nodes = get_nodes(item.nodes, item.busy_nodes, item.done_nodes);
                 edges = get_edges(item.edges);
                 init_graph(item.id+"-graph", nodes, edges);
 
