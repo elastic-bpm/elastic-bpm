@@ -83,7 +83,7 @@ get_workflow = function(id, callback) {
 };
 
 delete_workflow = function(id, callback) {
-    client.hdel(id, ['id', 'created', 'status','state','name','owner','description'], function (err, obj) {
+    client.del(id, function (err, obj) {
         if (err) {
             console.dir(err);
             callback(err, null);
