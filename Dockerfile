@@ -8,7 +8,6 @@ ENV NODE_ENV=$NODE_ENV DEBUG=express:* REDIS_HOST=redis API_HOST=api SCALING_HOS
 
 COPY package.json /usr/src/app/
 COPY yarn.lock /usr/src/app/
-#RUN npm install
 RUN yarn install
 
 COPY . /usr/src/app
