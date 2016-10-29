@@ -1,4 +1,4 @@
-FROM node:6.9-slim
+FROM djbnjack/node-yarn
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
@@ -7,7 +7,9 @@ ARG NODE_ENV
 ENV NODE_ENV=$NODE_ENV DEBUG=express:* REDIS_HOST=redis API_HOST=api SCALING_HOST=scaling
 
 COPY package.json /usr/src/app/
-RUN npm install
+COPY yarn.lock /usr/src/app/
+#RUN npm install
+RUN yarn install
 
 COPY . /usr/src/app
 
