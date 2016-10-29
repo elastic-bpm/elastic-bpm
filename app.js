@@ -38,8 +38,16 @@ get_task = function(req, res) {
     });
 };
 
+get_task_count = function(req, res) {
+    task_repository.get_all_tasks((tasks) => {
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify(tasks.length, null, 3));
+    });
+};
+
 // ROUTING
 setup_routes = function() {
+    app.get('/task/count', get_task_count);
     app.get('/task', get_task);
     app.post('/task/:workflow_id/:task_id', post_task);
 
