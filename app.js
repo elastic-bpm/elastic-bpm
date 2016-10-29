@@ -110,6 +110,21 @@ get_workflows = function(req, res) {
     });
 };
 
+get_task_amount = function(req, res) {
+    elastic_api.get_workflows((err, workflows) => {
+        if (err) {
+            res.status(500).send(err);
+        } else {
+            task_amount = 0;
+            workflows.forEach((workflow) => {
+                task_amount = task_amount + workflow.todo_nodes.length;
+            });
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify(task_amount, null, 3));
+        }
+    });
+};
+
 create_workflow = function(req, res) {
     elastic_api.create_workflow(req.body, (err, success) => {
         if (err) {
@@ -155,7 +170,10 @@ setup_routes = function() {
    app.get('/events', get_events);
 
    app.get('/workflows', get_workflows);
+   app.get('/workflows/tasks/amount', get_task_amount);
+
    app.post('/workflows', create_workflow);
+
    app.delete('/workflows/:workflow_id', delete_workflow);
 
    app.get('/virtualmachines', get_virtualmachines);

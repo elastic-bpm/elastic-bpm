@@ -203,4 +203,9 @@ show_workflows = function() {
         });
         workflow_template_shown = false;
     });
+
+    $.get('/workflows/tasks/amount', (amount) => {
+        $("#task-amount").html(amount);
+    });
+
 };
