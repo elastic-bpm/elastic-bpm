@@ -14,6 +14,7 @@ show_containers_table = function () {
         if (item.name === 'elastic-docker' && item.status === 200) {
             $("#containers-info").html("");
 
+            fill_service_table();
             fill_containers_table();
             fill_docker_info();
         } else if (item.name === 'elastic-docker'){
@@ -21,6 +22,14 @@ show_containers_table = function () {
                 $("#containers-info").html(data);
             });
         }
+    });
+};
+
+fill_service_table = function() {
+    $.get("/services", (data) => {
+        $("#remote-services-table-body").loadTemplate("templates/service-template.html", data);
+    }).fail(() => {
+        console.log("unable to get remote service data");
     });
 };
 
@@ -41,6 +50,15 @@ fill_containers_table = function() {
 $.addTemplateFormatter({
     JSONDateToString: function(value, template) {
         return new Date(value).toLocaleString();
+    },
+    ServiceMode: function(value, template) {
+        if (value.Replicated) {
+            return "Replicated";
+        } else if (value.Global) {
+            return "Global";
+        } else {
+            return "Unknown: " + value;
+        }
     }
 });
 

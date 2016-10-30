@@ -82,8 +82,30 @@ e_get_docker_info_remote = function(callback) {
     e_get_docker_info(callback, "remote");
 };
 
+e_get_services = function(callback) {
+    host = process.env.DOCKER_HOST;
+    if (connected) {
+        var req = client.get("http://" + host + ":4444/services", (data, response) => {
+            if (response.statusCode == 200) {
+                callback(null, data);
+            } else {
+                connected = false;
+                callback("not connected", null);
+            }
+        });
+
+        req.on('error', (error) =>{
+            connected = false;
+            callback(""+error, null);
+        });
+    } else {
+        callback("Not connected, check status", null);
+    }
+};
+
 exports.check_docker_status = check_docker_status;
 exports.get_containers_local = e_get_containers_local;
 exports.get_containers_remote = e_get_containers_remote;
 exports.get_docker_info_local = e_get_docker_info_local;
 exports.get_docker_info_remote = e_get_docker_info_remote;
+exports.get_services = e_get_services;
