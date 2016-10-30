@@ -141,8 +141,8 @@
         dashboard_init(socket, interval);
         workflows_init(socket, interval);
         machines_init(socket, interval);
-        containers_init(socket, interval);
-        workers_init(socket, interval);
+        containers_init(socket, 2*interval);
+        workers_init(socket, 3*interval);
 	});
 </script>
 
