@@ -167,7 +167,7 @@ create_workflow = function(req, res) {
 
 delete_workflow = function(req, res) {
     workflow_id = req.params.workflow_id;
-    elastic_api.delete_workflow(workflow_id, (error, success) => {return_data(res, error, data);});
+    elastic_api.delete_workflow(workflow_id, (error, data) => {return_data(res, error, data);});
 };
 
 start_virtualmachine = function(req, res) {
