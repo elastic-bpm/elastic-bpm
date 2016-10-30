@@ -105,39 +105,37 @@ get_status = function(req, res) {
     res.send(JSON.stringify(status_data, null, 3));
 };
 
-get_containers = function(req, res) {
-    elastic_docker.get_containers((error, containers) => {
-        if (error) {
-            res.status(500).send(error);
-        } else {
-            res.setHeader('Content-Type', 'application/json');
-            res.send(JSON.stringify(containers, null, 3));
-        }
-    });
+return_data = function(res, error, data) {
+    if (error) {
+        res.status(500).send(error);
+    } else {
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify(data, null, 3));
+    }
+};
+
+get_containers_local = function(req, res) {
+    elastic_docker.get_containers_local((error, data) => {return_data(res, error, data);});
+};
+
+get_containers_remote = function(req, res) {
+    elastic_docker.get_containers_remote((error, data) => {return_data(res, error, data);});
+};
+
+get_docker_info_local = function(req, res) {
+    elastic_docker.get_docker_info_local((error, data) => {return_data(res, error, data);});
+};
+
+get_docker_info_remote = function(req, res) {
+    elastic_docker.get_docker_info_remote((error, data) => {return_data(res, error, data);});
 };
 
 get_virtualmachines = function(req, res) {
-    elastic_scaling.get_vms((err, success) => {
-        if (err) {
-            // console.log("Got error from elastic_scaling.get_vms:");
-            // console.dir(err);
-            res.status(500).send(err);
-        } else {
-            res.setHeader('Content-Type', 'application/json');
-            res.send(JSON.stringify(success, null, 3));
-        }
-    });
+    elastic_scaling.get_vms((error, data) => {return_data(res, error, data);});
 };
 
 get_workflows = function(req, res) {
-    elastic_api.get_workflows((err, success) => {
-        if (err) {
-            res.status(500).send(err);
-        } else {
-            res.setHeader('Content-Type', 'application/json');
-            res.send(JSON.stringify(success, null, 3));
-        }
-    });
+    elastic_api.get_workflows((error, data) => {return_data(res, error, data);});
 };
 
 get_task_amount = function(req, res) {
@@ -156,26 +154,12 @@ get_task_amount = function(req, res) {
 };
 
 create_workflow = function(req, res) {
-    elastic_api.create_workflow(req.body, (err, success) => {
-        if (err) {
-            res.status(500).send(err);
-        } else {
-            res.setHeader('Content-Type', 'application/json');
-            res.send(JSON.stringify(success, null, 3));
-        }
-    });
+    elastic_api.create_workflow(req.body, (error, data) => {return_data(res, error, data);});
 };
 
 delete_workflow = function(req, res) {
     workflow_id = req.params.workflow_id;
-    elastic_api.delete_workflow(workflow_id, (err, success) => {
-        if (err) {
-            res.status(500).send(err);
-        } else {
-            res.setHeader('Content-Type', 'application/json');
-            res.send(JSON.stringify(success, null, 3));
-        }
-    });
+    elastic_api.delete_workflow(workflow_id, (error, success) => {return_data(res, error, data);});
 };
 
 start_virtualmachine = function(req, res) {
@@ -208,7 +192,11 @@ setup_routes = function() {
    app.post('/virtualmachines/:machine_id/start', start_virtualmachine);
    app.post('/virtualmachines/:machine_id/stop', stop_virtualmachine);
 
-   app.get('/containers', get_containers);
+   app.get('/containers/local', get_containers_local);
+   app.get('/containers/remote', get_containers_remote);
+
+   app.get('/docker_info/local', get_docker_info_local);
+   app.get('/docker_info/remote', get_docker_info_remote);
 };
 
 // Emit events

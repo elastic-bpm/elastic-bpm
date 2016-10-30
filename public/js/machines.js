@@ -19,9 +19,7 @@ show_machines_table = function () {
             });
             $("#azure_login_code").html(item.message);
         } else if (item.name === 'elastic-scaling' && item.status === 200) {
-            $.get("/parts/machines.html", (data) => {
-                $("#machines").html(data);
-            });
+            $("#machines-info").html("");
             fill_machines_table();
         } else if (item.name === 'elastic-scaling'){
             $.get("/parts/machines_error.html", (data) => {
