@@ -8,6 +8,7 @@
       - redis
       - api
       - scaling
+      - docker
    api:
      build:
        context:  ..\elastic-api\
@@ -32,3 +33,11 @@
       - api
      ports:
       - "3210:3210"
+   docker:
+     build:
+       context: ..\elastic-docker\
+     image: djbnjack/elastic-docker:latest
+     ports:
+      - "4444:4444"
+     volumes:
+      - /var/run/docker.sock:/var/run/docker.sock

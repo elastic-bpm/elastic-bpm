@@ -31,3 +31,10 @@ scheduler:
     - api
   ports:
     - '3210:3210'
+docker:
+  image: 'djbnjack/elastic-docker:latest'
+  autoredeploy: true
+  ports:
+   - '4444:4444'
+  volumes:
+   - /var/run/docker.sock:/var/run/docker.sock

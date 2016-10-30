@@ -105,6 +105,17 @@ get_status = function(req, res) {
     res.send(JSON.stringify(status_data, null, 3));
 };
 
+get_containers = function(req, res) {
+    elastic_docker.get_containers((error, containers) => {
+        if (error) {
+            res.status(500).send(error);
+        } else {
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify(containers, null, 3));
+        }
+    });
+};
+
 get_virtualmachines = function(req, res) {
     elastic_scaling.get_vms((err, success) => {
         if (err) {
@@ -190,14 +201,14 @@ setup_routes = function() {
 
    app.get('/workflows', get_workflows);
    app.get('/workflows/tasks/amount', get_task_amount);
-
    app.post('/workflows', create_workflow);
-
    app.delete('/workflows/:workflow_id', delete_workflow);
 
    app.get('/virtualmachines', get_virtualmachines);
    app.post('/virtualmachines/:machine_id/start', start_virtualmachine);
    app.post('/virtualmachines/:machine_id/stop', stop_virtualmachine);
+
+   app.get('/containers', get_containers);
 };
 
 // Emit events
