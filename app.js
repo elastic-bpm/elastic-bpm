@@ -2,26 +2,57 @@
 
 var Docker = require('dockerode');
 var docker_local = new Docker();
+var docker_remote = new Docker({host: 'http://master-01.westeurope.cloudapp.azure.com', port: 4243});
 
 var bodyParser = require('body-parser');
 var express = require('express'),
     app = express();
 app.use(bodyParser.json());
 
-get_containers = function(req, res) {
-    docker_local.listContainers(function (err, containers) {
+get_containers_local = function(req, res) {
+    get_containers(req, res, docker_local);
+};
+
+get_containers_remote = function(req, res) {
+    get_containers(req, res, docker_remote);
+};
+
+get_containers = function(req, res, docker) {
+    docker.listContainers((err, data) => {
         if (err) {
             res.status(500).send(err);
         } else {
             res.setHeader('Content-Type', 'application/json');
-            res.send(JSON.stringify(containers, null, 3));
+            res.send(JSON.stringify(data, null, 3));
         }
     });
 };
 
+get_info = function(req, res, docker) {
+    docker.info((err, data) => {
+        if (err) {
+            res.status(500).send(err);
+        } else {
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify(data, null, 3));            
+        }
+    });
+};
+
+get_info_local = function(req, res) {
+    get_info(req, res, docker_local);
+};
+
+get_info_remote = function(req, res) {
+    get_info(req, res, docker_remote);
+};
+
 // ROUTING
 setup_routes = function() {
-    app.get('/containers', get_containers); 
+    app.get('/info/local', get_info_local);
+    app.get('/info/remote', get_info_remote);
+    app.get('/containers/local', get_containers_local); 
+    app.get('/containers/remote', get_containers_remote); 
     app.get('/status', (req, res) => res.send('ok'));
 };
 
