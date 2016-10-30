@@ -47,12 +47,24 @@ get_info_remote = function(req, res) {
     get_info(req, res, docker_remote);
 };
 
+get_services = function(req, res) {
+    docker_remote.listServices((err, data) => {
+        if (err) {
+            res.status(500).send(err);
+        } else {
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify(data, null, 3));            
+        }
+    });
+};
+
 // ROUTING
 setup_routes = function() {
     app.get('/info/local', get_info_local);
     app.get('/info/remote', get_info_remote);
     app.get('/containers/local', get_containers_local); 
     app.get('/containers/remote', get_containers_remote); 
+    app.get('/services', get_services);
     app.get('/status', (req, res) => res.send('ok'));
 };
 
