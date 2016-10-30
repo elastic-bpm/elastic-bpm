@@ -10,6 +10,7 @@ var io = require('socket.io')(server);
 var redis_listener = require('./components/redis-listener');
 var elastic_api = require('./components/elastic-api');
 var elastic_scaling = require('./components/elastic-scaling');
+var elastic_docker = require('./components/elastic-docker');
     
 app.use(bodyParser.json());
 app.use(express.static('public'));
@@ -36,6 +37,12 @@ elastic_api_status = {
 
 elastic_scaling_status = {
     name: "elastic-scaling",
+    status: 0,
+    message: "Not connected"
+};
+
+elastic_docker_status = {
+    name: "elastic-docker",
     status: 0,
     message: "Not connected"
 };
@@ -73,6 +80,17 @@ start_check_status = function() {
             elastic_scaling_status.message = "Connected to elastic-scaling";
         }
     );
+
+    elastic_docker.check_docker_status(
+        (status_code, message) => {
+            elastic_docker_status.status = status_code;
+            elastic_docker_status.message = "" + message;
+        },
+        () => {
+            elastic_docker_status.status = 200;
+            elastic_docker_status.message = "Connected to elastic-docker";
+        }
+    );
     // Check other components here
 };
 
@@ -80,7 +98,8 @@ get_status = function(req, res) {
     status_data = [
         redis_status,
         elastic_api_status,
-        elastic_scaling_status
+        elastic_scaling_status,
+        elastic_docker_status
     ];
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(status_data, null, 3));

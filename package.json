@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node app.js",
-    "start:local": "set DEBUG=express:* & set REDIS_HOST=localhost& set API_HOST=localhost& set SCALING_HOST=localhost& nodemon app.js",
+    "start:local": "set DEBUG=express:* & set REDIS_HOST=localhost& set API_HOST=localhost& set SCALING_HOST=localhost& set DOCKER_HOST=localhost& nodemon app.js",
     "wait": "timeout 3",
     "docker:reload": "npm run docker:kill && npm run docker:build && npm run wait && npm run docker:run",
     "docker:kill": "docker rm elastic-dashboard --force || echo 'ok'",
