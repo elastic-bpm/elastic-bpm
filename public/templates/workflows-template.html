@@ -2,7 +2,7 @@
     <td data-content="id"></td>
     <td data-content="name"></td>
     <td data-content="owner"></td>
-    <td>Nodes: <span data-content="nodes"></span>, Edges: <span data-content="edges"></span>
+    <td>
         <!-- Button trigger modal -->
         <button data-template-bind='[
                 {"attribute": "data-target", "value": "id", "formatter": "WorkflowModal", "formatOptions": "#"}
@@ -13,8 +13,9 @@
     </td>
     <td data-content="created"></td>
     <td data-content="status"></td>
-    <td data-content="busy_nodes"></td>
-    <td data-content="done_nodes"></td>
+    <td data-content="todo_nodes" data-format="ListToAmount"></td>
+    <td data-content="busy_nodes" data-format="ListToAmount"></td>
+    <td data-content="done_nodes" data-format="ListToAmount"></td>
     <td>
         <button 
             data-template-bind='[

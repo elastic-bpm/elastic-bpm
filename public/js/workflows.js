@@ -23,6 +23,9 @@ $.addTemplateFormatter({
     },
     WorkflowGraph: function(value, template) {
         return value + "-graph";
+    },
+    ListToAmount: function(value, template) {
+        return value.length;
     }
 });
 
@@ -122,9 +125,6 @@ init_graph = function(elementId, nodes, edges) {
     });
 };
 
-workflow_template_shown = false;
-workflow_graphs_shown = false;
-
 get_nodes = function(node_string, busy, done) {
     nodes = [];
     
@@ -165,34 +165,37 @@ get_edges = function(edges_string) {
     return edges;
 };
 
-fill_template = function (workflows) {
-    if (!workflow_graphs_shown) {
-        $("#workflows-modal").loadTemplate("templates/workflow-graph-template.html", workflows, {success: () => {
-            workflows.forEach((item) => {
-                nodes = get_nodes(item.nodes, item.busy_nodes, item.done_nodes);
-                edges = get_edges(item.edges);
-                init_graph(item.id+"-graph", nodes, edges);
+show_graph_for_workflow = function(item) {
+    nodes = get_nodes(item.nodes, item.busy_nodes, item.done_nodes);
+    edges = get_edges(item.edges);
+    init_graph(item.id+"-graph", nodes, edges);
 
-                $('#' + item.id + '-modal').on('shown.bs.modal', function () {
-                    cy[item.id+"-graph"].resize();
-                    cy[item.id+"-graph"].fit();
-                });
-            });
+    $('#' + item.id + '-modal').on('shown.bs.modal', function () {
+        cy[item.id+"-graph"].resize();
+        cy[item.id+"-graph"].fit();
+    });
+};
 
-            workflow_graphs_shown = true; 
-        }});
-    }
-
-    $("#workflows-table-body").loadTemplate("templates/workflows-template.html", workflows, {success: () => {
-        workflows.forEach((item) => {
-            $("#delete-workflow-" + item.id + "-button").on('click', (event) => delete_workflow(item.id));
-        });
-    }});
+show_graphs = function (workflows) {
+    workflows.forEach((item) => {
+        if (!$("#"+item.id+"-modal").length) {
+            $("#workflows-modal").loadTemplate("templates/workflow-graph-template.html", item, {append: true, success: () => {
+                show_graph_for_workflow(item);
+            }});
+        } else {
+            show_graph_for_workflow(item);
+        }
+    });
 };
 
 show_workflows = function() {
     $.get('/workflows', (workflows) => {
-        fill_template(workflows);
+        show_graphs(workflows);
+        $("#workflows-table-body").loadTemplate("templates/workflows-template.html", workflows, {success: () => {
+            workflows.forEach((item) => {
+                $("#delete-workflow-" + item.id + "-button").on('click', (event) => delete_workflow(item.id));
+            });
+        }});
         $.get('/workflows/tasks/amount', (amount) => {
             $("#workflows-info").loadTemplate("templates/workflows-info.html", {amount: amount});
         });
