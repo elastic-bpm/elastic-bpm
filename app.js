@@ -58,14 +58,38 @@ get_services = function(req, res) {
     });
 };
 
-get_workers = function(req, res) {
-    docker_remote.listTasks({filters:'{"service":["elastic-workers"]}'}, (err, data) => {
+// TODO: Only get nodes when undefined node is found!!
+get_nodes = function(callback) {
+    nodes = {};
+    docker_remote.listNodes((err, data) => {
         if (err) {
             res.status(500).send(err);
         } else {
-            res.setHeader('Content-Type', 'application/json');
-            res.send(JSON.stringify(data, null, 3));            
+            data.forEach((node) => {
+                nodes[node.ID] = node.Description.Hostname;
+            });
+
+            callback(nodes);
         }
+    });
+};
+
+// TODO: Only get nodes when undefined node is found!!
+get_workers = function(req, res) {
+    get_nodes((nodes) => {
+        docker_remote.listTasks({filters:'{"service":["elastic-workers"]}'}, (err, data) => {
+            if (err) {
+                res.status(500).send(err);
+            } else {
+                data = data.map((task) => {
+                    task.NodeID = nodes[task.NodeID];
+                    return task;
+                });
+
+                res.setHeader('Content-Type', 'application/json');
+                res.send(JSON.stringify(data, null, 3));            
+            }
+        });
     });
 };
 
