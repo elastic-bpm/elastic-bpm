@@ -1,0 +1,22 @@
+{
+  "name": "elastic-docker",
+  "version": "1.0.0",
+  "description": "Docker service for the elastic BPM system",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DJBnjack/elastic-docker.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DJBnjack/elastic-docker/issues"
+  },
+  "homepage": "https://github.com/DJBnjack/elastic-docker#readme",
+  "dependencies": {
+    "dockerode": "^2.3.1"
+  }
+}
