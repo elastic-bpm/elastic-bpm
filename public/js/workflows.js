@@ -1,6 +1,11 @@
 /*jshint esversion: 6 */
 
 workflows_init = function (socket, interval) {
+    $.get("/parts/workflows.html", (data) => {
+        $("#workflows").html(data);
+        $("#workflow-create-button").on('click', create_workflow);
+    });
+
     show_workflows();
     setInterval(show_workflows, interval);
 };
@@ -187,25 +192,11 @@ fill_template = function (workflows) {
 
 show_workflows = function() {
     $.get('/workflows', (workflows) => {
-        if (!workflow_template_shown) {
-            $.get("/parts/workflows.html", (data) => {
-                $("#workflows").html(data);
-                $("#workflow-create-button").on('click', create_workflow);
-                workflow_template_shown = true;
-                fill_template(workflows);       
-            });
-        } else {
-            fill_template(workflows);
-        }
-    }).fail(() => {
-        $.get("/parts/workflows_error.html", (data) => {
-                $("#workflows").html(data);
+        fill_template(workflows);
+        $.get('/workflows/tasks/amount', (amount) => {
+            $("#workflows-info").loadTemplate("templates/workflows-info.html", {amount: amount});
         });
-        workflow_template_shown = false;
+    }).fail(() => {
+        $("#workflows-info").loadTemplate("templates/workflows-error.html");
     });
-
-    $.get('/workflows/tasks/amount', (amount) => {
-        $("#task-amount").html(amount);
-    });
-
 };
