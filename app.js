@@ -134,6 +134,10 @@ get_services = function(req, res) {
     elastic_docker.get_services((error, data) => {return_data(res, error, data);});
 };
 
+get_workers = function(req, res) {
+    elastic_docker.get_workers((error, data) => {return_data(res, error, data);});
+};
+
 get_virtualmachines = function(req, res) {
     elastic_scaling.get_vms((error, data) => {return_data(res, error, data);});
 };
@@ -201,6 +205,8 @@ setup_routes = function() {
 
    app.get('/docker_info/local', get_docker_info_local);
    app.get('/docker_info/remote', get_docker_info_remote);
+
+   app.get('/workers', get_workers);
 
    app.get('/services', get_services);
 };
