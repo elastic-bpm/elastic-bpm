@@ -1,41 +1,32 @@
 /*jshint esversion: 6 */
 
 machines_init = function(socket, interval) {
+    $.get("/parts/machines.html", (data) => {
+        $("#machines").html(data);
+    });
+
     show_machines_table();
     setInterval(show_machines_table, interval);
 };
 
-shown_machine_page = "";
 show_machines_table = function () {
     global_status_data.forEach((item) => {
         if (item.name === 'elastic-scaling' && item.status === 206) {
-            if (shown_machine_page != "login") {
-                // Show login
-                $.get("/parts/machines_login.html", (data) => {
-                    $("#machines").html(data);
-                    new Clipboard('#azure_login_button');
-                    $("#azure_login_code").html(item.message);
-                });
-                shown_machine_page = "login";
-            };
+            $.get("/parts/machines_login.html", (data) => {
+                $("#machines-info").html(data);
+                new Clipboard('#azure_login_button');
+                $("#azure_login_code").html(item.message);
+            });
             $("#azure_login_code").html(item.message);
         } else if (item.name === 'elastic-scaling' && item.status === 200) {
-            if (shown_machine_page != "table") {
-                // Show machines
-                $.get("/parts/machines.html", (data) => {
-                    $("#machines").html(data);
-                });
-                shown_machine_page = "table";
-            };
+            $.get("/parts/machines.html", (data) => {
+                $("#machines").html(data);
+            });
             fill_machines_table();
         } else if (item.name === 'elastic-scaling'){
-            if (shown_machine_page != "error") {
-                // Can not connect
-                $.get("/parts/machines_error.html", (data) => {
-                    $("#machines").html(data);
-                });
-                shown_machine_page = "error";
-            };
+            $.get("/parts/machines_error.html", (data) => {
+                $("#machines-info").html(data);
+            });
         }
     });
 };

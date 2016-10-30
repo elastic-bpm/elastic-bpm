@@ -38,10 +38,10 @@
         <ul class="nav navbar-right navbar-top-links">
             <li class="dropdown">
                 <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                    <i class="fa fa-user fa-fw"></i> admin <b class="caret"></b>
+                    <i class="fa fa-hand-spock-o fa-fw"></i> Johannes Bertens <b class="caret"></b>
                 </a>
                 <ul class="dropdown-menu dropdown-user">
-                    <li><a href="#"><i class="fa fa-user fa-fw"></i> User Profile</a>
+                    <li><a href="#"><i class="fa fa-hand-spock-o fa-fw"></i> User Profile</a>
                     </li>
                     <li><a href="#"><i class="fa fa-gear fa-fw"></i> Settings</a>
                     </li>
@@ -70,6 +70,7 @@
                     <li><a href="#dashboard" data-toggle="tab"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a></li>
                     <li><a href="#timeline" data-toggle="tab"><i class="fa fa-calendar fa-fw"></i> Timeline</a></li>
                     <li><a href="#console" data-toggle="tab"><i class="fa fa-terminal fa-fw"></i> Console</a></li>
+                    <li><a href="#containers" data-toggle="tab"><i class="fa fa-ship fa-fw"></i> Containers</a></li>
                     <li><a href="#machines" data-toggle="tab"><i class="fa fa-laptop fa-fw"></i> Machines</a></li>
                     <li><a href="#workflows" data-toggle="tab"><i class="fa fa-sitemap fa-fw"></i> Workflows</a></li>
                 </ul>
@@ -84,6 +85,7 @@
 		<div id="timeline" class="container-fluid tab-pane"></div>
 		<div id="console" class="container-fluid tab-pane"></div>
         <div id="machines" class="container-fluid tab-pane"></div>
+        <div id="containers" class="container-fluid tab-pane"></div>
         <div id="workflows" class="container-fluid tab-pane"></div>
 	</div>
 
@@ -109,6 +111,7 @@
 <script src="js/dashboard.js"></script>
 <script src="js/workflows.js"></script>
 <script src="js/machines.js"></script>
+<script src="js/containers.js"></script>
 <script src="js/console.js"></script>
 
 <script id="main">
@@ -133,6 +136,7 @@
         dashboard_init(socket, interval);
         workflows_init(socket, interval);
         machines_init(socket, interval);
+        containers_init(socket, interval);
 	});
 </script>
 
