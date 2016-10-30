@@ -1,7 +1,7 @@
 /*jshint esversion: 6 */
 
 var Docker = require('dockerode');
-var docker = new Docker();
+var docker_local = new Docker();
 
 var bodyParser = require('body-parser');
 var express = require('express'),
@@ -9,7 +9,7 @@ var express = require('express'),
 app.use(bodyParser.json());
 
 get_containers = function(req, res) {
-    docker.listContainers(function (err, containers) {
+    docker_local.listContainers(function (err, containers) {
         if (err) {
             res.status(500).send(err);
         } else {
