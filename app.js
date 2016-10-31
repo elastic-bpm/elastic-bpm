@@ -185,6 +185,10 @@ get_events = function(req,res) {
     res.send(JSON.stringify(events, null, 3));
 };
 
+setup_updates = function() {
+    elastic_docker.setup_updates();
+};
+
 // ROUTING
 setup_routes = function() {
    app.get('/status', get_status);
@@ -226,6 +230,7 @@ start_server = function() {
 
 // When run directly, serve the API
 if (require.main === module) {
+    setup_updates();
     setup_routes();
     start_server();
     start_check_status();
