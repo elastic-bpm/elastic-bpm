@@ -58,38 +58,37 @@ get_services = function(req, res) {
     });
 };
 
-// TODO: Only get nodes when undefined node is found!!
-get_nodes = function(callback) {
-    nodes = {};
+nodes = {};
+get_nodes = function() {
     docker_remote.listNodes((err, data) => {
         if (err) {
-            res.status(500).send(err);
+            console.log("Error: " + err);
         } else {
             data.forEach((node) => {
                 nodes[node.ID] = node.Description.Hostname;
             });
-
-            callback(nodes);
         }
     });
 };
 
-// TODO: Only get nodes when undefined node is found!!
 get_workers = function(req, res) {
-    get_nodes((nodes) => {
-        docker_remote.listTasks({filters:'{"service":["elastic-workers"]}'}, (err, data) => {
-            if (err) {
-                res.status(500).send(err);
-            } else {
-                data = data.map((task) => {
+    docker_remote.listTasks({filters:'{"service":["elastic-workers"]}'}, (err, data) => {
+        if (err) {
+            res.status(500).send(err);
+        } else {
+            data = data.map((task) => {
+                if (task.Status.Err === undefined) {
+                    task.Status.Err = "";
+                } 
+                if (nodes[task.NodeID] !== undefined) {
                     task.NodeID = nodes[task.NodeID];
-                    return task;
-                });
+                }
+                return task;
+            });
 
-                res.setHeader('Content-Type', 'application/json');
-                res.send(JSON.stringify(data, null, 3));            
-            }
-        });
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify(data, null, 3));            
+        }
     });
 };
 
@@ -107,6 +106,7 @@ setup_routes = function() {
 
 // Server startup
 start_server = function() {
+    get_nodes();
     app.listen(4444, () => console.log('elastic-docker listening on port 4444!'));
 };
 
