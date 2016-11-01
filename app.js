@@ -24,7 +24,7 @@ post_task = function(req, res) {
 };
 
 get_task = function(req, res) {
-    task_repository.get_all_tasks((tasks) => {
+    task_repository.get_all_free_tasks((tasks) => {
         if (tasks.length === 0) {
             res.status(404).send("No todo tasks found.");
         } else {
