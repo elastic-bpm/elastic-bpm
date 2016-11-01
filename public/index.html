@@ -10,6 +10,7 @@
     <title>Elastic BPM - Dashboard</title>
 
     <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/bootstrap-slider.min.css" rel="stylesheet">
     <link href="css/metisMenu.min.css" rel="stylesheet">
     <link href="css/timeline.css" rel="stylesheet">
     <link href="css/startmin.css" rel="stylesheet">
@@ -104,6 +105,7 @@
 
 <script src="js/vendor/clipboard.min.js"></script>
 <script src="js/vendor/bootstrap.min.js"></script>
+<script src="js/vendor/bootstrap-slider.min.js"></script>
 <script src="js/vendor/metisMenu.min.js"></script>
 <script src="js/vendor/startmin.js"></script>
 
@@ -123,6 +125,7 @@
 <script src="js/containers.js"></script>
 <script src="js/workers.js"></script>
 <script src="js/console.js"></script>
+<script src="js/utilities.js"></script>
 
 <script id="main">
     var global_status_data = [];
@@ -148,6 +151,7 @@
         machines_init(socket, interval);
         containers_init(socket, 2*interval);
         workers_init(socket, 3*interval);
+        utilities_init(socket, interval);
 	});
 </script>
 
