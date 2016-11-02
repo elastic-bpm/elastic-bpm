@@ -6,6 +6,7 @@ var express = require('express'),
     app = express();
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
+var multiparty = require('multiparty');
 
 var redis_listener = require('./components/redis-listener');
 var elastic_api = require('./components/elastic-api');
@@ -165,6 +166,27 @@ create_workflow = function(req, res) {
     elastic_api.create_workflow(req.body, (error, data) => {return_data(res, error, data);});
 };
 
+create_workflow_using_file = function(req, res) {
+    var form = new multiparty.Form();
+ 
+    form.parse(req, function(err, fields, files) {
+        console.dir(files.workflow[0].path);
+        workflows = require(files.workflow[0].path);
+        workflows.forEach((wf) => {
+            elastic_api.create_workflow(wf, (error, data) => {
+                if (error) {
+                    res.status(500).send(error);
+                }
+            });
+        });
+
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify('ok', null, 3));
+    });
+
+    return;
+};
+
 delete_workflow = function(req, res) {
     workflow_id = req.params.workflow_id;
     elastic_api.delete_workflow(workflow_id, (error, data) => {return_data(res, error, data);});
@@ -198,6 +220,7 @@ setup_routes = function() {
    app.get('/workflows', get_workflows);
    app.get('/workflows/tasks/amount', get_task_amount);
    app.post('/workflows', create_workflow);
+   app.post('/workflows/file', create_workflow_using_file);
    app.delete('/workflows/:workflow_id', delete_workflow);
 
    app.get('/virtualmachines', get_virtualmachines);

@@ -14,7 +14,15 @@ utilities_init = function(socket, interval) {
         });
 
         $("#workflow-script-button").on("click", function() {
-            alert("Create workflow-script: " + $("#workflow-script-file").val());
+            var formData = new FormData();
+
+            // HTML file input, chosen by user
+            fileInput = document.getElementById('workflow-script-file');
+            formData.append("workflow", fileInput.files[0]);
+
+            var request = new XMLHttpRequest();
+            request.open("POST", "/workflows/file");
+            request.send(formData);
         });
 
         $("#scale-workers-button").on("click", function() {
