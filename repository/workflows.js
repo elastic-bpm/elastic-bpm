@@ -38,6 +38,24 @@ create_workflow = function(workflow, callback) {
     });
 };
 
+
+create_multiple_workflows = function(workflows, callback) {
+    workflows.forEach((workflow) => {
+        if (workflow.delay) {
+            // Fire & forget with delayed workflows...
+            setTimeout(() => create_workflow(workflow, () => {}), workflow.delay);
+        } else {
+            create_workflow(workflow, (error, data) => {
+                if (error) {
+                    callback(error, null);
+                }
+            });
+        }
+    });
+
+    callback(null, 'ok');
+};
+
 update_workflow = function(workflow, callback) {
     client.set(workflow.id, JSON.stringify(workflow), function (err, res) {
         if (err) {
@@ -98,6 +116,7 @@ delete_workflow = function(id, callback) {
 };
 
 exports.create_workflow = create_workflow;
+exports.create_multiple_workflows = create_multiple_workflows;
 exports.update_workflow = update_workflow;
 exports.delete_workflow = delete_workflow;
 exports.get_workflow = get_workflow;

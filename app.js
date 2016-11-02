@@ -11,7 +11,19 @@ post_workflows = function(req, res) {
     workflows.create_workflow(req.body, (err, workflow) => {
         if (err) {
             console.dir(err);
-            res.status(404).send('Not found');
+            res.status(500).send("" + err);
+        } else {
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify(workflow, null, 3));
+        }
+    });
+};
+
+post_multiple_workflows = function(req, res) {
+    workflows.create_multiple_workflows(req.body, (err, workflow) => {
+        if (err) {
+            console.dir(err);
+            res.status(500).send("" + err);
         } else {
             res.setHeader('Content-Type', 'application/json');
             res.send(JSON.stringify(workflow, null, 3));
@@ -66,6 +78,7 @@ update_workflow = function(req, res) {
 setup_routes = function() {
     app.get('/workflows', get_workflows); 
     app.post('/workflows', post_workflows);
+    app.post('/workflows/multiple', post_multiple_workflows);
 
     app.get('/workflows/:workflow_id', get_workflow_at);
     app.patch('/workflows/:workflow_id', update_workflow);
