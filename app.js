@@ -7,6 +7,7 @@ var express = require('express'),
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var multiparty = require('multiparty');
+const fs = require('fs');
 
 var redis_listener = require('./components/redis-listener');
 var elastic_api = require('./components/elastic-api');
@@ -170,18 +171,18 @@ create_workflow_using_file = function(req, res) {
     var form = new multiparty.Form();
  
     form.parse(req, function(err, fields, files) {
-        console.dir(files.workflow[0].path);
         workflows = require(files.workflow[0].path);
-        workflows.forEach((wf) => {
-            elastic_api.create_workflow(wf, (error, data) => {
-                if (error) {
-                    res.status(500).send(error);
-                }
-            });
+        fs.unlink(files.workflow[0].path, (err) => {
+            if (err) throw err;
         });
-
-        res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify('ok', null, 3));
+        elastic_api.create_multiple_workflows(workflows, (error, data) => {
+            if (error) {
+                res.status(500).send(error);
+            } else {
+                res.setHeader('Content-Type', 'application/json');
+                res.send(JSON.stringify(data, null, 3));
+            }
+        });
     });
 
     return;

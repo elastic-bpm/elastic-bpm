@@ -23,21 +23,37 @@ check_api_status = function(err, ready) {
 create_workflow = function(body, callback) {
     host = process.env.API_HOST;
 
-    // set content-type header and data as json in args parameter 
     var args = {
         data: body,
         headers: { "Content-Type": "application/json" }
     };
 
     var req = client.post("http://" + host + ":3000/workflows", args, (data, response) => {
-        // console.log("Got response for api: " + data);
         if (response.statusCode == 200) {
             callback(null, data);
         }
     });
 
     req.on('error', (error) => {
-        // console.log("Got error for api: " + error);
+        callback(""+error, null);
+    });
+};
+
+create_multiple_workflows = function(workflows, callback) {
+    host = process.env.API_HOST;
+
+    var args = {
+        data: workflows,
+        headers: { "Content-Type": "application/json" }
+    };
+
+    var req = client.post("http://" + host + ":3000/workflows/multiple", args, (data, response) => {
+        if (response.statusCode == 200) {
+            callback(null, data);
+        }
+    });
+
+    req.on('error', (error) => {
         callback(""+error, null);
     });
 };
@@ -76,3 +92,4 @@ exports.check_api_status = check_api_status;
 exports.get_workflows = get_workflows;
 exports.create_workflow = create_workflow;
 exports.delete_workflow = delete_workflow;
+exports.create_multiple_workflows = create_multiple_workflows;
