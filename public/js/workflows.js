@@ -225,7 +225,7 @@ init_workflow_table = function() {
 
             if(actionString === 'delete'){
                 delete_workflow(data.id);
-                data_workflow_table.ajax.reload();
+                data_workflow_table.ajax.reload(null, false);
             } else if (actionString === 'show') {
                 $('#' + data.id + '-modal').modal('show'); 
             }
@@ -233,7 +233,7 @@ init_workflow_table = function() {
 
         init_workflow_table_flag = true;
     } else {
-        data_workflow_table.ajax.reload();
+        data_workflow_table.ajax.reload(null, false);
     }
 };
 
