@@ -22,11 +22,11 @@ show_workers_table = function () {
     });
 };
 
-init_table = false;
-data_table = {};
+init_workers_table_flag = false;
+data_workers_table = {};
 init_workers_table = function() {
-    if (!init_table) {
-        data_table = $('#workers-table').DataTable({
+    if (!init_workers_table_flag) {
+        data_workers_table = $('#workers-table').DataTable({
             "ajax": {
                 "url": "/workers",
                 "dataSrc": ""
@@ -40,8 +40,8 @@ init_workers_table = function() {
             ]
         });
 
-        init_table = true;
+        init_workers_table_flag = true;
     } else {
-        data_table.ajax.reload();
+        data_workers_table.ajax.reload();
     }
 };

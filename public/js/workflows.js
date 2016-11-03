@@ -193,17 +193,54 @@ show_graphs = function (workflows) {
     });
 };
 
+init_workflow_table_flag = false;
+data_workflow_table = {};
+init_workflow_table = function() {
+    if (!init_workflow_table_flag) {
+        data_workflow_table = $('#workflow-table').DataTable({
+            "order": [ 0, 'desc' ],
+            "scrollY": "400px",
+            "paging": false,
+            "ajax": {
+                "url": "/workflows",
+                "dataSrc": ""
+            },
+            "columns": [
+                { "data": "created", "render": function ( data, type, full, meta ) {return new Date(data).toLocaleString();} },
+                { "data": "id", "render": function ( data, type, full, meta ) {return '<abbr title="'+ data +'">'+ data.substring(0,8) +'</abbr>';} },
+                { "data": "name" },
+                { "data": "owner" },
+                { "data": null, "defaultContent": "<button data-action='show' class='btn btn-primary btn-sm'>Graph</button>" },
+                { "data": "status" },
+                { "data": "todo_nodes", "render": function ( data, type, full, meta ) {return data.length;} },
+                { "data": "busy_nodes", "render": function ( data, type, full, meta ) {return data.length;} },
+                { "data": "done_nodes", "render": function ( data, type, full, meta ) {return data.length;} },
+                { "data": null, "defaultContent": "<button data-action='delete' class='btn btn-danger btn-circle'><i class='fa fa-stop'></i></button>" }
+            ]
+        });
+
+        $('#workflow-table tbody').on( 'click', 'button', function () {
+            var data = data_workflow_table.row( $(this).parents('tr') ).data();
+            var actionString = $(this).data( "action" ); 
+
+            if(actionString === 'delete'){
+                delete_workflow(data.id);
+                data_workflow_table.ajax.reload();
+            } else if (actionString === 'show') {
+                $('#' + data.id + '-modal').modal('show'); 
+            }
+        } );
+
+        init_workflow_table_flag = true;
+    } else {
+        data_workflow_table.ajax.reload();
+    }
+};
+
 show_workflows = function() {
     $.get('/workflows', (workflows) => {
         show_graphs(workflows);
-        $("#workflows-table-body").loadTemplate("templates/workflows-template.html", workflows, {success: () => {
-            workflows.forEach((item) => {
-                $("#delete-workflow-" + item.id + "-button").on('click', (event) => delete_workflow(item.id));
-            });
-        }});
-        $.get('/workflows/tasks/amount', (amount) => {
-            $("#workflows-info").loadTemplate("templates/workflows-info.html", {amount: amount});
-        });
+        init_workflow_table();
     }).fail(() => {
         $("#workflows-info").loadTemplate("templates/workflows-error.html");
     });
