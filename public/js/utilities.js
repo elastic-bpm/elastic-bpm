@@ -21,7 +21,12 @@ utilities_init = function(socket, interval) {
         });
 
         $("#create-test-workflow-button").on("click", function() {
-            alert("Creat-test-workflow!");
+            name = "Test-Workflow";
+            owner = "test";
+            nodes = "A, B";
+            edges = "A -> B";
+
+            post_workflow(name, owner, edges, nodes, () => {});
         });
 
         $("#workflow-script-button").on("click", function() {

@@ -11,29 +11,39 @@
 
 <div id="create-workflow-panel" class="panel panel-default">
 
-    <div class="panel-heading">New Workflow</div>
-    <div class="panel-body">
+    <div class="panel-heading">
+        <h4 class="panel-title">
+            <a data-toggle="collapse"  href="#panel-form"> New Workflow</a>
+        </h4>
+    </div>
+    <div id="panel-form" class="panel-body panel-collapse collapse">
 
+        <form id="workflow-create-form" role="form">
         <div class="row">
             <div class="col-lg-6">
-                <form id="workflow-create-form" role="form">
-                    <div class="form-group">
-                        <input id="workflow-name" class="form-control" placeholder="Name">
-                    </div>
-                    <div class="form-group">
-                        <input id="workflow-owner" class="form-control" placeholder="Owner">
-                    </div>
-                    <div class="form-group">
-                        <input id="workflow-nodes" class="form-control" placeholder="Nodes">
-                    </div>
-                    <div class="form-group">
-                        <input id="workflow-edges" class="form-control" placeholder="Edges">
-                    </div>
-                    <button id="workflow-create-button" type='button' class="btn btn-default">Submit Button</button>
-                    <button type="reset" class="btn btn-default">Reset Button</button>
-                </form>
+                <div class="form-group">
+                    <input id="workflow-name" class="form-control" placeholder="Name">
+                </div>
+                <div class="form-group">
+                    <input id="workflow-owner" class="form-control" placeholder="Owner">
+                </div>
+            </div>
+            <div class="col-lg-6">
+                <div class="form-group">
+                    <input id="workflow-nodes" class="form-control" placeholder="Nodes">
+                </div>
+                <div class="form-group">
+                    <input id="workflow-edges" class="form-control" placeholder="Edges">
+                </div>
             </div>
         </div> <!-- /row -->
+        <div class="row">
+            <div class="col-lg-6">
+                <button id="workflow-create-button" type='button' class="btn btn-default">Submit Button</button>
+                <button type="reset" class="btn btn-default">Reset Button</button>
+            </div>
+        </div> <!-- /row -->
+        </form>
 
     </div><!-- /.panel-body -->
 
@@ -41,7 +51,11 @@
 
 <div class="panel panel-default">
 
-    <div class="panel-heading">Running Workflows</div>
+    <div class="panel-heading">
+        <h4 class="panel-title">
+            Running Workflows
+        </h4>
+    </div>
     <div class="panel-body">
         
         <div class="table-responsive">

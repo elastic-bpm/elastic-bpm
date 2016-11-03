@@ -3,7 +3,7 @@
 workflows_init = function (socket, interval) {
     $.get("/parts/workflows.html", (data) => {
         $("#workflows").html(data);
-        $("#workflow-create-button").on('click', create_workflow);
+        $("#workflow-create-button").on('click', create_workflow_from_form);
     });
 
     show_workflows();
@@ -29,26 +29,31 @@ $.addTemplateFormatter({
     }
 });
 
-create_workflow = function() {
-    var name = $("#workflow-name").val();
-    var owner = $("#workflow-owner").val();
-    var edges = $("#workflow-edges").val();
-    var nodes = $("#workflow-nodes").val();
-
+post_workflow = function(name, owner, edges, nodes, callback) {
     // Elaborate post, because I want to use the body
     $.ajax({
         contentType: 'application/json',
         data: JSON.stringify({"name": name, "owner": owner, "edges": edges, "nodes": nodes}),
         success: function(data){
-            console.log(data);
-            $('#workflow-create-form').trigger('reset');
-            show_workflows();
+            callback(data);
         },
         error: function(error){
             console.log(error);
         },
         type: 'POST',
         url: '/workflows'
+    });
+};
+
+create_workflow_from_form = function() {
+    var name = $("#workflow-name").val();
+    var owner = $("#workflow-owner").val();
+    var edges = $("#workflow-edges").val();
+    var nodes = $("#workflow-nodes").val();
+
+    post_workflow(name, owner, edges, nodes, (data) => {
+        $('#workflow-create-form').trigger('reset');
+        show_workflows();
     });
 };
 
