@@ -1,5 +1,16 @@
 /*jshint esversion: 6 */
 
+check_workflow_availability = function() {
+    global_status_data.forEach((item) => {
+        if (item.name === 'elastic-api' && item.status === 200) {
+            $("#utilities-workflows-info").html("");
+        } else if (item.name === 'elastic-api'){
+            $("#utilities-workflows-info").loadTemplate("templates/workflows-error.html");
+        }
+    });
+    setTimeout(check_workflow_availability, 2000);
+};
+
 utilities_init = function(socket, interval) {
     $.get("/parts/utilities.html", (data) => {
         $("#utilities").html(data);
@@ -32,5 +43,7 @@ utilities_init = function(socket, interval) {
         $("#reset-workers-service-button").on("click", function() {
             alert("Reset the workers service!");
         });
+
+        check_workflow_availability();
     });
 };
