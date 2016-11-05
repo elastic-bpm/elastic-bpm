@@ -39,8 +39,8 @@ upload_workflow_script = function(callback) {
     var request = new XMLHttpRequest();
     request.open("POST", "/workflows/file");
     request.onreadystatechange = function (aEvt) {
-        if (req.readyState == 4) {
-            if(req.status == 200) {
+        if (request.readyState == 4) {
+            if(request.status == 200) {
                 callback();
             } else {
                 console.log("Error uploading script.");
@@ -257,7 +257,18 @@ init_workflow_table = function() {
                 { "data": "busy_nodes", "render": function ( data, type, full, meta ) {return data.length;} },
                 { "data": "done_nodes", "render": function ( data, type, full, meta ) {return data.length;} },
                 { "data": null, "defaultContent": "<button data-action='delete' class='btn btn-danger btn-circle'><i class='fa fa-stop'></i></button>" }
-            ]
+            ],
+            "rowCallback": function( row, data, index ) {
+                console.log(data.status);
+                $(row).removeClass('info warning success');
+                if (data.status === "Done") {
+                    $(row).addClass('success');
+                } else if (data.status === "Waiting") {
+                    $(row).addClass('info');
+                } else if (data.status === "Busy") {
+                    $(row).addClass('warning');
+                }
+            }
         });
 
         $('#workflow-table tbody').on( 'click', 'button', function () {
