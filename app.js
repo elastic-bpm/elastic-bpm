@@ -183,7 +183,7 @@ create_workers = function(req, res) {
       },
       "Mode": {
         "Replicated": {
-          "Replicas": 1
+          "Replicas": 0
         }
       },
       "UpdateConfig": {
