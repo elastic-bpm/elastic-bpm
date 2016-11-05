@@ -6,6 +6,33 @@
 
 <div id="workers-info"></div>
 
+<div class="panel panel-default">
+
+    <div class="panel-heading">
+        <h4 class="panel-title">
+            <a data-toggle="collapse"  href="#worker-utilities-panel"> Worker utilities</a>
+        </h4>
+    </div>
+
+    <div id="worker-utilities-panel" class="panel-body panel-collapse collapse">
+        <div class="row" style="padding: 5px">
+            <div class="col-md-2">
+                <button id="reset-workers-service-button" type="button" class="btn btn-primary">Reset workers service</button>
+            </div>
+            <div class="col-md-2">
+                Current amount of workers: <span id="current-worker-amount"></span><br />
+            </div>
+            <div class="col-md-2">
+                <button id="scale-workers-button" type="button" class="btn btn-primary">Scale workers to: <span id="worker-amount-value"></span></button>
+                <input id="worker-amount" type="text" data-slider-min="0" data-slider-max="20" data-slider-step="1"/>
+            </div>
+        </div>
+
+    </div>
+    <!-- /.panel-body -->
+    
+</div>
+
 <div class="panel tabbed-panel panel-default">
     <div class="panel-heading clearfix">
         <div class="panel-title pull-left">Running workers</div>

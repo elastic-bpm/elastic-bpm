@@ -4,19 +4,45 @@
     </div>
 </div>
 
-<div id="workflows-info">
+<div id="workflows-info"></div>
+
+<div class="panel panel-default">
+
+    <div class="panel-heading">
+        <h4 class="panel-title">
+            <a data-toggle="collapse"  href="#workflow-utilities-panel"> Workflow utilities</a>
+        </h4>
+    </div>
+
+    <div id="workflow-utilities-panel" class="panel-body panel-collapse collapse">
+        <div class="row" style="padding: 5px">
+            <div class="col-md-2">
+                <button id="create-test-workflow-button" type="button" class="btn btn-primary">Create test-flow</button>
+            </div>
+            <div class="col-md-1">
+                    <button id="workflow-script-button" type="button" class="btn btn-primary">Create flow</button>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label>Upload workflow script</label>
+                    <input id="workflow-script-file" type="file">
+                </div>    
+            </div>
+        </div>
+
+    </div>
+    <!-- /.panel-body -->
 
 </div>
-
 
 <div id="create-workflow-panel" class="panel panel-default">
 
     <div class="panel-heading">
         <h4 class="panel-title">
-            <a data-toggle="collapse"  href="#panel-form"> New Workflow</a>
+            <a data-toggle="collapse"  href="#new-workflow-form"> New Workflow</a>
         </h4>
     </div>
-    <div id="panel-form" class="panel-body panel-collapse collapse">
+    <div id="new-workflow-form" class="panel-body panel-collapse collapse">
 
         <form id="workflow-create-form" role="form">
         <div class="row">

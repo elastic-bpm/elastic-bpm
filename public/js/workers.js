@@ -3,6 +3,19 @@
 workers_init = function(socket, interval) {
     $.get("/parts/workers.html", (data) => {
         $("#workers").html(data);
+
+        $("#worker-amount").slider();
+        $("#worker-amount").on("slide", function(slideEvt) {
+            $("#worker-amount-value").text(slideEvt.value);
+        });
+
+        $("#scale-workers-button").on("click", function() {
+            alert("Scale the workers to" + $("#worker-amount").val());
+        });
+
+        $("#reset-workers-service-button").on("click", function() {
+            alert("Reset the workers service!");
+        });
     });
 
     show_workers_table();

@@ -4,6 +4,27 @@ workflows_init = function (socket, interval) {
     $.get("/parts/workflows.html", (data) => {
         $("#workflows").html(data);
         $("#workflow-create-button").on('click', create_workflow_from_form);
+
+        $("#create-test-workflow-button").on("click", function() {
+            name = "Test-Workflow";
+            owner = "test";
+            nodes = "A, B";
+            edges = "A -> B";
+
+            post_workflow(name, owner, edges, nodes, () => {});
+        });
+
+        $("#workflow-script-button").on("click", function() {
+            var formData = new FormData();
+
+            // HTML file input, chosen by user
+            fileInput = document.getElementById('workflow-script-file');
+            formData.append("workflow", fileInput.files[0]);
+
+            var request = new XMLHttpRequest();
+            request.open("POST", "/workflows/file");
+            request.send(formData);
+        });
     });
 
     show_workflows();
@@ -200,6 +221,7 @@ init_workflow_table = function() {
         data_workflow_table = $('#workflow-table').DataTable({
             "order": [ 0, 'desc' ],
             "scrollY": "400px",
+            "searching": false,
             "paging": false,
             "ajax": {
                 "url": "/workflows",
