@@ -55,12 +55,8 @@ post_workflow = function(name, owner, edges, nodes, callback) {
     $.ajax({
         contentType: 'application/json',
         data: JSON.stringify({"name": name, "owner": owner, "edges": edges, "nodes": nodes}),
-        success: function(data){
-            callback(data);
-        },
-        error: function(error){
-            console.log(error);
-        },
+        success: function(data){callback(data);},
+        error: function(error){console.log(error);},
         type: 'POST',
         url: '/workflows'
     });
@@ -80,15 +76,19 @@ create_workflow_from_form = function() {
 
 delete_workflow = function(workflow_id) {
     $.ajax({
-        success: function(data){
-            console.log(data);
-            show_workflows();
-        },
-        error: function(error){
-            console.log(error);
-        },
+        success: function(data){show_workflows();},
+        error: function(error){console.log(error);},
         type: 'DELETE',
         url: '/workflows/' + workflow_id
+    });
+};
+
+delete_all_workflows = function(workflow_id) {
+    $.ajax({
+        success: function(data){show_workflows();},
+        error: function(error){console.log(error);},
+        type: 'DELETE',
+        url: '/workflows'
     });
 };
 

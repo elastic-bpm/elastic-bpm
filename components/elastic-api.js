@@ -3,24 +3,22 @@
 var Client = require('node-rest-client').Client;
 var client = new Client();
 
-check_api_status = function(err, ready) {
+a_check_api_status = function(err, ready) {
     host = process.env.API_HOST;
     var req = client.get("http://" + host + ":3000/status", (data, response) => {
-        // console.log("Got response for api: " + data);
         if (response.statusCode == 200) {
             ready();
         }
     });
 
     req.on('error', (error) => {
-        // console.log("Got error for api: " + error);
         err(error);
     });
 
-    setTimeout(() => check_api_status(err, ready), 2000);
+    setTimeout(() => a_check_api_status(err, ready), 2000);
 };
 
-create_workflow = function(body, callback) {
+a_create_workflow = function(body, callback) {
     host = process.env.API_HOST;
 
     var args = {
@@ -39,7 +37,7 @@ create_workflow = function(body, callback) {
     });
 };
 
-create_multiple_workflows = function(workflows, callback) {
+a_create_multiple_workflows = function(workflows, callback) {
     host = process.env.API_HOST;
 
     var args = {
@@ -58,38 +56,48 @@ create_multiple_workflows = function(workflows, callback) {
     });
 };
 
-delete_workflow = function(workflow_id, callback) {
+a_delete_workflow = function(workflow_id, callback) {
     host = process.env.API_HOST;
     var req = client.delete("http://" + host + ":3000/workflows/" + workflow_id, (data, response) => {
-        // console.log("Got response for api: " + data);
         if (response.statusCode == 200) {
             callback(null, data);
         }
     });
 
     req.on('error', (error) => {
-        // console.log("Got error for api: " + error);
         callback(""+error, null);
     });
 };
 
-get_workflows = function(callback) {
+a_delete_all_workflows = function(callback) {
+    host = process.env.API_HOST;
+    var req = client.delete("http://" + host + ":3000/workflows", (data, response) => {
+        if (response.statusCode == 200) {
+            callback(null, data);
+        }
+    });
+
+    req.on('error', (error) => {
+        callback(""+error, null);
+    });
+};
+
+a_get_workflows = function(callback) {
     host = process.env.API_HOST;
     var req = client.get("http://" + host + ":3000/workflows", (data, response) => {
-        // console.log("Got response for api: " + data);
         if (response.statusCode == 200) {
             callback(null, data);
         }
     });
 
     req.on('error', (error) => {
-        // console.log("Got error for api: " + error);
         callback(""+error, null);
     });
 };
 
-exports.check_api_status = check_api_status;
-exports.get_workflows = get_workflows;
-exports.create_workflow = create_workflow;
-exports.delete_workflow = delete_workflow;
-exports.create_multiple_workflows = create_multiple_workflows;
+exports.check_api_status = a_check_api_status;
+exports.get_workflows = a_get_workflows;
+exports.create_workflow = a_create_workflow;
+exports.delete_workflow = a_delete_workflow;
+exports.delete_all_workflows = a_delete_all_workflows;
+exports.create_multiple_workflows = a_create_multiple_workflows;

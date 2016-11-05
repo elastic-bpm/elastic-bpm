@@ -193,6 +193,10 @@ delete_workflow = function(req, res) {
     elastic_api.delete_workflow(workflow_id, (error, data) => {return_data(res, error, data);});
 };
 
+delete_all_workflows = function(req, res) {
+    elastic_api.delete_all_workflows((error, data) => {return_data(res, error, data);});
+};
+
 start_virtualmachine = function(req, res) {
     machine_id = req.params.machine_id;
     res.send("Starting " + machine_id);    
@@ -235,6 +239,7 @@ setup_routes = function() {
    app.post('/workflows', create_workflow);
    app.post('/workflows/file', create_workflow_using_file);
    app.delete('/workflows/:workflow_id', delete_workflow);
+   app.delete('/workflows', delete_all_workflows);
 
    app.get('/virtualmachines', get_virtualmachines);
    app.post('/virtualmachines/:machine_id/start', start_virtualmachine);
