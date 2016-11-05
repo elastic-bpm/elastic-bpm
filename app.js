@@ -74,6 +74,18 @@ update_workflow = function(req, res) {
     });
 };
 
+delete_all_workflows = function(req, res) {
+    workflows.delete_all_workflows((err, data) => {
+        if (err) {
+            console.dir(err);
+            res.status(500).send("Error: " + err);
+        } else {
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify('ok', null, 3));
+        }
+    });
+};
+
 // ROUTING
 setup_routes = function() {
     app.get('/workflows', get_workflows); 
@@ -83,6 +95,8 @@ setup_routes = function() {
     app.get('/workflows/:workflow_id', get_workflow_at);
     app.patch('/workflows/:workflow_id', update_workflow);
     app.delete('/workflows/:workflow_id',delete_workflow);
+
+    app.delete('/workflows', delete_all_workflows);
 
     app.get('/status', (req, res) => res.send('ok'));
 };

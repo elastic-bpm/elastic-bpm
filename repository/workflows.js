@@ -4,11 +4,11 @@ var redis = require("redis"),
     client = redis.createClient(6379, process.env.REDIS_HOST);
 var uuid = require('node-uuid');
 
-to_list = function(element_string) {
+wf_to_list = function(element_string) {
     return element_string.split(',').map((e) => e.trim());
 };
 
-create_workflow = function(workflow, callback) {
+wf_create_workflow = function(workflow, callback) {
     workflow.id = uuid.v1();
     workflow.created = (new Date()).toJSON();
     workflow.status = "Enabled";
@@ -18,7 +18,7 @@ create_workflow = function(workflow, callback) {
 
     // Set all nodes in TODO
     if (workflow.nodes && workflow.nodes.length > 0) {
-        workflow.todo_nodes = to_list(workflow.nodes);
+        workflow.todo_nodes = wf_to_list(workflow.nodes);
     }
 
     // Set the object in the new hash
@@ -34,18 +34,18 @@ create_workflow = function(workflow, callback) {
         client.publish("workflows", "CREATED " + workflow.id);
 
         // Give the REDIS-object back
-        get_workflow(workflow.id, callback);
+        wf_get_workflow(workflow.id, callback);
     });
 };
 
 
-create_multiple_workflows = function(workflows, callback) {
+wf_create_multiple_workflows = function(workflows, callback) {
     workflows.forEach((workflow) => {
         if (workflow.delay) {
             // Fire & forget with delayed workflows...
-            setTimeout(() => create_workflow(workflow, () => {}), workflow.delay);
+            setTimeout(() => wf_create_workflow(workflow, () => {}), workflow.delay);
         } else {
-            create_workflow(workflow, (error, data) => {
+            wf_create_workflow(workflow, (error, data) => {
                 if (error) {
                     callback(error, null);
                 }
@@ -56,7 +56,7 @@ create_multiple_workflows = function(workflows, callback) {
     callback(null, 'ok');
 };
 
-update_workflow = function(workflow, callback) {
+wf_update_workflow = function(workflow, callback) {
     client.set(workflow.id, JSON.stringify(workflow), function (err, res) {
         if (err) {
             console.log("Error setting workflow for id: " + workflow.id);
@@ -67,18 +67,18 @@ update_workflow = function(workflow, callback) {
         client.publish("workflows", "UPDATED " + workflow.id);
 
         // Give the REDIS-object back
-        get_workflow(workflow.id, callback);
+        wf_get_workflow(workflow.id, callback);
     });
 };
 
-get_all_workflows = function(callback) {
+wf_get_all_workflows = function(callback) {
     client.smembers("workflows", function(err, workflows) {
         output_workflows = [];
         if (workflows.length === 0) callback(err, output_workflows);
 
         count = 0;
         workflows.forEach(function(element) {
-            get_workflow(element, function(err, obj) {
+            wf_get_workflow(element, function(err, obj) {
                 output_workflows.push(obj);
                 count++;
 
@@ -89,7 +89,7 @@ get_all_workflows = function(callback) {
     });
 };
 
-get_workflow = function(id, callback) {
+wf_get_workflow = function(id, callback) {
     client.get(id, function (err, obj) {
         if (err) {
             console.dir(err);
@@ -100,7 +100,7 @@ get_workflow = function(id, callback) {
     });
 };
 
-delete_workflow = function(id, callback) {
+wf_delete_workflow = function(id, callback) {
     client.del(id, function (err, obj) {
         if (err) {
             console.dir(err);
@@ -115,9 +115,23 @@ delete_workflow = function(id, callback) {
     });
 };
 
-exports.create_workflow = create_workflow;
-exports.create_multiple_workflows = create_multiple_workflows;
-exports.update_workflow = update_workflow;
-exports.delete_workflow = delete_workflow;
-exports.get_workflow = get_workflow;
-exports.get_all_workflows = get_all_workflows;
+wf_delete_all_workflows = function(callback) {
+    wf_get_all_workflows((err, workflows) => {
+        if (err) {
+            callback(err, null);
+        } else {
+            workflows.forEach((wf) => {
+                wf_delete_workflow(wf.id, () => {});
+            });
+            callback(null, null);
+        }
+    });
+};
+
+exports.create_workflow = wf_create_workflow;
+exports.create_multiple_workflows = wf_create_multiple_workflows;
+exports.update_workflow = wf_update_workflow;
+exports.delete_workflow = wf_delete_workflow;
+exports.get_workflow = wf_get_workflow;
+exports.get_all_workflows = wf_get_all_workflows;
+exports.delete_all_workflows = wf_delete_all_workflows;
