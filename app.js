@@ -171,6 +171,10 @@ create_workflow_using_file = function(req, res) {
     var form = new multiparty.Form();
  
     form.parse(req, function(err, fields, files) {
+        if (files === undefined || files.workflow === undefined) {
+            return;
+        }
+
         workflows = require(files.workflow[0].path);
         fs.unlink(files.workflow[0].path, (err) => {
             if (err) throw err;

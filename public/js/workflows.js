@@ -3,7 +3,9 @@
 workflows_init = function (socket, interval) {
     $.get("/parts/workflows.html", (data) => {
         $("#workflows").html(data);
-        $("#workflow-create-button").on('click', create_workflow_from_form);
+        $("#workflow-create-button").on('click', () => {
+            create_workflow_from_form(() => show_workflows());
+        });
 
         $("#create-test-workflow-button").on("click", function() {
             name = "Test-Workflow";
@@ -11,24 +13,41 @@ workflows_init = function (socket, interval) {
             nodes = "A, B";
             edges = "A -> B";
 
-            post_workflow(name, owner, edges, nodes, () => {});
+            post_workflow(name, owner, edges, nodes, () => show_workflows());
         });
 
-        $("#workflow-script-button").on("click", function() {
-            var formData = new FormData();
+        $("#workflow-script-button").on("click", () => {
+            upload_workflow_script(() => show_workflows());
+        });
 
-            // HTML file input, chosen by user
-            fileInput = document.getElementById('workflow-script-file');
-            formData.append("workflow", fileInput.files[0]);
-
-            var request = new XMLHttpRequest();
-            request.open("POST", "/workflows/file");
-            request.send(formData);
+        $("#workflow-delete-all-button").on("click", () => {
+            delete_all_workflows(() => show_workflows());
         });
     });
 
     show_workflows();
     setInterval(show_workflows, interval);
+};
+
+upload_workflow_script = function(callback) {
+    var formData = new FormData();
+
+    // HTML file input, chosen by user
+    fileInput = document.getElementById('workflow-script-file');
+    formData.append("workflow", fileInput.files[0]);
+
+    var request = new XMLHttpRequest();
+    request.open("POST", "/workflows/file");
+    request.onreadystatechange = function (aEvt) {
+        if (req.readyState == 4) {
+            if(req.status == 200) {
+                callback();
+            } else {
+                console.log("Error uploading script.");
+            }
+        }
+    };
+    request.send(formData);
 };
 
 $.addTemplateFormatter({
@@ -62,7 +81,7 @@ post_workflow = function(name, owner, edges, nodes, callback) {
     });
 };
 
-create_workflow_from_form = function() {
+create_workflow_from_form = function(callback) {
     var name = $("#workflow-name").val();
     var owner = $("#workflow-owner").val();
     var edges = $("#workflow-edges").val();
@@ -70,7 +89,7 @@ create_workflow_from_form = function() {
 
     post_workflow(name, owner, edges, nodes, (data) => {
         $('#workflow-create-form').trigger('reset');
-        show_workflows();
+        callback();
     });
 };
 
@@ -83,9 +102,9 @@ delete_workflow = function(workflow_id) {
     });
 };
 
-delete_all_workflows = function(workflow_id) {
+delete_all_workflows = function(callback) {
     $.ajax({
-        success: function(data){show_workflows();},
+        success: function(data){callback();},
         error: function(error){console.log(error);},
         type: 'DELETE',
         url: '/workflows'
@@ -261,6 +280,8 @@ init_workflow_table = function() {
 
 show_workflows = function() {
     $.get('/workflows', (workflows) => {
+        $("#workflows-info").html("");
+        
         show_graphs(workflows);
         init_workflow_table();
     }).fail(() => {

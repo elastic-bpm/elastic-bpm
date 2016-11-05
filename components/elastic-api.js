@@ -38,6 +38,10 @@ a_create_workflow = function(body, callback) {
 };
 
 a_create_multiple_workflows = function(workflows, callback) {
+    if (workflows.length === 0) {
+        callback("No workflows to create!", null);
+    }
+
     host = process.env.API_HOST;
 
     var args = {
