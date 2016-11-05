@@ -16,10 +16,10 @@ workers_init = function(socket, interval) {
         $("#reset-workers-service-button").on("click", function() {
             reset_workers(() => {});
         });
-    });
 
-    show_workers_table();
-    setInterval(show_workers_table, interval);
+        show_workers_table();
+        setInterval(show_workers_table, interval);
+    });
 };
 
 delete_workers = function(callback) {

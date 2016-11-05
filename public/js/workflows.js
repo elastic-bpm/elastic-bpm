@@ -23,10 +23,10 @@ workflows_init = function (socket, interval) {
         $("#workflow-delete-all-button").on("click", () => {
             delete_all_workflows(() => show_workflows());
         });
-    });
 
-    show_workflows();
-    setInterval(show_workflows, interval);
+        show_workflows();
+        setInterval(show_workflows, interval);
+    });
 };
 
 upload_workflow_script = function(callback) {
