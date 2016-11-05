@@ -11,7 +11,7 @@ wf_to_list = function(element_string) {
 wf_create_workflow = function(workflow, callback) {
     workflow.id = uuid.v1();
     workflow.created = (new Date()).toJSON();
-    workflow.status = "Enabled";
+    workflow.status = "Waiting";
     workflow.todo_nodes = [];
     workflow.busy_nodes = [];
     workflow.done_nodes = [];
@@ -57,6 +57,14 @@ wf_create_multiple_workflows = function(workflows, callback) {
 };
 
 wf_update_workflow = function(workflow, callback) {
+    if (workflow.busy_nodes.length > 0) {
+        workflow.status = "Busy";
+    } else if (workflow.todo_nodes.length === 0) {
+        workflow.status = "Done";
+    } else {
+        workflow.status = "Waiting";
+    }
+
     client.set(workflow.id, JSON.stringify(workflow), function (err, res) {
         if (err) {
             console.log("Error setting workflow for id: " + workflow.id);
