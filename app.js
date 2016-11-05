@@ -92,13 +92,57 @@ get_workers = function(req, res) {
     });
 };
 
+send_error = function(res, error) {
+    console.log(error);
+    res.status(500).send(error);
+};
+
+update_workers = function(req, res) {
+    amount = parseInt(req.body.scale);
+    if (amount !== undefined) {
+        docker_remote.listServices((err, data) => {
+            if (data === null) {
+                send_error(res, "No services running");
+                return;
+            }
+
+            worker_service_info = data.filter((item) => item.Spec.Name === "elastic-workers")[0];
+
+            update = worker_service_info.Spec; 
+            update.version = worker_service_info.Version.Index;
+            update.Mode = {
+                Replicated: {
+                    Replicas: amount
+                }
+            };
+
+            worker_service = docker_remote.getService(worker_service_info.ID);
+            worker_service.update(update, (err2, data2) => {
+                if (err2) {
+                    send_error(res, "" + err2);
+                } else {
+                    console.log(data2);
+                    res.setHeader('Content-Type', 'application/json');
+                    res.send(JSON.stringify(data2, null, 3));      
+                }
+            });
+
+        });
+    } else {
+        res.status(500).send("No scale info in body: " + req.body);
+    }
+};
+
 // ROUTING
 setup_routes = function() {
     app.get('/info/local', get_info_local);
     app.get('/info/remote', get_info_remote);
     app.get('/containers/local', get_containers_local); 
     app.get('/containers/remote', get_containers_remote); 
+    
     app.get('/services', get_services);
+    app.put('/services/workers', update_workers);
+
     app.get('/workers', get_workers);
 
     app.get('/status', (req, res) => res.send('ok'));
