@@ -102,11 +102,16 @@ data_workers_table = {};
 init_workers_table = function() {
     if (!init_workers_table_flag) {
         data_workers_table = $('#workers-table').DataTable({
+            "order": [ 0, 'desc' ],
+            "scrollY": "400px",
+            "searching": false,
+            "paging": false,
             "ajax": {
                 "url": "/workers",
                 "dataSrc": ""
             },
             "columns": [
+                { "data": "CreatedAt", "render": function ( data, type, full, meta ) {return new Date(data).toLocaleString();} },
                 { "data": "ID" },
                 { "data": "NodeID" },
                 { "data": "DesiredState" },
@@ -117,6 +122,6 @@ init_workers_table = function() {
 
         init_workers_table_flag = true;
     } else {
-        data_workers_table.ajax.reload();
+        data_workers_table.ajax.reload(null, false);
     }
 };
