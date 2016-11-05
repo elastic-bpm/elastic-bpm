@@ -133,6 +133,34 @@ update_workers = function(req, res) {
     }
 };
 
+delete_workers = function(req, res) {
+    docker_remote.listServices((err, data) => {
+        if (data === null) {
+            send_error(res, "No services running");
+            return;
+        }
+
+        worker_service_info = data.filter((item) => item.Spec.Name === "elastic-workers")[0];
+
+        if (worker_service_info === undefined) {
+
+            send_error(res, "Worker service not found.");
+
+        } else {
+
+            worker_service = docker_remote.getService(worker_service_info.ID);
+            worker_service.remove((err2, data2) => {
+                if (err2) {
+                    send_error(res, "" + err2);
+                } else {
+                    res.setHeader('Content-Type', 'application/json');
+                    res.send(JSON.stringify('ok', null, 3));      
+                }
+            });
+        }
+    });
+};
+
 // ROUTING
 setup_routes = function() {
     app.get('/info/local', get_info_local);
@@ -142,6 +170,7 @@ setup_routes = function() {
     
     app.get('/services', get_services);
     app.put('/services/workers', update_workers);
+    app.delete('/services/workers', delete_workers);
 
     app.get('/workers', get_workers);
 
