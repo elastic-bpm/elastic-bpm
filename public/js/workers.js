@@ -10,7 +10,7 @@ workers_init = function(socket, interval) {
         });
 
         $("#scale-workers-button").on("click", function() {
-            alert("Scale the workers to" + $("#worker-amount").val());
+            scale_workers($("#worker-amount").val(), () => {});
         });
 
         $("#reset-workers-service-button").on("click", function() {
@@ -22,16 +22,44 @@ workers_init = function(socket, interval) {
     setInterval(show_workers_table, interval);
 };
 
+scale_workers = function(amount, callback) {
+    // Elaborate PUT, because I want to use the body
+    $.ajax({
+        contentType: 'application/json',
+        data: JSON.stringify({"scale": amount}),
+        success: function(data){
+            callback(data);
+        },
+        error: function(error){
+            console.log(error);
+        },
+        type: 'PUT',
+        url: '/services/workers'
+    });
+};
+
 show_workers_table = function () {
     global_status_data.forEach((item) => {
         if (item.name === 'elastic-docker' && item.status === 200) {
             $("#workers-info").html("");
+            update_workers_info();
             init_workers_table();
         } else if (item.name === 'elastic-docker'){
             $.get("/parts/workers_error.html", (data) => {
                 $("#workers-info").html(data);
             });
         }
+    });
+};
+
+update_workers_info = function() {
+    $.get("/services", (data) => {
+        elastic_service_info = data.find((item) => item.Spec.Name === "elastic-workers");
+        if (elastic_service_info !== undefined) {
+            $("#current-worker-amount").html(elastic_service_info.Spec.Mode.Replicated.Replicas);
+        }
+    }).fail(() => {
+        console.log("unable to get remote service data");
     });
 };
 

@@ -203,13 +203,17 @@ stop_virtualmachine = function(req, res) {
     res.send("Stopping " + machine_id);    
 };
 
-get_events = function(req,res) {
+get_events = function(req, res) {
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(events, null, 3));
 };
 
 setup_updates = function() {
     elastic_docker.setup_updates();
+};
+
+update_workers = function(req, res) {
+    elastic_docker.update_workers(req.body, (error, data) => {return_data(res, error, data);});
 };
 
 // ROUTING
@@ -237,6 +241,7 @@ setup_routes = function() {
    app.get('/workers', get_workers);
 
    app.get('/services', get_services);
+   app.put('/services/workers', update_workers);
 };
 
 // Emit events

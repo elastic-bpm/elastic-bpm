@@ -53,7 +53,7 @@ e_get_docker_info_local = function(callback) {
 };
 
 e_docker_info_remote = [];
-e_update_docker_info_remote = function() {
+e_refresh_docker_info_remote = function() {
     e_get_data("http://" + process.env.DOCKER_HOST + ":4444/info/remote", (error, data) => {
         if (error) {
             console.log("Error getting docker info remote: " + error);
@@ -68,7 +68,7 @@ e_get_docker_info_remote = function(callback) {
 };
 
 services = [];
-e_update_services = function() {
+e_refresh_services = function() {
     e_get_data("http://" + process.env.DOCKER_HOST + ":4444/services", (error, data) => {
         if (error) {
             console.log("Error getting services: " + error);
@@ -83,7 +83,7 @@ e_get_services = function(callback) {
 };
 
 workers = [];
-e_update_workers = function() {
+e_refresh_workers = function() {
     e_get_data("http://" + process.env.DOCKER_HOST + ":4444/workers", (error, data) => {
         if (error) {
             console.log("Error getting workers: " + error);
@@ -97,17 +97,42 @@ e_get_workers = function(callback) {
     callback(null, workers);
 };
 
+e_update_workers = function(put_data, callback) {
+    if (connected) {
+        args = {
+            data: put_data,
+            headers: { "Content-Type": "application/json" }
+        };
+        url = "http://" + process.env.DOCKER_HOST + ":4444/services/workers";
+        var req = client.put(url, args, (data, response) => {
+            if (response.statusCode == 200) {
+                callback(null, data);
+            } else {
+                connected = false;
+                callback("not connected", null);
+            }
+        });
+
+        req.on('error', (error) =>{
+            connected = false;
+            callback(""+error, null);
+        });
+    } else {
+        callback("Not connected, check status", null);
+    }
+};
+
 e_setup_updates = function() {
     timeout = 1000;
 
-    e_update_workers();
-    setInterval(e_update_workers, 10*timeout);
+    e_refresh_workers();
+    setInterval(e_refresh_workers, 10*timeout);
 
-    e_update_services();
-    setInterval(e_update_services, 10*timeout);
+    e_refresh_services();
+    setInterval(e_refresh_services, 10*timeout);
 
-    e_update_docker_info_remote();
-    setInterval(e_update_docker_info_remote, 60*timeout);
+    e_refresh_docker_info_remote();
+    setInterval(e_refresh_docker_info_remote, 60*timeout);
 };
 
 exports.check_docker_status = check_docker_status;
@@ -117,4 +142,5 @@ exports.get_docker_info_local = e_get_docker_info_local;
 exports.get_docker_info_remote = e_get_docker_info_remote;
 exports.get_services = e_get_services;
 exports.get_workers = e_get_workers;
+exports.update_workers = e_update_workers;
 exports.setup_updates = e_setup_updates;
