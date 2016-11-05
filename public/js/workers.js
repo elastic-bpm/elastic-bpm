@@ -14,12 +14,46 @@ workers_init = function(socket, interval) {
         });
 
         $("#reset-workers-service-button").on("click", function() {
-            alert("Reset the workers service!");
+            reset_workers(() => {});
         });
     });
 
     show_workers_table();
     setInterval(show_workers_table, interval);
+};
+
+delete_workers = function(callback) {
+    $.ajax({
+        contentType: 'application/json',
+        success: function(data){
+            callback();
+        },
+        error: function(error){
+            console.log(error);
+        },
+        type: 'DELETE',
+        url: '/services/workers'
+    });
+};
+
+create_workers = function(callback) {
+    $.ajax({
+        contentType: 'application/json',
+        success: function(data){
+            callback();
+        },
+        error: function(error){
+            console.log(error);
+        },
+        type: 'POST',
+        url: '/services/workers'
+    });
+};
+
+reset_workers = function(callback) {
+    delete_workers(() => {
+        create_workers(callback);
+    });
 };
 
 scale_workers = function(amount, callback) {

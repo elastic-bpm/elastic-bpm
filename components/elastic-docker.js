@@ -122,6 +122,48 @@ e_update_workers = function(put_data, callback) {
     }
 };
 
+e_delete_workers = function(callback) {
+    if (connected) {
+        url = "http://" + process.env.DOCKER_HOST + ":4444/services/workers";
+        var req = client.delete(url, (data, response) => {
+            if (response.statusCode == 200) {
+                callback(null, data);
+            } else {
+                connected = false;
+                callback("not connected", null);
+            }
+        });
+
+        req.on('error', (error) =>{
+            connected = false;
+            callback(""+error, null);
+        });
+    } else {
+        callback("Not connected, check status", null);
+    }
+};
+
+e_create_workers = function(callback) {
+    if (connected) {
+        url = "http://" + process.env.DOCKER_HOST + ":4444/services/workers";
+        var req = client.post(url, (data, response) => {
+            if (response.statusCode == 200) {
+                callback(null, data);
+            } else {
+                connected = false;
+                callback("not connected", null);
+            }
+        });
+
+        req.on('error', (error) =>{
+            connected = false;
+            callback(""+error, null);
+        });
+    } else {
+        callback("Not connected, check status", null);
+    }
+};
+
 e_setup_updates = function() {
     timeout = 1000;
 
@@ -142,5 +184,7 @@ exports.get_docker_info_local = e_get_docker_info_local;
 exports.get_docker_info_remote = e_get_docker_info_remote;
 exports.get_services = e_get_services;
 exports.get_workers = e_get_workers;
+exports.delete_workers = e_delete_workers;
+exports.create_workers = e_create_workers;
 exports.update_workers = e_update_workers;
 exports.setup_updates = e_setup_updates;

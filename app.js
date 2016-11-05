@@ -216,6 +216,14 @@ update_workers = function(req, res) {
     elastic_docker.update_workers(req.body, (error, data) => {return_data(res, error, data);});
 };
 
+delete_workers = function(req, res) {
+    elastic_docker.delete_workers((error, data) => {return_data(res, error, data);});
+};
+
+create_workers = function(req, res) {
+    elastic_docker.create_workers((error, data) => {return_data(res, error, data);});
+};
+
 // ROUTING
 setup_routes = function() {
    app.get('/status', get_status);
@@ -242,6 +250,8 @@ setup_routes = function() {
 
    app.get('/services', get_services);
    app.put('/services/workers', update_workers);
+   app.delete('/services/workers', delete_workers);
+   app.post('/services/workers', create_workers);
 };
 
 // Emit events
