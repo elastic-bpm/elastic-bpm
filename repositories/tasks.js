@@ -80,7 +80,7 @@ r_remove_from_array = function(array, item) {
 
 r_mark_task_busy = function(task, callback) {
     req = client.get("http://"+host+":3000/workflows/" + task.workflow_id, function (workflow, response) {
-        workflow.todo_nodes = remove_from_array(workflow.todo_nodes, task.task_id);
+        workflow.todo_nodes = r_remove_from_array(workflow.todo_nodes, task.task_id);
         workflow.busy_nodes.push(task.task_id);
 
         var args = {
@@ -104,7 +104,7 @@ r_mark_task_done = function(task, callback) {
             callback("Workflow with id " + task.workflow_id + " not found.");
         } else {
             if (workflow.busy_nodes.indexOf(task.task_id) > -1) {
-                workflow.busy_nodes = remove_from_array(workflow.busy_nodes, task.task_id);
+                workflow.busy_nodes = r_remove_from_array(workflow.busy_nodes, task.task_id);
                 workflow.done_nodes.push(task.task_id);
 
                 var args = {
