@@ -16,7 +16,7 @@ post_task = function(req, res) {
 
     task_repository.mark_task_done(task, (err) => {
         if (err) {
-            res.status(404).send(err);
+            res.status(500).send("Error: " + err);
         } else {
             res.send('ok');
         }
@@ -24,8 +24,10 @@ post_task = function(req, res) {
 };
 
 get_task = function(req, res) {
-    task_repository.get_all_free_tasks((tasks) => {
-        if (tasks.length === 0) {
+    task_repository.get_all_free_tasks((error, tasks) => {
+        if (error) {
+            res.status(500).send("Error: " + error);
+        } else if (tasks === undefined || tasks.length === 0) {
             res.status(404).send("No todo tasks found.");
         } else {
             policy.select_task(tasks, (task) => {
@@ -39,9 +41,13 @@ get_task = function(req, res) {
 };
 
 get_task_count = function(req, res) {
-    task_repository.get_all_tasks((tasks) => {
-        res.setHeader('Content-Type', 'application/json');
-        res.send(JSON.stringify(tasks.length, null, 3));
+    task_repository.get_all_tasks((error, tasks) => {
+        if (error) {
+            res.status(500).send("Error: " + error);
+        } else {
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify(tasks.length, null, 3));
+        }
     });
 };
 
