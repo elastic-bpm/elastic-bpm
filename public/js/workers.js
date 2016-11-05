@@ -117,7 +117,18 @@ init_workers_table = function() {
                 { "data": "DesiredState" },
                 { "data": "Status.State" },
                 { "data": "Status.Err" }
-            ]
+            ],
+            "rowCallback": function( row, data, index ) {
+                console.log(data.Status.State);
+                $(row).removeClass('info warning success');
+                if (data.Status.State === "shutdown") {
+                    $(row).addClass('warning');
+                } else if (data.Status.State === "running") {
+                    $(row).addClass('success');
+                } else {
+                    $(row).addClass('info');
+                }
+            }
         });
 
         init_workers_table_flag = true;
