@@ -161,6 +161,50 @@ delete_workers = function(req, res) {
     });
 };
 
+create_workers = function(req, res) {
+    opts = {
+      "Name": "elastic-workers",
+      "TaskTemplate": {
+        "ContainerSpec": {
+          "Image": "djbnjack/elastic-worker",
+          "Env": [
+            "SCHEDULER=scheduler.elastic-dashboard.6491bc89.svc.dockerapp.io"
+          ]
+        },
+        "Resources": {
+          "Limits": {},
+          "Reservations": {}
+        },
+        "RestartPolicy": {
+          "Condition": "any",
+          "MaxAttempts": 0
+        },
+        "Placement": {}
+      },
+      "Mode": {
+        "Replicated": {
+          "Replicas": 1
+        }
+      },
+      "UpdateConfig": {
+        "Parallelism": 1,
+        "FailureAction": "pause"
+      },
+      "EndpointSpec": {
+        "Mode": "vip"
+      }
+    };
+    
+    docker_remote.createService(opts, (err, data) => {
+        if (err) {
+            res.status(500).send(err);
+        } else {
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify(data, null, 3));            
+        }
+    });
+};
+
 // ROUTING
 setup_routes = function() {
     app.get('/info/local', get_info_local);
@@ -171,6 +215,7 @@ setup_routes = function() {
     app.get('/services', get_services);
     app.put('/services/workers', update_workers);
     app.delete('/services/workers', delete_workers);
+    app.post('/services/workers', create_workers);
 
     app.get('/workers', get_workers);
 
