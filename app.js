@@ -9,13 +9,28 @@ app.use(bodyParser.json());
 var task_repository = require('./repositories/tasks');
 var policy = require('./policies/random');
 
-post_task = function(req, res) {
+post_task_done = function(req, res) {
     task = {
         workflow_id: req.params.workflow_id,
         task_id: req.params.task_id
     };
 
     task_repository.mark_task_done(task, (err) => {
+        if (err) {
+            res.status(500).send("Error: " + err);
+        } else {
+            res.send('ok');
+        }
+    });
+};
+
+post_task_busy = function(req, res) {
+    task = {
+        workflow_id: req.params.workflow_id,
+        task_id: req.params.task_id
+    };
+
+    task_repository.mark_task_busy(task, (err) => {
         if (err) {
             res.status(500).send("Error: " + err);
         } else {
@@ -46,6 +61,20 @@ get_task_worker = function(req, res) {
     }); // -sem
 };
 
+get_human_tasks = function(req, res) {
+    task_repository.r_get_all_unfinished_human_tasks((error, tasks) => {
+        if (error) {
+            res.status(500).send("Error: " + error);
+        } else if (tasks === undefined || tasks.length === 0) {
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify([], null, 3));
+        } else {
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify(tasks, null, 3));
+        }
+    });
+};
+
 get_task_count = function(req, res) {
     task_repository.get_all_tasks((error, tasks) => {
         if (error) {
@@ -61,7 +90,9 @@ get_task_count = function(req, res) {
 setup_routes = function() {
     app.get('/task/count', get_task_count);
     app.get('/task', get_task_worker);
-    app.post('/task/:workflow_id/:task_id', post_task);
+    app.get('/tasks/human', get_human_tasks);
+    app.post('/task/:workflow_id/:task_id/busy', post_task_busy);
+    app.post('/task/:workflow_id/:task_id', post_task_done);
 
     app.get('/status', (req, res) => res.send('ok'));
 };

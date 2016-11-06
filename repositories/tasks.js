@@ -64,6 +64,58 @@ r_get_all_free_worker_tasks = function(callback) {
     r_get_all_tasks(callback, r_task_is_worker_and_free);
 };
 
+r_get_all_free_human_tasks = function(callback) {
+    r_get_all_tasks(callback, r_task_is_human_and_free);
+};
+
+r_get_all_busy_human_tasks = function(callback) {
+    r_get_all_workflows((error, workflows) => {
+        if (error) {
+            callback(error, null);
+        } else {
+            tasks = [];
+
+            workflows.forEach((workflow) => {
+                workflow.busy_nodes.forEach((node) => {
+                    if (r_task_is_human(node, workflow)) {
+                        tasks.push({
+                            task_id: node,
+                            task_status: "busy",
+                            workflow_id: workflow.id
+                        });
+                    }
+                });
+            });
+
+            callback(null, tasks);
+        }
+    });
+};
+
+r_get_all_unfinished_human_tasks = function(callback) {
+    all_tasks = [];
+    r_get_all_free_human_tasks((error, todo_tasks) => {
+        if (error){
+            callback(error, null);
+        } else {
+            todo_tasks.forEach((task) => {
+                all_tasks.push(task);
+            });
+            r_get_all_busy_human_tasks((error, busy_tasks) => {
+                if (error) {
+                    callback(error, null);
+                } else {
+                    busy_tasks.forEach((task) => {
+                        all_tasks.push(task);
+                    });
+
+                    callback(null, all_tasks);
+                }
+            });
+        }
+    });
+};
+
 r_get_all_tasks = function(callback, filter) {
     r_get_all_workflows((error, workflows) => {
         if (error) {
@@ -76,6 +128,7 @@ r_get_all_tasks = function(callback, filter) {
                     if (filter === undefined || filter(node, workflow)) {
                         tasks.push({
                             task_id: node,
+                            task_status: "todo",
                             workflow_id: workflow.id
                         });
                     }
@@ -145,5 +198,6 @@ r_mark_task_done = function(task, callback) {
 
 exports.get_all_tasks = r_get_all_tasks;
 exports.get_all_free_worker_tasks = r_get_all_free_worker_tasks;
+exports.r_get_all_unfinished_human_tasks = r_get_all_unfinished_human_tasks;
 exports.mark_task_busy = r_mark_task_busy;
 exports.mark_task_done = r_mark_task_done;
