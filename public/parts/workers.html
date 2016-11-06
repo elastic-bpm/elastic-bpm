@@ -16,15 +16,13 @@
 
     <div id="worker-utilities-panel" class="panel-body panel-collapse collapse">
         <div class="row" style="padding: 5px">
-            <div class="col-md-2">
-                <button id="reset-workers-service-button" type="button" class="btn btn-primary">Reset workers service</button>
-            </div>
-            <div class="col-md-2">
-                Current amount of workers: <span id="current-worker-amount"></span><br />
-            </div>
             <div class="col-md-8">
+                Current amount of workers: <span id="current-worker-amount"></span><br />
                 <button id="scale-workers-button" type="button" class="btn btn-primary">Scale workers to: <span id="worker-amount-value"></span></button><br />
                 <input style="width: 80%;" id="worker-amount" type="text" data-slider-min="0" data-slider-max="50" data-slider-step="1"/>
+            </div>
+            <div class="col-md-4">
+                <button id="reset-workers-service-button" type="button" class="btn btn-danger">Reset workers service</button>
             </div>
         </div>
 
