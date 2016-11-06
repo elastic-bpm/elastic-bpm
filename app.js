@@ -168,7 +168,7 @@ create_workers = function(req, res) {
         "ContainerSpec": {
           "Image": "djbnjack/elastic-worker",
           "Env": [
-            "SCHEDULER=" + proccess.env.SCHEDULER_HOST
+            "SCHEDULER=" + process.env.SCHEDULER_HOST
           ]
         },
         "Resources": {
