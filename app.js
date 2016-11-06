@@ -168,7 +168,7 @@ create_workers = function(req, res) {
         "ContainerSpec": {
           "Image": "djbnjack/elastic-worker",
           "Env": [
-            "SCHEDULER=scheduler.elastic-dashboard.6491bc89.svc.dockerapp.io"
+            "SCHEDULER=scheduler.elastic-bpm.6c2bb181.svc.dockerapp.io"
           ]
         },
         "Resources": {
