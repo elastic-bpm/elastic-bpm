@@ -19,8 +19,7 @@ get_status = function(req, res) {
         msg = 'ok';
         statusCode = 200;
     } else if (msg === 'login') {
-        code = azure.get_code();
-        msg = code;
+        msg = azure.get_code();
         statusCode = 206;
     } 
 
