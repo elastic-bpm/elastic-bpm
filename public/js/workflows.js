@@ -259,7 +259,6 @@ init_workflow_table = function() {
                 { "data": null, "defaultContent": "<button data-action='delete' class='btn btn-danger btn-circle'><i class='fa fa-stop'></i></button>" }
             ],
             "rowCallback": function( row, data, index ) {
-                console.log(data.status);
                 $(row).removeClass('info warning success');
                 if (data.status === "Done") {
                     $(row).addClass('success');

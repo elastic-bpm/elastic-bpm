@@ -119,7 +119,6 @@ init_workers_table = function() {
                 { "data": "Status.Err" }
             ],
             "rowCallback": function( row, data, index ) {
-                console.log(data.Status.State);
                 $(row).removeClass('info warning success');
                 if (data.Status.State === "shutdown") {
                     $(row).addClass('warning');
