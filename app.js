@@ -171,25 +171,33 @@ create_workflow_using_file = function(req, res) {
     var form = new multiparty.Form();
  
     form.parse(req, function(err, fields, files) {
-        if (files === undefined || files.workflow === undefined) {
-            return;
-        }
-
-        workflows = require(files.workflow[0].path);
-        fs.unlink(files.workflow[0].path, (err) => {
-            if (err) throw err;
-        });
-        elastic_api.create_multiple_workflows(workflows, (error, data) => {
-            if (error) {
-                res.status(500).send(error);
-            } else {
-                res.setHeader('Content-Type', 'application/json');
-                res.send(JSON.stringify(data, null, 3));
+        if (err) {
+            res.status(500).send("Error creating workflow: " + err);            
+        } else if (files === undefined || files.workflow === undefined) {
+            res.status(500).send("Error creating workflow, file not found.");
+        } else {
+            workflows = {};
+             try {
+                workflows = JSON.parse(fs.readFileSync(files.workflow[0].path, 'utf8'));
+                fs.unlink(files.workflow[0].path, (unlink_err) => {
+                    if (unlink_err){
+                        res.status(500).send("Error unlinking file: " + unlink_err);
+                    } else {
+                        elastic_api.create_multiple_workflows(workflows, (error, data) => {
+                            if (error) {
+                                res.status(500).send(error);
+                            } else {
+                                res.setHeader('Content-Type', 'application/json');
+                                res.send(JSON.stringify(data, null, 3));
+                            }
+                        });
+                    }
+                });
+            } catch (e) {
+                res.status(500).send("Error parsing workflow: " + e);
             }
-        });
+        }
     });
-
-    return;
 };
 
 delete_workflow = function(req, res) {

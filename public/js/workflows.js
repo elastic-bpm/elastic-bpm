@@ -43,7 +43,7 @@ upload_workflow_script = function(callback) {
             if(request.status == 200) {
                 callback();
             } else {
-                console.log("Error uploading script.");
+                console.log("Error uploading script: " + aEvt.target.responseText);
             }
         }
     };
