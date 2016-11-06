@@ -179,7 +179,13 @@ create_workers = function(req, res) {
           "Condition": "any",
           "MaxAttempts": 0
         },
-        "Placement": {}
+        "Placement": {},
+        "LogDriver": {
+            "Name": "gelf",
+            "Options": {
+                "gelf-address": "udp://137.116.195.67:12201"
+            }
+        }
       },
       "Mode": {
         "Replicated": {
