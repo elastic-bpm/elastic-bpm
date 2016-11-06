@@ -8,10 +8,10 @@
     "start": "node app.js",
     "docker:build": "docker build -t elastic-docker .",
     "docker:kill": "docker rm --force elastic-docker || echo 'ok'",
-    "docker:start": "docker run -p 4444:4444 -d -v /var/run/docker.sock:/var/run/docker.sock --name elastic-docker elastic-docker",
+    "docker:start": "docker run -p 4444:4444 -d -v /var/run/docker.sock:/var/run/docker.sock -e \"SCHEDULER_HOST=localhost\" --name elastic-docker elastic-docker",
     "docker:tail": "docker logs -f elastic-docker",
     "wait": "timeout 1",
-    "start:local": "npm run docker:build && npm run docker:kill && npm run wait && npm run docker:start && npm run docker:tail"
+    "start:local": "npm run docker:build && npm run docker:kill && npm run wait && npm run docker:start &&  npm run docker:tail"
   },
   "repository": {
     "type": "git",
