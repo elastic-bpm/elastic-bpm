@@ -44,7 +44,7 @@ r_task_is_free = function(task, workflow) {
 };
 
 r_task_is_human = function(task) {
-    task_info_string = task.task_id.split(":");
+    task_info_string = task.split(":");
     if (task_info_string.length === 3 && (task_info_string[1] === "HE" || task_info_string[1] === "HH")) {
         return true;
     } else {
