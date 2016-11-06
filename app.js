@@ -28,8 +28,10 @@ get_task = function(req, res) {
     sem.take(function() {
         task_repository.get_all_free_tasks((error, tasks) => {
             if (error) {
+                sem.leave();
                 res.status(500).send("Error: " + error);
             } else if (tasks === undefined || tasks.length === 0) {
+                sem.leave();
                 res.status(404).send("No todo tasks found.");
             } else {
                 policy.select_task(tasks, (task) => {
