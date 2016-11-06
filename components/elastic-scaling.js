@@ -1,49 +1,81 @@
 /*jshint esversion: 6 */
 
-var Client = require('node-rest-client').Client;
-var client = new Client();
+elastic_scaling_component = (function () {
+    var es = {};
 
-connected = false;
+    var Client = require('node-rest-client').Client;
+    var client = new Client();
 
-get_vms = function(callback) {
-    host = process.env.SCALING_HOST;
-    if (connected) {
-        var req = client.get("http://" + host + ":8888/virtualmachines", (data, response) => {
-            // console.log("Got response for vms: " + data);
-            if (response.statusCode == 200) {
-                callback(null, data);
-            } else {
+    var connected = false;
+    var host = process.env.SCALING_HOST;
+
+    es.get_vms = function(callback) {    
+        if (connected) {
+            var req = client.get("http://" + host + ":8888/virtualmachines", (data, response) => {
+                // console.log("Got response for vms: " + data);
+                if (response.statusCode == 200) {
+                    callback(null, data);
+                } else {
+                    connected = false;
+                    callback("not connected", null);
+                }
+            });
+
+            req.on('error', (error) =>{
                 connected = false;
-                callback("not connected", null);
+                callback(""+error, null);
+            });
+        } else {
+            callback("Not connected, check status", null);
+        }
+    };
+
+    es.check_scaling_status = function(err, ready) {
+        var req = client.get("http://" + host + ":8888/status", (data, response) => {
+            if (response.statusCode == 200) {
+                connected = true;
+                ready();
+            } else {
+                err(response.statusCode, data);
+                connected = false;
             }
         });
 
-        req.on('error', (error) =>{
-            connected = false;
-            callback(""+error, null);
+        req.on('error', (error) => {
+            err(0, error);
         });
-    } else {
-        callback("Not connected, check status", null);
-    }
-};
 
-check_scaling_status = function(err, ready) {
-    host = process.env.SCALING_HOST;
-    var req = client.get("http://" + host + ":8888/status", (data, response) => {
-        // console.log("Got response for scaling: " + data);
-        if (response.statusCode == 200) {
-            connected = true;
-            ready();
-        } else {
-            err(response.statusCode, data);
-            connected = false;
-        }
-    });
+        setTimeout(() => es.check_scaling_status(err, ready), 2000);
+    };
 
-    req.on('error', (error) => err(0, error));
+    es.stop_vm = function(resourcegroup, virtualmachine, callback) {
+        var req = client.delete("http://" + host + ":8888/virtualmachines/"+resourcegroup+"/"+virtualmachine, (data, response) => {
+            if (response.statusCode == 200) {
+                callback(null, data);
+            } else {
+                callback("error: " + data, null);
+            }
+        });
 
-    setTimeout(() => check_scaling_status(err, ready), 2000);
-};
+        req.on('error', (error) => callback(error, null));
+    };
 
-exports.check_scaling_status = check_scaling_status;
-exports.get_vms = get_vms;
+    es.start_vm = function(resourcegroup, virtualmachine, callback) {
+        var req = client.post("http://" + host + ":8888/virtualmachines/"+resourcegroup+"/"+virtualmachine, (data, response) => {
+            if (response.statusCode == 200) {
+                callback(null, data);
+            } else {
+                callback("error: " + data, null);
+            }
+        });
+
+        req.on('error', (error) => callback(error, null));
+    };
+
+    return es;
+}());
+
+exports.check_scaling_status = elastic_scaling_component.check_scaling_status;
+exports.get_vms = elastic_scaling_component.get_vms;
+exports.start_vm = elastic_scaling_component.start_vm;
+exports.stop_vm = elastic_scaling_component.stop_vm;

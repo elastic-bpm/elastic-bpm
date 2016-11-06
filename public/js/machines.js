@@ -33,12 +33,13 @@ fill_machines_table = function () {
     $.get('/virtualmachines', (status_data) => {
         $("#machines-table-body").loadTemplate("templates/machines-template.html", status_data, {success: () => {
             status_data.forEach((obj) => {
-                $("#start-button-" + obj.name).on('click', () => start_machine(obj.vmId));
-                $("#pause-button-" + obj.name).on('click', () => pause_machine(obj.vmId));
+                $("#start-button-" + obj.name).on('click', () => start_machine(obj.resourceGroupName, obj.name));
+                $("#pause-button-" + obj.name).on('click', () => pause_machine(obj.resourceGroupName, obj.name));
             });
         }});
-    }).fail(() => {
+    }).fail((data) => {
         console.log("unable to get VM data");
+        // console.dir(data);
     });
 };
 
@@ -65,14 +66,14 @@ $.addTemplateFormatter({
     }
 });
 
-start_machine = function(machine_id) {
-    $.post( "/virtualmachines/"+machine_id+"/start" ).done(function( data ) {
+start_machine = function(resourcegroup, machine_id) {
+    $.post( "/virtualmachines/"+resourcegroup+"/"+machine_id+"/start" ).done(function( data ) {
         console.log(data);
     });
 };
 
-pause_machine = function(machine_id) {
-    $.post( "/virtualmachines/"+machine_id+"/stop" ).done(function( data ) {
+pause_machine = function(resourcegroup, machine_id) {
+    $.post( "/virtualmachines/"+resourcegroup+"/"+machine_id+"/stop" ).done(function( data ) {
         console.log(data);
     });
 };

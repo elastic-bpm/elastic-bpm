@@ -229,13 +229,11 @@ delete_all_workflows = function(req, res) {
 };
 
 start_virtualmachine = function(req, res) {
-    machine_id = req.params.machine_id;
-    res.send("Starting " + machine_id);    
+    elastic_scaling.start_vm(req.params.resourcegroup, req.params.machine_id, (error, data) => {return_data(res, error, data);});    
 };
 
 stop_virtualmachine = function(req, res) {
-    machine_id = req.params.machine_id;
-    res.send("Stopping " + machine_id);    
+    elastic_scaling.stop_vm(req.params.resourcegroup, req.params.machine_id, (error, data) => {return_data(res, error, data);});    
 };
 
 get_events = function(req, res) {
@@ -307,8 +305,8 @@ setup_routes = function() {
    app.delete('/workflows', delete_all_workflows);
 
    app.get('/virtualmachines', get_virtualmachines);
-   app.post('/virtualmachines/:machine_id/start', start_virtualmachine);
-   app.post('/virtualmachines/:machine_id/stop', stop_virtualmachine);
+   app.post('/virtualmachines/:resourcegroup/:machine_id/start', start_virtualmachine);
+   app.post('/virtualmachines/:resourcegroup/:machine_id/stop', stop_virtualmachine);
 
    app.get('/containers/local', get_containers_local);
    app.get('/containers/remote', get_containers_remote);
