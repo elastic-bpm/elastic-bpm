@@ -41,6 +41,8 @@
      build:
        context: ..\elastic-docker\
      image: djbnjack/elastic-docker:latest
+     depends_on:
+      - scheduler
      ports:
       - "4444:4444"
      volumes:

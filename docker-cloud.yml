@@ -13,6 +13,7 @@ dashboard:
     - redis
     - scaling
     - scheduler
+    - docker
   ports:
     - '8080:8080'
 redis:
@@ -38,6 +39,8 @@ scheduler:
 docker:
   image: 'djbnjack/elastic-docker:latest'
   autoredeploy: true
+  links:
+    - scheduler
   ports:
    - '4444:4444'
   volumes:
