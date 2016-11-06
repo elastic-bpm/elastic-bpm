@@ -27,9 +27,35 @@ get_status = function(req, res) {
     res.status(Number(statusCode)).send(JSON.stringify(msg, null, 3));
 };
 
+stop_virtualmachine = function(req, res) {
+    azure.stop_vm(req.params.resourcegroup, req.params.vm, (error) => {
+        if (error) {
+            res.status(500).send(error);
+        } else {
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify('ok', null, 3));
+        }
+    });
+};
+
+start_virtualmachine = function(req, res) {
+    azure.start_vm(req.params.resourcegroup, req.params.vm, (error) => {
+        if (error) {
+            res.status(500).send(error);
+        } else {
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify('ok', null, 3));
+        }
+    });
+};
+
 // ROUTING
 setup_routes = function() {
     app.get('/virtualmachines', get_virtualmachines);
+    
+    app.delete('/virtualmachines/:resourcegroup/:vm', stop_virtualmachine);
+    app.post('/virtualmachines/:resourcegroup/:vm', start_virtualmachine);
+    
     app.get('/status', get_status);
 };
 

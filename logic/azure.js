@@ -57,6 +57,30 @@ azure_load_vms = function(callback) {
   });
 };
 
+azure_stop_vm = function(resourcegrp, virtualmachine, callback) {
+  if (status !== 'done') {
+    callback("Status is not good.");
+  } else {
+    deallocate_vm = spawn('azure',['vm','deallocate',resourcegrp, virtualmachine]);
+    callback();
+
+    deallocate_vm.stdout.on('data', log_output);
+    deallocate_vm.stderr.on('data', log_output);
+  }
+};
+
+azure_start_vm = function(resourcegrp, virtualmachine, callback) {
+  if (status !== 'done') {
+    callback("Status is not good.");
+  } else {
+    start_vm = spawn('azure',['vm','start',resourcegrp, virtualmachine]);
+    callback();
+
+    start_vm.stdout.on('data', log_output);
+    start_vm.stderr.on('data', log_output);
+  }
+};
+
 eventEmitter.on('started', () => {
   status = 'started';
   azure_disable_telemetry(() => eventEmitter.emit('login'));
@@ -97,3 +121,5 @@ exports.start_events = start_events;
 exports.get_vms = get_vms;
 exports.get_code = get_code;
 exports.get_status = get_status;
+exports.stop_vm = azure_stop_vm;
+exports.start_vm = azure_start_vm;
