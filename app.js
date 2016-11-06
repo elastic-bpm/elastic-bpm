@@ -240,6 +240,16 @@ create_workers = function(req, res) {
     elastic_docker.create_workers((error, data) => {return_data(res, error, data);});
 };
 
+get_human_tasks = function(req, res) {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify([{
+        created: new Date(),
+        id: "abc",
+        state: "todo",
+        difficulty: "Hard"
+    }], null, 3));
+};
+
 // ROUTING
 setup_routes = function() {
    app.get('/status', get_status);
@@ -269,6 +279,8 @@ setup_routes = function() {
    app.put('/services/workers', update_workers);
    app.delete('/services/workers', delete_workers);
    app.post('/services/workers', create_workers);
+
+   app.get('/tasks/human', get_human_tasks);
 };
 
 // Emit events
