@@ -24,9 +24,9 @@ post_task = function(req, res) {
     });
 };
 
-get_task = function(req, res) {
+get_task_worker = function(req, res) {
     sem.take(function() {
-        task_repository.get_all_free_tasks((error, tasks) => {
+        task_repository.get_all_free_worker_tasks((error, tasks) => {
             if (error) {
                 sem.leave();
                 res.status(500).send("Error: " + error);
@@ -60,7 +60,7 @@ get_task_count = function(req, res) {
 // ROUTING
 setup_routes = function() {
     app.get('/task/count', get_task_count);
-    app.get('/task', get_task);
+    app.get('/task', get_task_worker);
     app.post('/task/:workflow_id/:task_id', post_task);
 
     app.get('/status', (req, res) => res.send('ok'));

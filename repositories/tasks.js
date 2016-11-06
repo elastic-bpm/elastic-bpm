@@ -43,8 +43,25 @@ r_task_is_free = function(task, workflow) {
     return task_free;
 };
 
-r_get_all_free_tasks = function(callback) {
-    r_get_all_tasks(callback, r_task_is_free);
+r_task_is_human = function(task) {
+    task_info_string = task.task_id.split(":");
+    if (task_info_string.length === 3 && (task_info_string[1] === "HE" || task_info_string[1] === "HH")) {
+        return true;
+    } else {
+        return false;
+    }
+};
+
+r_task_is_worker_and_free = function(task, workflow) {
+    return !r_task_is_human(task) && r_task_is_free(task, workflow);    
+};
+
+r_task_is_human_and_free = function(task, workflow) {
+    return r_task_is_human(task) && r_task_is_free(task, workflow);
+};
+
+r_get_all_free_worker_tasks = function(callback) {
+    r_get_all_tasks(callback, r_task_is_worker_and_free);
 };
 
 r_get_all_tasks = function(callback, filter) {
@@ -127,6 +144,6 @@ r_mark_task_done = function(task, callback) {
 
 
 exports.get_all_tasks = r_get_all_tasks;
-exports.get_all_free_tasks = r_get_all_free_tasks;
+exports.get_all_free_worker_tasks = r_get_all_free_worker_tasks;
 exports.mark_task_busy = r_mark_task_busy;
 exports.mark_task_done = r_mark_task_done;
