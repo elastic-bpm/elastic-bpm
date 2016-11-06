@@ -22,18 +22,23 @@ update_human_task_table = function() {
                 "dataSrc": ""
             },
             "columns": [
-                { "data": "created", "render": function ( data, type, full, meta ) {return new Date(data).toLocaleString();} },
-                { "data": "id" },
-                { "data": "state"},
-                { "data": "difficulty" },
+                { "data": "workflow_id" },
+                { "data": "task_id" },
+                { "data": "task_status"},
                 {
                     "data": null, 
                     "render": function (data, type, full, meta) {
                         // GHETTO disable & OnClick :/
-                        start_disabled = data.state === "todo" ? "" : "disabled";
-                        stop_disabled = data.state === "busy" ? "" : "disabled";
-                        return "<button id=\"start-task-"+data.id+"\" onclick=\"start_human_task('"+data.id+"')\" class=\"btn btn-success "+start_disabled+"\">Start task</button>&nbsp;" +
-                        "<button id=\"finish-task-"+data.id+"\" onclick=\"stop_human_task('"+data.id+"')\" class=\"btn btn-danger "+stop_disabled+"\">Finish task</button>";
+                        start_disabled = data.task_status === "todo" ? "" : "disabled";
+                        stop_disabled = data.task_status === "busy" ? "" : "disabled";
+                        return "<button " +
+                                    "id=\"start-task-"+data.task_id+"\" "+
+                                    "onclick=\"start_human_task('"+data.workflow_id+"','"+data.task_id+"')\" "+
+                                    "class=\"btn btn-success "+start_disabled+"\">Start task</button>&nbsp;" +
+                                "<button "+
+                                    "id=\"finish-task-"+data.task_id+"\" "+
+                                    "onclick=\"stop_human_task('"+data.workflow_id+"','"+data.task_id+"')\" "+
+                                    "class=\"btn btn-danger "+stop_disabled+"\">Finish task</button>";
                     }
                 }
             ]
@@ -45,10 +50,18 @@ update_human_task_table = function() {
     }
 };
 
-start_human_task = function(id) {
-    alert("Starting task " + id);
+start_human_task = function(workflow_id, task_id) {
+    console.log("Starting task: " + task_id + ", from workflow: " + workflow_id);
+    $.post( "/task/"+workflow_id+"/"+task_id+"/busy", function( data ) {
+        console.log(data);
+        update_human_task_table();
+    });
 };
 
-stop_human_task = function(id) {
-    alert("Stopping task " + id);
+stop_human_task = function(workflow_id, task_id) {
+    console.log("Stopping task: " + task_id + ", from workflow: " + workflow_id);
+    $.post( "/task/"+workflow_id+"/"+task_id, function( data ) {
+        console.log(data);
+        update_human_task_table();
+    });
 };

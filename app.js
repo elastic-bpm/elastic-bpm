@@ -13,7 +13,8 @@ var redis_listener = require('./components/redis-listener');
 var elastic_api = require('./components/elastic-api');
 var elastic_scaling = require('./components/elastic-scaling');
 var elastic_docker = require('./components/elastic-docker');
-    
+var elastic_scheduler = require('./components/elastic-scheduler');
+
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
@@ -45,6 +46,12 @@ elastic_scaling_status = {
 
 elastic_docker_status = {
     name: "elastic-docker",
+    status: 0,
+    message: "Not connected"
+};
+
+elastic_scheduler_status = {
+    name: "elastic-scheduler",
     status: 0,
     message: "Not connected"
 };
@@ -93,6 +100,17 @@ start_check_status = function() {
             elastic_docker_status.message = "Connected to elastic-docker";
         }
     );
+
+    elastic_scheduler.check_status(
+        (status_code, message) => {
+            elastic_scheduler_status.status = status_code;
+            elastic_scheduler_status.message = "" + message;
+        },
+        () => {
+            elastic_scheduler_status.status = 200;
+            elastic_scheduler_status.message = "Connected to elastic-scheduler";
+        }
+    );
     // Check other components here
 };
 
@@ -101,7 +119,8 @@ get_status = function(req, res) {
         redis_status,
         elastic_api_status,
         elastic_scaling_status,
-        elastic_docker_status
+        elastic_docker_status,
+        elastic_scheduler_status
     ];
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(status_data, null, 3));
@@ -241,13 +260,37 @@ create_workers = function(req, res) {
 };
 
 get_human_tasks = function(req, res) {
-    res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify([{
-        created: new Date(),
-        id: "abc",
-        state: "todo",
-        difficulty: "Hard"
-    }], null, 3));
+    elastic_scheduler.get_free_human_tasks((error, data) => {return_data(res, error, data);});
+};
+
+post_task_done = function(req, res) {
+    task = {
+        workflow_id: req.params.workflow_id,
+        task_id: req.params.task_id
+    };
+
+    elastic_scheduler.mark_task_done(task, (err) => {
+        if (err) {
+            res.status(500).send("Error: " + err);
+        } else {
+            res.send('ok');
+        }
+    });
+};
+
+post_task_busy = function(req, res) {
+    task = {
+        workflow_id: req.params.workflow_id,
+        task_id: req.params.task_id
+    };
+
+    elastic_scheduler.mark_task_busy(task, (err) => {
+        if (err) {
+            res.status(500).send("Error: " + err);
+        } else {
+            res.send('ok');
+        }
+    });
 };
 
 // ROUTING
@@ -281,6 +324,8 @@ setup_routes = function() {
    app.post('/services/workers', create_workers);
 
    app.get('/tasks/human', get_human_tasks);
+   app.post('/task/:workflow_id/:task_id/busy', post_task_busy);
+   app.post('/task/:workflow_id/:task_id', post_task_done);
 };
 
 // Emit events
