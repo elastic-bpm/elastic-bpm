@@ -9,6 +9,7 @@
       - api
       - scaling
       - docker
+      - scheduler
    api:
      build:
        context:  ..\elastic-api\
@@ -25,6 +26,9 @@
      image: djbnjack/elastic-scaling:latest
      ports:
       - "8888:8888"
+     depends_on:
+      - docker
+      - api
    scheduler:
      build:
        context:  ..\elastic-scheduler\
