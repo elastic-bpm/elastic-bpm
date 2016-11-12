@@ -16,10 +16,6 @@ dashboard:
     - docker
   ports:
     - '8080:8080'
-  logging:
-    driver: gelf
-    options:
-      gelf-address: "udp://<add-elk-ip>:12201"
 redis:
   image: 'redis:3.0.7'
   autoredeploy: true
