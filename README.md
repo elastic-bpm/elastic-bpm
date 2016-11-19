@@ -1,3 +1,5 @@
+Became part of the elastic-bpm project!
+
 # elastic-dashboard
 Dashboard for the Elastic BPM implementation
 
