@@ -25,11 +25,11 @@ workers_init = function(socket, interval) {
 delete_workers = function(callback) {
     $.ajax({
         contentType: 'application/json',
-        success: function(data){
-            callback();
-        },
         error: function(error){
             console.log(error);
+        },
+        complete: function(jqXHR, textStatus) {
+            callback();
         },
         type: 'DELETE',
         url: '/services/workers'
