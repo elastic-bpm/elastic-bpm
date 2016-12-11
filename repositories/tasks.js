@@ -195,9 +195,36 @@ r_mark_task_done = function(task, callback) {
     });
 };
 
+r_mark_task_todo = function(task, callback) {
+    req = client.get("http://"+host+":3000/workflows/" + task.workflow_id, function (workflow, response) {
+        if (!workflow || workflow === undefined) {
+            callback("Workflow with id " + task.workflow_id + " not found.");
+        } else {
+            if (workflow.busy_nodes.indexOf(task.task_id) > -1) {
+                workflow.busy_nodes = r_remove_from_array(workflow.busy_nodes, task.task_id);
+                workflow.todo_nodes.push(task.task_id);
+
+                var args = {
+                    data: workflow,
+                    headers: { "Content-Type": "application/json" }
+                };
+                client.patch("http://"+host+":3000/workflows/" + task.workflow_id, args, function (data, response) {
+                    callback(null);
+                });
+            } else {
+                callback("Task with id " + task.task_id + " not found in workflow with id " + task.workflow_id);
+            }
+        }
+    });
+
+    req.on('error', function (err) {
+        callback(err);
+    });
+};
 
 exports.get_all_tasks = r_get_all_tasks;
 exports.get_all_free_worker_tasks = r_get_all_free_worker_tasks;
 exports.r_get_all_unfinished_human_tasks = r_get_all_unfinished_human_tasks;
 exports.mark_task_busy = r_mark_task_busy;
 exports.mark_task_done = r_mark_task_done;
+exports.mark_task_todo = r_mark_task_todo;
