@@ -12,7 +12,7 @@ var policy = require('./policies/random');
 
 var task_start = {};
 var task_done = {};
-var max_timeout_seconds = 60;
+var max_timeout_seconds = 600; // 10 mins for production
 
 post_task_done = function(req, res) {
     task = {
