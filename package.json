@@ -31,6 +31,6 @@
     "node-rest-client": "^2.0.1",
     "nodemon": "^1.11.0",
     "redis": "^2.6.2",
-    "socket.io": "^1.7.1"
+    "socket.io": "^1.7.2"
   }
 }
