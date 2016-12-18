@@ -292,7 +292,12 @@ show_workflows = function() {
     $.get('/workflows', (workflows) => {
         $("#workflows-info").html("");
         
-        show_graphs(workflows);
+        if (workflows !== undefined && workflows.length < 10) {
+            show_graphs(workflows);
+        } else {
+            $("#workflows-modal").html("");
+        }
+
         init_workflow_table();
     }).fail(() => {
         $("#workflows-info").loadTemplate("templates/workflows-error.html");

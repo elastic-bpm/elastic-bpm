@@ -147,7 +147,7 @@
         timeline_init(socket, interval);
         console_init(socket, interval);
         dashboard_init(socket, interval);
-        workflows_init(socket, interval);
+        workflows_init(socket, 5*interval);
         machines_init(socket, interval);
         containers_init(socket, interval);
         workers_init(socket, interval);
