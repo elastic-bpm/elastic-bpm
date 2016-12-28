@@ -1,0 +1,25 @@
+{
+  "name": "elastic-human",
+  "version": "1.0.0",
+  "description": "Automated human component",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "start:local": "set DEBUG=express:*& nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elastic-bpm/elastic-human.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/elastic-bpm/elastic-human/issues"
+  },
+  "homepage": "https://github.com/elastic-bpm/elastic-human#readme",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "express": "^4.14.0"
+  }
+}
