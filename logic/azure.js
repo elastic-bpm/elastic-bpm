@@ -49,14 +49,14 @@ azure_load_vms = function(callback) {
   vm_data = "";
 
   list_vms.stdout.on('data', (data) => { 
-    console.log('stdout: ' + data);
+    //console.log('stdout: ' + data);
     vm_data += data;
-    //vms = JSON.parse(data);
   });
   list_vms.stderr.on('data', log_output);
 
   list_vms.on('close', (code3) => {
     console.log('Full VMdata: ' + vm_data);
+    vms = JSON.parse(vm_dat);
     setTimeout(() => azure_load_vms(callback), 10000);
     callback();
   });
