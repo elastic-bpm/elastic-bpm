@@ -10,6 +10,7 @@
       - scaling
       - docker
       - scheduler
+      - human
    api:
      build:
        context:  ..\elastic-api\
@@ -47,3 +48,11 @@
       - "4444:4444"
      volumes:
       - /var/run/docker.sock:/var/run/docker.sock
+   human:
+     build:
+       context: ..\elastic-human\
+     image: 'djbnjack/elastic-human:latest'
+     depends_on:
+      - scheduler
+     ports:
+      - '5555:5555'

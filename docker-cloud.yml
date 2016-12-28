@@ -14,6 +14,7 @@ dashboard:
     - scaling
     - scheduler
     - docker
+    - human
   ports:
     - '8080:8080'
 redis:
@@ -45,3 +46,10 @@ docker:
    - '4444:4444'
   volumes:
    - /var/run/docker.sock:/var/run/docker.sock
+human:
+  image: 'djbnjack/elastic-human:latest'
+  autoredeploy: true
+  links:
+   - scheduler
+  ports:
+   - '5555:5555'
