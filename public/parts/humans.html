@@ -7,6 +7,39 @@
 <div id="humans-info"></div>
 
 <div class="panel panel-default">
+
+    <div class="panel-heading">
+        <h4 class="panel-title">
+            <a data-toggle="collapse"  href="#human-utilities-panel"> Automated Human</a>
+        </h4>
+    </div>
+
+    <div id="human-utilities-panel" class="panel-body panel-collapse collapse">
+        <div class="row" style="padding: 5px">
+            <div class="col-md-8">
+                Humans on time:
+                <input style="width: 80%;" id="humans-on-time" type="text" data-slider-min="0" data-slider-max="24" data-slider-step="1" data-slider-value="8"/><br />
+                Humans off time:
+                <input style="width: 80%;" id="humans-off-time" type="text" data-slider-min="0" data-slider-max="24" data-slider-step="1" data-slider-value="16"/><br />
+                Humans init time:
+                <input style="width: 80%;" id="humans-init-time" type="text" data-slider-min="0" data-slider-max="200" data-slider-step="1" data-slider-value="8"/><br />
+                Humans total time:
+                <input style="width: 80%;" id="humans-total-time" type="text" data-slider-min="0" data-slider-max="200" data-slider-step="1" data-slider-value="48"/><br />
+                Amount of humans:
+                <input style="width: 80%;" id="humans-amount" type="text" data-slider-min="0" data-slider-max="50" data-slider-step="1" data-slider-value="5"/><br />
+            </div>
+            <div class="col-md-4">
+                <button id="start-humans-button" type="button" class="btn btn-primary">Start</button>
+                <button id="stop-humans-button" type="button" class="btn btn-danger">Stop</button>
+            </div>
+        </div>
+
+    </div>
+    <!-- /.panel-body -->
+    
+</div>
+
+<div class="panel panel-default">
     <div class="panel-heading clearfix">
         <div class="panel-title pull-left">Available tasks</div>
     </div>

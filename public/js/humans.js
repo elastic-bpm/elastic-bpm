@@ -4,6 +4,12 @@ humans_init = function(socket, interval) {
     $.get("/parts/humans.html", (data) => {
         $("#humans").html(data);
 
+        $("#humans-on-time").slider();
+        $("#humans-off-time").slider();
+        $("#humans-init-time").slider();
+        $("#humans-total-time").slider();
+        $("#humans-amount").slider();
+
         update_human_task_table();
         setInterval(update_human_task_table, interval);
     });

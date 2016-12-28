@@ -10,8 +10,8 @@ workflows_init = function (socket, interval) {
         $("#create-test-workflow-button").on("click", function() {
             name = "Test-Workflow";
             owner = "test";
-            nodes = "A, B";
-            edges = "A -> B";
+            nodes = "A:CC:S, B:HE:5, C:CC:M";
+            edges = "A:CC:S -> B:HE:5, B:HE:5 -> C:CC:M";
 
             post_workflow(name, owner, edges, nodes, () => show_workflows());
         });
