@@ -4,20 +4,58 @@ var express = require('express'),
 app.use(bodyParser.json());
 
 var active = false;
+var paused = false;
+var humans = null;
+var stopTimer = null;
+var initTimer = null;
+var timeOn = 0;
+var timeOff = 0;
 
-start_humans = function(on, off, init, total) {
-    console.log("On: " + on + ", Off: " + off + ", Init: " + init + ", Total: " + total);
-    
-    // Start timers!
+start_humans = function(amount, on, off, init, total) {
+    onTime = on*1000;//*60;
+    offTime = off*1000;//*60;
+    initTime = init*1000;//*60;
+    totalTime = total*1000;//*60;
 
-    // Set flag
+    console.log("Amount: " + amount + ", On: " + on + ", Off: " + off + ", Init: " + init + ", Total: " + total);
     active = true;
+    
+    // Start the fun after init time!
+    console.log("Setting initTimer to: " + initTime);
+    initTimer = setTimeout(function() {
+        console.log("Starting humans");
+        human_act();
+        setTimeout(function() {
+            console.log("Pausing humans.");
+            paused = true;
+
+            setTimeout(function() {
+                console.log("Resuming humans.");
+                paused = false;
+            }, offTime);
+        }, onTime);
+    }, initTime);
+
+    // Stop when done
+    stopTimer = setTimeout(stop_humans, totalTime);
+};
+
+human_act = function() {
+    if (active) {
+        if (paused) {
+            console.log("Human not acting, paused.");
+        } else {
+            console.log("Human acting");
+        }
+
+        setTimeout(human_act, 200);
+    }
 };
 
 stop_humans = function() {
-    // Turn all timers off
-
-    // Set flag
+    console.log("Stopping humans");
+    clearTimeout(stopTimer);
+    clearTimeout(initTimer);
     active = false;
 };
 
@@ -31,7 +69,7 @@ post_start = function(req, res) {
     }
 
     // Start the humans!
-    start_humans(req.body.on, req.body.off, req.body.init, req.body.total);
+    start_humans(req.body.amount, req.body.on, req.body.off, req.body.init, req.body.total);
 
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify('ok', null, 3));
