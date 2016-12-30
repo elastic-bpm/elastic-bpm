@@ -4,12 +4,30 @@ var express = require('express'),
 app.use(bodyParser.json());
 
 var active = false;
-var paused = false;
+var paused = true;
 var humans = null;
 var stopTimer = null;
 var initTimer = null;
-var timeOn = 0;
-var timeOff = 0;
+var pauseTimer = null;
+var unpauseTimer = null;
+var i = 0;
+
+function Human(name) {
+    this.name = name;
+    this.timer = null;
+}
+
+act_human = function(human) {
+    if (active) {
+        if (paused) {
+            console.log("Human " + human.name + " not acting, paused.");
+        } else {
+            console.log("Human " + human.name + " acting");
+        }
+
+        human.timer = setTimeout(function() {act_human(human);}, 1000);
+    }
+}
 
 start_humans = function(amount, on, off, init, total) {
     onTime = on*1000;//*60;
@@ -20,43 +38,56 @@ start_humans = function(amount, on, off, init, total) {
     console.log("Amount: " + amount + ", On: " + on + ", Off: " + off + ", Init: " + init + ", Total: " + total);
     active = true;
     
-    // Start the fun after init time!
+    // Create humans
+    humans = [];
+    for (var i = 0; i < amount; i++) {
+        humans.push(new Human("hal-" + i));
+    }
+    
+    // Start up humans
+    humans.map(function(h){act_human(h);});
+    
+    // Activate the fun after init time!
     console.log("Setting initTimer to: " + initTime);
     initTimer = setTimeout(function() {
-        console.log("Starting humans");
-        human_act();
-        setTimeout(function() {
-            console.log("Pausing humans.");
-            paused = true;
-
-            setTimeout(function() {
-                console.log("Resuming humans.");
-                paused = false;
-            }, offTime);
-        }, onTime);
+        unpause_humans(onTime, offTime);
     }, initTime);
 
     // Stop when done
     stopTimer = setTimeout(stop_humans, totalTime);
 };
 
-human_act = function() {
+unpause_humans = function(onTime, offTime) {
     if (active) {
-        if (paused) {
-            console.log("Human not acting, paused.");
-        } else {
-            console.log("Human acting");
-        }
-
-        setTimeout(human_act, 200);
+        console.log("Resuming humans.");
+        paused = false;
+        pauseTimer = setTimeout(function() {
+            pause_humans(onTime, offTime);
+        }, onTime);
     }
 };
+
+pause_humans = function(onTime, offTime) {
+    if (active) {
+        console.log("Pausing humans.");
+        paused = true;
+
+        unpauseTimer = setTimeout(function() {
+            unpause_humans(onTime, offTime);
+        }, offTime);
+    }
+};
+
 
 stop_humans = function() {
     console.log("Stopping humans");
     clearTimeout(stopTimer);
     clearTimeout(initTimer);
+    clearTimeout(pauseTimer);
+    clearTimeout(unpauseTimer);
+    humans.map(function(h) {clearTimeout(h.timer);});
     active = false;
+    paused = true;
 };
 
 post_start = function(req, res) {
