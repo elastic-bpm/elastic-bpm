@@ -2,6 +2,7 @@
 
 var moment = require('moment');
 var sem = require('semaphore')(1);
+var hsem = require('semaphore')(1);
 var bodyParser = require('body-parser');
 var express = require('express'),
     app = express();
@@ -69,7 +70,7 @@ get_task_worker = function(req, res) {
     }); // -sem
 };
 
-get_human_tasks = function(req, res) {
+get_all_human_tasks = function(req, res) {
     task_repository.r_get_all_unfinished_human_tasks((error, tasks) => {
         if (error) {
             res.status(500).send("Error: " + error);
@@ -81,6 +82,29 @@ get_human_tasks = function(req, res) {
             res.send(JSON.stringify(tasks, null, 3));
         }
     });
+};
+
+get_human_task = function(req, res) {
+    hsem.take(function() {
+        task_repository.r_get_all_unfinished_human_tasks((error, tasks) => {
+            if (error) {
+                hsem.leave();
+                res.status(500).send("Error: " + error);
+            } else if (tasks === undefined || tasks.length === 0) {
+                hsem.leave();
+                res.setHeader('Content-Type', 'application/json');
+                res.send(JSON.stringify([], null, 3));
+            } else {
+                policy.select_task(tasks, (task) => {
+                    task_repository.mark_task_busy(task, () => {
+                        hsem.leave();
+                        res.setHeader('Content-Type', 'application/json');
+                        res.send(JSON.stringify(tasks, null, 3));
+                    });
+                });
+            }
+        });
+    }); // -sem
 };
 
 get_task_count = function(req, res) {
@@ -119,7 +143,8 @@ check_timeouts = function() {
 setup_routes = function() {
     app.get('/task/count', get_task_count);
     app.get('/task', get_task_worker);
-    app.get('/tasks/human', get_human_tasks);
+    app.get('/tasks/human', get_all_human_tasks);
+    app.get('/task/human', get_human_task);
     app.post('/task/:workflow_id/:task_id/busy', post_task_busy);
     app.post('/task/:workflow_id/:task_id', post_task_done);
 
