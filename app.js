@@ -143,10 +143,11 @@ check_timeouts = function() {
 setup_routes = function() {
     app.get('/task/count', get_task_count);
     app.get('/task', get_task_worker);
-    app.get('/tasks/human', get_all_human_tasks);
     app.get('/task/human', get_human_task);
     app.post('/task/:workflow_id/:task_id/busy', post_task_busy);
     app.post('/task/:workflow_id/:task_id', post_task_done);
+
+    app.get('/tasks/human', get_all_human_tasks);
 
     app.get('/status', (req, res) => res.send('ok'));
 };
