@@ -71,7 +71,7 @@ get_task_worker = function(req, res) {
 };
 
 get_all_human_tasks = function(req, res) {
-    task_repository.r_get_all_unfinished_human_tasks((error, tasks) => {
+    task_repository.get_all_unfinished_human_tasks((error, tasks) => {
         if (error) {
             res.status(500).send("Error: " + error);
         } else if (tasks === undefined || tasks.length === 0) {
@@ -86,7 +86,7 @@ get_all_human_tasks = function(req, res) {
 
 get_human_task = function(req, res) {
     hsem.take(function() {
-        task_repository.r_get_all_unfinished_human_tasks((error, tasks) => {
+        task_repository.get_all_free_human_tasks((error, tasks) => {
             if (error) {
                 hsem.leave();
                 res.status(500).send("Error: " + error);
@@ -99,7 +99,7 @@ get_human_task = function(req, res) {
                     task_repository.mark_task_busy(task, () => {
                         hsem.leave();
                         res.setHeader('Content-Type', 'application/json');
-                        res.send(JSON.stringify(tasks, null, 3));
+                        res.send(JSON.stringify(task, null, 3));
                     });
                 });
             }

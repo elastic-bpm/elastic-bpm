@@ -224,7 +224,8 @@ r_mark_task_todo = function(task, callback) {
 
 exports.get_all_tasks = r_get_all_tasks;
 exports.get_all_free_worker_tasks = r_get_all_free_worker_tasks;
-exports.r_get_all_unfinished_human_tasks = r_get_all_unfinished_human_tasks;
+exports.get_all_free_human_tasks = r_get_all_free_human_tasks;
+exports.get_all_unfinished_human_tasks = r_get_all_unfinished_human_tasks;
 exports.mark_task_busy = r_mark_task_busy;
 exports.mark_task_done = r_mark_task_done;
 exports.mark_task_todo = r_mark_task_todo;
