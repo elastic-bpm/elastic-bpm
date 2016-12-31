@@ -310,6 +310,17 @@ post_task_busy = function(req, res) {
     });
 };
 
+post_start_humans = function(req, res) {
+    elastic_human.start_humans(req.body, (error) => {
+        if (error) {
+            console.log("Error: " + error);
+            res.status(500).send("Error: " + error);
+        } else {
+            res.send('ok');
+        }
+    });
+};
+
 // ROUTING
 setup_routes = function() {
    app.get('/status', get_status);
@@ -343,6 +354,8 @@ setup_routes = function() {
    app.get('/tasks/human', get_human_tasks);
    app.post('/task/:workflow_id/:task_id/busy', post_task_busy);
    app.post('/task/:workflow_id/:task_id', post_task_done);
+
+   app.post('/starthumans', post_start_humans);
 };
 
 // Emit events

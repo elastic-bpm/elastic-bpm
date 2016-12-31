@@ -10,6 +10,26 @@ humans_init = function(socket, interval) {
         $("#humans-total-time").slider();
         $("#humans-amount").slider();
 
+        $("#start-humans-button").on('click', () => {
+            var data = { 
+                on: $("#humans-on-time").val(), 
+                off: $("#humans-off-time").val(),
+                init: $("#humans-init-time").val(), 
+                total: $("#humans-total-time").val(),
+                amount: $("#humans-amount").val()
+            };
+            $.ajax({
+                type: "POST",
+                url: "/starthumans",
+                processData: false,
+                contentType: 'application/json',
+                data: JSON.stringify(data),
+                success: function(r) {
+                    console.log(r);
+                }
+            });
+        });
+
         update_human_task_table();
         setInterval(update_human_task_table, interval);
     });
