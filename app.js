@@ -92,8 +92,7 @@ get_human_task = function(req, res) {
                 res.status(500).send("Error: " + error);
             } else if (tasks === undefined || tasks.length === 0) {
                 hsem.leave();
-                res.setHeader('Content-Type', 'application/json');
-                res.send(JSON.stringify([], null, 3));
+                res.status(404).send("No todo tasks found.");
             } else {
                 policy.select_task(tasks, (task) => {
                     task_repository.mark_task_busy(task, () => {
