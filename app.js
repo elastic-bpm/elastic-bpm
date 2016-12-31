@@ -1,7 +1,12 @@
+/*jshint esversion: 6 */
+
+var workflows = require('./listener/workflows');
 var bodyParser = require('body-parser');
 var express = require('express'),
     app = express();
 app.use(bodyParser.json());
+var Client = require('node-rest-client').Client;
+var client = new Client();
 
 var active = false;
 var paused = true;
@@ -18,16 +23,46 @@ function Human(name) {
 }
 
 act_human = function(human) {
-    if (active) {
-        if (paused) {
-            console.log("Human " + human.name + " not acting, paused.");
-        } else {
-            console.log("Human " + human.name + " acting");
-        }
-
-        human.timer = setTimeout(function() {act_human(human);}, 1000);
+    if (!active) {
+        return;
     }
-}
+
+    if (paused) {
+        console.log("Human " + human.name + " not acting, paused.");
+        human.timer = setTimeout(function() {act_human(human);}, 1000);
+    }  else {
+        console.log("Human " + human.name + " acting");
+        // Grab new task
+
+        workflows.get_next_task((err, task) => {
+            if (err) {
+                console.log("Human " + human.name + " Error: " + err);
+                human.timer = setTimeout(function() {act_human(human);}, 1000);
+            } else {           
+                if (task) {
+                    console.log("Human " + human.name + " executing task " + task.task_id + " for workflow " + task.workflow_id);
+                    // If there is, timeout task length & finish task
+                    task_length = parseInt(task.task_id.split(":")[2]) * 1000;
+
+                    setTimeout(() => {
+                        console.log("Human " + human.name + " done executing task " + task.task_id + " for workflow " + task.workflow_id);
+                        workflows.flag_task_done(task, (err, task) => {
+                            if (err) {
+                                console.log("Human " + human.name + " Error when flagging task done!");
+                            }
+                            human.timer = setTimeout(function() {act_human(human);}, 1000);
+                        });
+                    }, task_length);
+
+                } else {
+                    // Else, timeout to default
+                    console.log("Human " + human.name + " No task.");
+                    human.timer = setTimeout(function() {act_human(human);}, 1000);
+                }
+            }
+        });
+    }
+};
 
 start_humans = function(amount, on, off, init, total) {
     onTime = on*1000;//*60;
