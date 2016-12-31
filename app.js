@@ -65,10 +65,10 @@ act_human = function(human) {
 };
 
 start_humans = function(amount, on, off, init, total) {
-    onTime = on*1000;//*60;
-    offTime = off*1000;//*60;
-    initTime = init*1000;//*60;
-    totalTime = total*1000;//*60;
+    onTime = on*1000*60;
+    offTime = off*1000*60;
+    initTime = init*1000*60;
+    totalTime = total*1000*60;
 
     console.log("Amount: " + amount + ", On: " + on + ", Off: " + off + ", Init: " + init + ", Total: " + total);
     active = true;
