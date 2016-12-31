@@ -14,6 +14,7 @@ var elastic_api = require('./components/elastic-api');
 var elastic_scaling = require('./components/elastic-scaling');
 var elastic_docker = require('./components/elastic-docker');
 var elastic_scheduler = require('./components/elastic-scheduler');
+var elastic_human = require('./components/elastic-human');
 
 app.use(bodyParser.json());
 app.use(express.static('public'));
@@ -52,6 +53,12 @@ elastic_docker_status = {
 
 elastic_scheduler_status = {
     name: "elastic-scheduler",
+    status: 0,
+    message: "Not connected"
+};
+
+elastic_human_status = {
+    name: "elastic-human",
     status: 0,
     message: "Not connected"
 };
@@ -111,6 +118,17 @@ start_check_status = function() {
             elastic_scheduler_status.message = "Connected to elastic-scheduler";
         }
     );
+
+    elastic_human.check_human_status(
+        (err) => {
+            elastic_human_status.status = 500;
+            elastic_human_status.message = "" + err;
+        },
+        () => {
+            elastic_human_status.status = 200;
+            elastic_human_status.message = "Connected to elastic-human";
+        }
+    );
     // Check other components here
 };
 
@@ -120,7 +138,8 @@ get_status = function(req, res) {
         elastic_api_status,
         elastic_scaling_status,
         elastic_docker_status,
-        elastic_scheduler_status
+        elastic_scheduler_status,
+        elastic_human_status
     ];
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(status_data, null, 3));
