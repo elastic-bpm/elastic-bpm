@@ -1,12 +1,32 @@
 /*jshint esversion: 6 */
 
 var workflows = require('./listener/workflows');
+const os = require('os');
 var bodyParser = require('body-parser');
 var express = require('express'),
     app = express();
 app.use(bodyParser.json());
 var Client = require('node-rest-client').Client;
 var client = new Client();
+
+var log4js = require('log4js');
+log4js.configure({
+    appenders: [
+        { type: 'console' },
+        {
+            "host": "137.116.195.67",
+            "port": 12201,
+            "type": "gelf",
+            "hostname": "elastic-human@" + os.hostname(),
+            "layout": {
+                "type": "pattern",
+                "pattern": "%m"
+            },
+            category: [ 'console' ]
+        }
+    ],
+    replaceConsole: true
+});
 
 var active = false;
 var paused = true;
@@ -15,6 +35,12 @@ var stopTimer = null;
 var initTimer = null;
 var pauseTimer = null;
 var unpauseTimer = null;
+var onTime = null;
+var offTime = null;
+var initTime = null;
+var totalTime = null;
+var startTime = null;
+var switchTime = null;
 var i = 0;
 
 function Human(name) {
@@ -65,6 +91,7 @@ act_human = function(human) {
 };
 
 start_humans = function(amount, on, off, init, total) {
+    startTime = Date.now();
     onTime = on*1000*60;
     offTime = off*1000*60;
     initTime = init*1000*60;
@@ -95,6 +122,7 @@ start_humans = function(amount, on, off, init, total) {
 unpause_humans = function(onTime, offTime) {
     if (active) {
         console.log("Resuming humans.");
+        switchTime = Date.now();
         paused = false;
         pauseTimer = setTimeout(function() {
             pause_humans(onTime, offTime);
@@ -105,6 +133,7 @@ unpause_humans = function(onTime, offTime) {
 pause_humans = function(onTime, offTime) {
     if (active) {
         console.log("Pausing humans.");
+        switchTime = Date.now();
         paused = true;
 
         unpauseTimer = setTimeout(function() {
@@ -164,6 +193,26 @@ setup_routes = function() {
 
     app.post('/start', post_start);
     app.post('/stop', post_stop);
+
+    app.get('/info', function(req, res) {
+        amount = 0;
+        if (humans) {
+            amount = humans.length;
+        }
+
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify({
+            onTime: onTime,
+            offTime: offTime,
+            initTime: initTime,
+            totalTime: totalTime,
+            startTime: startTime,
+            switchTime: switchTime,
+            active: active,
+            paused: paused,
+            humans: amount
+        }, null, 3));
+    });
 };
 
 // Server startup
