@@ -32,6 +32,38 @@ humans_init = function(socket, interval) {
 
         update_human_task_table();
         setInterval(update_human_task_table, interval);
+
+        update_human_info();
+        setInterval(update_human_info, interval);
+    });
+};
+
+update_human_info = function() {
+    $.get('/human/info', function(data) {
+        start_moment = moment(data.startTime);
+        $("#humans-info-started").html("<abbr title="+start_moment.format()+">"+start_moment.fromNow()+"</abbr>");
+        $("#humans-info-amount").html(data.humans);
+
+        var next_moment = null;
+        if (moment(data.startTime + data.initTime).isAfter()) {
+            $("#humans-info-paused").html("not init yet");
+            $("#humans-info-next-text").html("Time to init:");
+            next_moment = moment(data.startTime + data.initTime);
+        } else {
+            if (data.paused) {
+                $("#humans-info-paused").html("paused");
+                $("#humans-info-next-text").html("Time to active:");
+                next_moment = moment(data.switchTime + data.offTime);
+            } else {
+                $("#humans-info-paused").html("active");
+                $("#humans-info-next-text").html("Time to pause:");
+                next_moment = moment(data.switchTime + data.onTime);
+            }
+        }
+        $("#humans-info-next").html("<abbr title="+next_moment.format()+">"+next_moment.fromNow()+"</abbr>");
+
+        total_moment = moment(data.startTime + data.totalTime);
+        $("#humans-info-total").html("<abbr title="+total_moment.format()+">"+total_moment.fromNow()+"</abbr>");
     });
 };
 

@@ -37,5 +37,21 @@ h_start_humans = function(data, cb) {
     });
 };
 
+h_get_human_info = function(cb) {
+    host = process.env.HUMAN_HOST;
+    var req = client.get("http://" + host + ":5555/info", (data, response) => {
+        if (response.statusCode == 200) {
+            cb(null, data);
+        } else {
+            cb(response, null);
+        }
+    });
+
+    req.on('error', (error) => {
+        cb(error, null);
+    }); 
+}
+
 exports.check_human_status = h_check_human_status;
 exports.start_humans = h_start_humans;
+exports.get_human_info = h_get_human_info;

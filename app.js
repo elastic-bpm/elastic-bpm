@@ -321,6 +321,18 @@ post_start_humans = function(req, res) {
     });
 };
 
+get_human_info = function(req, res) {
+    elastic_human.get_human_info((error, data) => {
+        if (error) {
+            console.log("Error: " + error);
+            res.status(500).send("Error: " + error);
+        } else {
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify(data, null, 3));
+        }
+    });
+};
+
 // ROUTING
 setup_routes = function() {
    app.get('/status', get_status);
@@ -356,6 +368,7 @@ setup_routes = function() {
    app.post('/task/:workflow_id/:task_id', post_task_done);
 
    app.post('/starthumans', post_start_humans);
+   app.get('/human/info', get_human_info);
 };
 
 // Emit events
