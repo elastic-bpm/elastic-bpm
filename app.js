@@ -1,7 +1,6 @@
 /*jshint esversion: 6 */
 
 var workflows = require('./listener/workflows');
-const os = require('os');
 var bodyParser = require('body-parser');
 var express = require('express'),
     app = express();
@@ -9,6 +8,7 @@ app.use(bodyParser.json());
 var Client = require('node-rest-client').Client;
 var client = new Client();
 
+const os = require('os');
 var log4js = require('log4js');
 log4js.configure({
     appenders: [
