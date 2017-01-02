@@ -17,7 +17,7 @@ log4js.configure({
             "host": "137.116.195.67",
             "port": 12201,
             "type": "gelf",
-            "hostname": "elastic-api@" + os.hostname(),
+            "hostname": "elastic-scheduler@" + os.hostname(),
             "layout": {
                 "type": "pattern",
                 "pattern": "%m"
