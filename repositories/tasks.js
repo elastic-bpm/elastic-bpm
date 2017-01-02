@@ -222,6 +222,7 @@ r_mark_task_todo = function(task, callback) {
     });
 };
 
+exports.get_all_workflows = r_get_all_workflows;
 exports.get_all_tasks = r_get_all_tasks;
 exports.get_all_free_worker_tasks = r_get_all_free_worker_tasks;
 exports.get_all_free_human_tasks = r_get_all_free_human_tasks;

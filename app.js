@@ -148,7 +148,7 @@ setup_routes = function() {
 
 // Server startup
 start_server = function() {
-    setInterval(stats.check_timeouts, 5000);
+    setInterval(stats.check_timeouts, 60000); // once per minute
     app.listen(3210, () => console.log('Elastic Scheduler listening on port 3210!'));
 };
 

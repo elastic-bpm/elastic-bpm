@@ -16,13 +16,21 @@ var stats_module = (function (task_repository, moment) {
         task_start[JSON.stringify(task)] = moment().format();
     };
 
-	my.check_timeouts = function() {
-        // Let's spit out stats :-)
+    var print_stats = function() {
         var ntasks_start = Object.keys(task_start).length;
         var ntasks_done = Object.keys(task_done).length;
-        
-        console.log("Started tasks: " + ntasks_start + " done tasks: " + ntasks_done);
 
+        task_repository.get_all_workflows((err, workflows) => {
+            if (err) {
+                console.log("Error getting workflows: " + err);
+            } else {
+                // Do something with the workflows!
+            }
+        });
+    };
+
+	my.check_timeouts = function() {
+        print_stats(); // Let's spit out stats as well :-)
 
         Object.keys(task_start).forEach(function(key, index) {
             if (!task_done.hasOwnProperty(key)) {
