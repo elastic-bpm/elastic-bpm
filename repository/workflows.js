@@ -33,6 +33,8 @@ wf_create_workflow = function(workflow, callback) {
 
         client.publish("workflows", "CREATED " + workflow.id);
 
+        console.log("workflow:created id: " + workflow.id + " has JSON: " + JSON.stringify(workflow));
+
         // Give the REDIS-object back
         wf_get_workflow(workflow.id, callback);
     });
@@ -61,6 +63,7 @@ wf_update_workflow = function(workflow, callback) {
         workflow.status = "Busy";
     } else if (workflow.todo_nodes.length === 0) {
         workflow.status = "Done";
+        console.log("workflow:done id: " + workflow.id + " has JSON: " + JSON.stringify(workflow));
     } else {
         workflow.status = "Waiting";
     }

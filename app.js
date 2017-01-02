@@ -5,6 +5,27 @@ var express = require('express'),
     app = express();
 app.use(bodyParser.json());
 
+const os = require('os');
+var log4js = require('log4js');
+log4js.configure({
+    appenders: [
+        { type: 'console' },
+        {
+            "host": "137.116.195.67",
+            "port": 12201,
+            "type": "gelf",
+            "hostname": "elastic-api@" + os.hostname(),
+            "layout": {
+                "type": "pattern",
+                "pattern": "%m"
+            },
+            category: [ 'console' ]
+        }
+    ],
+    replaceConsole: true
+});
+
+
 var workflows = require('./repository/workflows');
 
 post_workflows = function(req, res) {
