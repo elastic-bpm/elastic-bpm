@@ -99,16 +99,67 @@ var stats_module = (function (task_repository, moment) {
         return fill_ready_time(nodes_info, workflow);
     };
 
-    var get_time_humans_waited = function(nodes_info) {
-        // WARNING - overlap in time should be filtered out!!
 
-        return 0;
+    var get_finished_time_from_list = function(task, task_list) {
+        var time = -1;
+        task_list.forEach(function(node) {
+            if (node.node === task) {
+                time = node.finished; 
+            }
+        });
+        return moment(time);
+    };
+
+    var fix_timing_for_calculation = function(n_info, edges_string) {
+        n_info.forEach(function(node) {
+            prev_tasks = get_previous_tasks(node.node, edges_string);
+            prev_finished_times = prev_tasks.map((task) => get_finished_time_from_list(task, n_info));
+            last_prev_finished_time = moment.max(prev_finished_times);
+            if (last_prev_finished_time.isBefore(moment(node.ready_to_start))) {
+                var timeDiff = moment(node.ready_to_start).diff(last_prev_finished_time);
+                node.ready_to_start = moment(node.ready_to_start).subtract(timeDiff, "milliseconds").toJSON();
+                node.started = moment(node.started).subtract(timeDiff, "milliseconds").toJSON();
+                node.finished = moment(node.finished).subtract(timeDiff, "milliseconds").toJSON();
+            }
+        });
+    };
+
+    var get_time_humans_waited = function(nodes_info, makespan, edges_string) {
+        // This one is complex, we need a deep copy of nodes_info
+        n_info = JSON.parse(JSON.stringify(nodes_info));
+
+        // First - find the human tasks and set them all to 0 time!
+        n_info.forEach(function(node) {
+            elements = node.node.split(":");
+            if (elements[1] === "HH" || elements[1] === "HE") {
+                node.started = node.ready_to_start;
+                node.finished = node.ready_to_start;
+            }
+        });
+
+        // Now to correct all the wrongs... N-iterations should do it (probably only need LOG(N) if smart? - this works for me!)
+        for (var i = 0; i < n_info.length; i++) {
+            fix_timing_for_calculation(n_info, edges_string);
+        }
+
+        // The calculate the makespan for this scenario
+        var first_task_started = get_first_task_started(n_info);
+        var last_task_finished = get_last_task_finished(n_info);
+        var new_makespan = moment(last_task_finished).diff(moment(first_task_started));
+
+        // Finally substract this new makespan from the real makespan and tada! human time
+        return makespan - new_makespan;
     };
 
     var get_first_task_started = function(nodes_info) {
         var start_moments = nodes_info.map((node) => moment(node.started));
         return moment.min(start_moments).toJSON();
     };
+
+    var get_last_task_finished = function(nodes_info) {
+        var end_moments = nodes_info.map((node) => moment(node.finished));
+        return moment.max(end_moments).toJSON();
+    }
 
     var get_stats_for_workflow = function(workflow, nodes_info) {
         var stats = {};
@@ -119,7 +170,7 @@ var stats_module = (function (task_repository, moment) {
         stats.makespan = moment(workflow.finished).diff(moment(first_task_started));
         stats.wait_time = moment(first_task_started).diff(moment(workflow.created));
         stats.response_time = stats.makespan + stats.wait_time;
-        stats.human_time = get_time_humans_waited(nodes_info);
+        stats.human_time = get_time_humans_waited(nodes_info, stats.makespan, workflow.edges);
         stats.system_time = stats.response_time - stats.human_time;
 
         return stats;
