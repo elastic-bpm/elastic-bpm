@@ -69,12 +69,10 @@ var stats_module = (function (task_repository, moment) {
     var fill_ready_time = function(nodes_info, workflow) {
         nodes_info.forEach(function(node_info) {
             var previous_tasks = get_previous_tasks(node_info.node, workflow.edges);
-            console.log("Pevious tasks: " + JSON.stringify(previous_tasks));
             node_info.ready_to_start = workflow.created;
 
             previous_tasks.forEach(function(previous_task) {
                 var prev_time = get_finish_time(previous_task, workflow.id);
-                console.log("Found prev_time: " + prev_time);
                 if (moment(prev_time).isAfter(moment(node_info.ready_to_start))) {
                     node_info.ready_to_start = prev_time;
                 }
