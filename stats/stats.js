@@ -68,9 +68,9 @@ var stats_module = (function (task_repository, moment) {
 
     var fill_ready_time = function(nodes_info, workflow) {
         nodes_info.forEach(function(node_info) {
-            var previous_tasks = get_previous_tasks(node_info.node, workflow.edges);
             node_info.ready_to_start = workflow.created;
 
+            var previous_tasks = get_previous_tasks(node_info.node, workflow.edges);
             previous_tasks.forEach(function(previous_task) {
                 var prev_time = get_finish_time(previous_task, workflow.id);
                 if (moment(prev_time).isAfter(moment(node_info.ready_to_start))) {
@@ -82,31 +82,64 @@ var stats_module = (function (task_repository, moment) {
         return nodes_info;
     };
 
-    var print_stats = function() {
-        var ntasks_start = Object.keys(task_start).length;
-        var ntasks_done = Object.keys(task_done).length;
+    var get_info_for_workflow = function(workflow) {
+        var nodes_info = [];
+        
+        var nodes = workflow.nodes.split(",").map((str) => str.trim());
+        nodes.forEach(function(node) {
+            nodes_info.push({
+                node: node,
+                created: workflow.created,
+                started: get_start_time(node, workflow.id),
+                finished: get_finish_time(node, workflow.id)
+            });
+        });
 
+        // Need to first fill the rest, before we can calculate the ready-time
+        return fill_ready_time(nodes_info, workflow);
+    };
+
+    var get_time_humans_waited = function(nodes_info) {
+        // WARNING - overlap in time should be filtered out!!
+
+        return 0;
+    };
+
+    var get_first_task_started = function(nodes_info) {
+        var start_moments = nodes_info.map((node) => moment(node.started));
+        return moment.min(start_moments).toJSON();
+    };
+
+    var get_stats_for_workflow = function(workflow, nodes_info) {
+        var stats = {};
+
+        var first_task_started = get_first_task_started(nodes_info);
+
+        // All stats are in milliseconds
+        stats.makespan = moment(workflow.finished).diff(moment(first_task_started));
+        stats.wait_time = moment(first_task_started).diff(moment(workflow.created));
+        stats.response_time = stats.makespan + stats.wait_time;
+        stats.human_time = get_time_humans_waited(nodes_info);
+        stats.system_time = stats.response_time - stats.human_time;
+
+        return stats;
+    };
+
+    var print_stats = function() {
         task_repository.get_all_workflows((err, workflows) => {
             if (err) {
                 console.log("Error getting workflows: " + err);
             } else {
                 workflows.forEach(function(workflow) {
                     if (workflow.status === "Done" && !finished_workflows.includes(workflow.id)) {
-                        var nodes_info = [];
-                        var nodes = workflow.nodes.split(",").map((str) => str.trim());
-                        nodes.forEach(function(node) {
-                            nodes_info.push({
-                                node: node,
-                                created: workflow.created,
-                                started: get_start_time(node, workflow.id),
-                                finished: get_finish_time(node, workflow.id)
-                            });
-                        });
-                        nodes_info = fill_ready_time(nodes_info, workflow);
+                        var nodes_info = get_info_for_workflow(workflow);
+                        console.log("workflow:info " + workflow.id + " " + JSON.stringify(nodes_info));
+
+                        var workflow_stats = get_stats_for_workflow(workflow, nodes_info);
+                        console.log("workflow:stats " + workflow.id + " " + JSON.stringify(workflow_stats));
 
                         finished_workflows.push(workflow.id);
                         remove_nodes_from_lists(workflow.id);
-                        console.log("workflow:info " + workflow.id + " " + JSON.stringify(nodes_info));
                     }
                 });
             }
