@@ -48,6 +48,17 @@ function Human(name) {
     this.timer = null;
 }
 
+var send_result = function(human, task) {
+    workflows.flag_task_done(task, (err, task) => {
+        if (err) {
+            console.log("Human " + human.name + " error: " + err + " when flagging task done.");
+            setTimeout(() => {send_result(human, task);}, 1000); // retry after 1 sec
+        } else {
+            human.timer = setTimeout(function() {act_human(human);}, 1000);
+        }
+    });
+};
+
 act_human = function(human) {
     if (!active) {
         return;
@@ -67,17 +78,12 @@ act_human = function(human) {
             } else {           
                 if (task) {
                     console.log("Human " + human.name + " executing task " + task.task_id + " for workflow " + task.workflow_id);
-                    // If there is, timeout task length & finish task
-                    task_length = parseInt(task.task_id.split(":")[2]) * 1000;
 
+                    // Executing task
+                    task_length = parseInt(task.task_id.split(":")[2]) * 1000;
                     setTimeout(() => {
                         console.log("Human " + human.name + " done executing task " + task.task_id + " for workflow " + task.workflow_id);
-                        workflows.flag_task_done(task, (err, task) => {
-                            if (err) {
-                                console.log("Human " + human.name + " Error when flagging task done!");
-                            }
-                            human.timer = setTimeout(function() {act_human(human);}, 1000);
-                        });
+                        send_result(human, task);
                     }, task_length);
 
                 } else {
