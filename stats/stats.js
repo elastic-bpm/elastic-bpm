@@ -184,10 +184,10 @@ var stats_module = (function (task_repository, moment) {
                 workflows.forEach(function(workflow) {
                     if (workflow.status === "Done" && !finished_workflows.includes(workflow.id)) {
                         var nodes_info = get_info_for_workflow(workflow);
-                        console.log("workflow:info " + workflow.id + " " + JSON.stringify(nodes_info));
+                        console.log("workflow:info " + workflow.id + " " + workflow.type + " " + JSON.stringify(nodes_info));
 
                         var workflow_stats = get_stats_for_workflow(workflow, nodes_info);
-                        console.log("workflow:stats " + workflow.id + " " + JSON.stringify(workflow_stats));
+                        console.log("workflow:stats " + workflow.id + " " + workflow.type + " " + JSON.stringify(workflow_stats));
 
                         finished_workflows.push(workflow.id);
                         remove_nodes_from_lists(workflow.id);
