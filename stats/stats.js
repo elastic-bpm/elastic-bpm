@@ -113,13 +113,15 @@ var stats_module = (function (task_repository, moment) {
     var fix_timing_for_calculation = function(n_info, edges_string) {
         n_info.forEach(function(node) {
             prev_tasks = get_previous_tasks(node.node, edges_string);
-            prev_finished_times = prev_tasks.map((task) => get_finished_time_from_list(task, n_info));
-            last_prev_finished_time = moment.max(prev_finished_times);
-            if (last_prev_finished_time.isBefore(moment(node.ready_to_start))) {
-                var timeDiff = moment(node.ready_to_start).diff(last_prev_finished_time);
-                node.ready_to_start = moment(node.ready_to_start).subtract(timeDiff, "milliseconds").toJSON();
-                node.started = moment(node.started).subtract(timeDiff, "milliseconds").toJSON();
-                node.finished = moment(node.finished).subtract(timeDiff, "milliseconds").toJSON();
+            if (prev_tasks.length > 0) {
+                prev_finished_times = prev_tasks.map((task) => get_finished_time_from_list(task, n_info));
+                last_prev_finished_time = moment.max(prev_finished_times);
+                if (last_prev_finished_time.isBefore(moment(node.ready_to_start))) {
+                    var timeDiff = moment(node.ready_to_start).diff(last_prev_finished_time);
+                    node.ready_to_start = moment(node.ready_to_start).subtract(timeDiff, "milliseconds").toJSON();
+                    node.started = moment(node.started).subtract(timeDiff, "milliseconds").toJSON();
+                    node.finished = moment(node.finished).subtract(timeDiff, "milliseconds").toJSON();
+                }
             }
         });
     };
@@ -141,6 +143,7 @@ var stats_module = (function (task_repository, moment) {
         for (var i = 0; i < n_info.length; i++) {
             fix_timing_for_calculation(n_info, edges_string);
         }
+        console.log("workflow:info n_info " + JSON.stringify(n_info));
 
         // The calculate the makespan for this scenario
         var first_task_started = get_first_task_started(n_info);
@@ -165,9 +168,10 @@ var stats_module = (function (task_repository, moment) {
         var stats = {};
 
         var first_task_started = get_first_task_started(nodes_info);
+        var last_task_finished = get_last_task_finished(nodes_info);
 
         // All stats are in milliseconds
-        stats.makespan = moment(workflow.finished).diff(moment(first_task_started));
+        stats.makespan = moment(last_task_finished).diff(moment(first_task_started));
         stats.wait_time = moment(first_task_started).diff(moment(workflow.created));
         stats.response_time = stats.makespan + stats.wait_time;
         stats.human_time = get_time_humans_waited(nodes_info, stats.makespan, workflow.edges);
