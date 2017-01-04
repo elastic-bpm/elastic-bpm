@@ -143,7 +143,7 @@ var stats_module = (function (task_repository, moment) {
         for (var i = 0; i < n_info.length; i++) {
             fix_timing_for_calculation(n_info, edges_string);
         }
-        console.log("workflow:info n_info " + JSON.stringify(n_info));
+        //console.log("workflow:info n_info " + JSON.stringify(n_info));
 
         // The calculate the makespan for this scenario
         var first_task_started = get_first_task_started(n_info);
