@@ -49,9 +49,9 @@ function Human(name) {
 }
 
 var send_result = function(human, task) {
-    workflows.flag_task_done(task, (err, task) => {
-        if (err) {
-            console.log("Human " + human.name + " error: " + err + " when flagging task done.");
+    workflows.flag_task_done(task, (error, task) => {
+        if (error && error !== "ignore") {
+            console.log("Human " + human.name + " error: " + error + " when flagging task done.");
             setTimeout(() => {send_result(human, task);}, 1000); // retry after 1 sec
         } else {
             human.timer = setTimeout(function() {act_human(human);}, 1000);
