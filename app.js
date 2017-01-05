@@ -124,7 +124,7 @@ setup_routes = function() {
 
 // Server startup
 start_server = function() {
-    app.listen(3000, () => console.log('Example app listening on port 3000!'));
+    app.listen(3000, () => console.log('Elastic Workflow listening on port 3000!'));
 };
 
 // When run directly, serve the API
