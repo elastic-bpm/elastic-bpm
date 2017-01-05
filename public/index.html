@@ -132,7 +132,7 @@
     var global_status_data = [];
 
 	$( document ).ready(function() {
-        interval = 2000;
+        interval = 5000; // higher interval for less hang ups?
         socket = io();
 
         var hash = window.location.hash;
@@ -148,11 +148,11 @@
         timeline_init(socket, interval);
         console_init(socket, interval);
         dashboard_init(socket, interval);
-        workflows_init(socket, 5*interval);
+        workflows_init(socket, 2*interval);
         machines_init(socket, interval);
         containers_init(socket, interval);
         workers_init(socket, interval);
-        humans_init(socket, interval);
+        humans_init(socket, 2*interval);
 	});
 </script>
 
