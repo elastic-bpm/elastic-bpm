@@ -40,6 +40,7 @@ post_task_done = function(req, res) {
     stats.mark_task_done(task);
     task_repository.mark_task_done(task, (err) => {
         if (err) {
+            console.log(err);
             res.status(500).send("Error: " + err);
         } else {
             res.send('ok');
@@ -56,6 +57,7 @@ post_task_busy = function(req, res) {
     stats.mark_task_start(task);
     task_repository.mark_task_busy(task, (err) => {
         if (err) {
+            console.log(err);
             res.status(500).send("Error: " + err);
         } else {
             res.send('ok');
@@ -66,6 +68,7 @@ post_task_busy = function(req, res) {
 get_task_worker = function(req, res) {
     task_repository.get_all_free_worker_tasks((error, tasks) => {
         if (error) {
+            console.log(error);
             res.status(500).send("Error: " + error);
         } else if (tasks === undefined || tasks.length === 0) {
             res.status(404).send("No todo tasks found.");
@@ -86,6 +89,7 @@ get_task_worker = function(req, res) {
 get_all_human_tasks = function(req, res) {
     task_repository.get_all_unfinished_human_tasks((error, tasks) => {
         if (error) {
+            console.log(error);
             res.status(500).send("Error: " + error);
         } else if (tasks === undefined || tasks.length === 0) {
             res.setHeader('Content-Type', 'application/json');
@@ -100,6 +104,7 @@ get_all_human_tasks = function(req, res) {
 get_human_task = function(req, res) {
     task_repository.get_all_free_human_tasks((error, tasks) => {
         if (error) {
+            console.log(error);
             res.status(500).send("Error: " + error);
         } else if (tasks === undefined || tasks.length === 0) {
             res.status(404).send("No todo tasks found.");
@@ -120,6 +125,7 @@ get_human_task = function(req, res) {
 get_task_count = function(req, res) {
     task_repository.get_all_tasks((error, tasks) => {
         if (error) {
+            console.log(error);
             res.status(500).send("Error: " + error);
         } else {
             res.setHeader('Content-Type', 'application/json');
