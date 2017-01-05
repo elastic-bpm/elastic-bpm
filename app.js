@@ -66,26 +66,21 @@ post_task_busy = function(req, res) {
 };
 
 get_task_worker = function(req, res) {
-    sem.take(function() {
-        task_repository.get_all_free_worker_tasks((error, tasks) => {
-            if (error) {
-                sem.leave();
-                res.status(500).send("Error: " + error);
-            } else if (tasks === undefined || tasks.length === 0) {
-                sem.leave();
-                res.status(404).send("No todo tasks found.");
-            } else {
-                policy.select_task(tasks, (task) => {
-                    stats.mark_task_start({task_id:task.task_id,workflow_id:task.workflow_id});
-                    task_repository.mark_task_busy(task, () => {
-                        sem.leave();
-                        res.setHeader('Content-Type', 'application/json');
-                        res.send(JSON.stringify(task, null, 3));
-                    });
+    task_repository.get_all_free_worker_tasks((error, tasks) => {
+        if (error) {
+            res.status(500).send("Error: " + error);
+        } else if (tasks === undefined || tasks.length === 0) {
+            res.status(404).send("No todo tasks found.");
+        } else {
+            policy.select_task(tasks, (task) => {
+                stats.mark_task_start({task_id:task.task_id,workflow_id:task.workflow_id});
+                task_repository.mark_task_busy(task, () => {
+                    res.setHeader('Content-Type', 'application/json');
+                    res.send(JSON.stringify(task, null, 3));
                 });
-            }
-        });
-    }); // -sem
+            });
+        }
+    });
 };
 
 get_all_human_tasks = function(req, res) {
@@ -103,26 +98,21 @@ get_all_human_tasks = function(req, res) {
 };
 
 get_human_task = function(req, res) {
-    hsem.take(function() {
-        task_repository.get_all_free_human_tasks((error, tasks) => {
-            if (error) {
-                hsem.leave();
-                res.status(500).send("Error: " + error);
-            } else if (tasks === undefined || tasks.length === 0) {
-                hsem.leave();
-                res.status(404).send("No todo tasks found.");
-            } else {
-                policy.select_task(tasks, (task) => {
-                    stats.mark_task_start({task_id:task.task_id,workflow_id:task.workflow_id});
-                    task_repository.mark_task_busy(task, () => {
-                        hsem.leave();
-                        res.setHeader('Content-Type', 'application/json');
-                        res.send(JSON.stringify(task, null, 3));
-                    });
+    task_repository.get_all_free_human_tasks((error, tasks) => {
+        if (error) {
+            res.status(500).send("Error: " + error);
+        } else if (tasks === undefined || tasks.length === 0) {
+            res.status(404).send("No todo tasks found.");
+        } else {
+            policy.select_task(tasks, (task) => {
+                stats.mark_task_start({task_id:task.task_id,workflow_id:task.workflow_id});
+                task_repository.mark_task_busy(task, () => {
+                    res.setHeader('Content-Type', 'application/json');
+                    res.send(JSON.stringify(task, null, 3));
                 });
-            }
-        });
-    }); // -sem
+            });
+        }
+    });
 };
 
 get_task_count = function(req, res) {
