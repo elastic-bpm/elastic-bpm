@@ -180,29 +180,32 @@ var stats_module = (function (task_repository, moment) {
         return stats;
     };
 
-    var print_stats = function() {
-        task_repository.get_all_workflows((err, workflows) => {
-            if (err) {
-                console.log("Error getting workflows: " + err);
-            } else {
-                workflows.forEach(function(workflow) {
-                    if (workflow.status === "Done" && !finished_workflows.includes(workflow.id)) {
-                        var nodes_info = get_info_for_workflow(workflow);
-                        console.log("workflow:info " + workflow.id + " " + workflow.type + " " + JSON.stringify(nodes_info));
+    var print_stats = function(lock) {
+        lock.readLock(function(release) {
+            task_repository.get_all_workflows((err, workflows) => {
+                release();
+                if (err) {
+                    console.log("Error getting workflows: " + err);
+                } else {
+                    workflows.forEach(function(workflow) {
+                        if (workflow.status === "Done" && !finished_workflows.includes(workflow.id)) {
+                            var nodes_info = get_info_for_workflow(workflow);
+                            console.log("workflow:info " + workflow.id + " " + workflow.type + " " + JSON.stringify(nodes_info));
 
-                        var workflow_stats = get_stats_for_workflow(workflow, nodes_info);
-                        console.log("workflow:stats " + workflow.id + " " + workflow.type + " " + JSON.stringify(workflow_stats));
+                            var workflow_stats = get_stats_for_workflow(workflow, nodes_info);
+                            console.log("workflow:stats " + workflow.id + " " + workflow.type + " " + JSON.stringify(workflow_stats));
 
-                        finished_workflows.push(workflow.id);
-                        remove_nodes_from_lists(workflow.id);
-                    }
-                });
-            }
+                            finished_workflows.push(workflow.id);
+                            remove_nodes_from_lists(workflow.id);
+                        }
+                    });
+                }
+            });
         });
     };
 
-	my.check_timeouts = function() {
-        print_stats(); // Let's spit out stats as well :-)
+	my.check_timeouts = function(lock) {
+        print_stats(lock); // Let's spit out stats as well :-)
 
         Object.keys(task_start).forEach(function(key, index) {
             if (!task_done.hasOwnProperty(key)) {
@@ -211,13 +214,18 @@ var stats_module = (function (task_repository, moment) {
                 if (task_start_time.isBefore(moment().subtract(max_timeout_seconds,'seconds'))) {
                     console.log("!!That's a long time ago!! - moving task back to 'todo'");
                     var task = JSON.parse(key);
-                    task_repository.mark_task_todo(task, (error) => {
-                        if (error) {
-                            console.log(error);
-                        }
 
-                        delete this[key];
+                    lock.writeLock(function (release) {
+                        task_repository.mark_task_todo(task, (error) => {
+                            release();
+                            if (error) {
+                                console.log(error);
+                            }
+
+                            delete this[key];
+                        });
                     });
+
                 }
             }
         }, task_start);

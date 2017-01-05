@@ -1,7 +1,7 @@
 /*jshint esversion: 6 */
 
-var sem = require('semaphore')(1);
-var hsem = require('semaphore')(1);
+var ReadWriteLock = require('rwlock');
+var lock = new ReadWriteLock();
 var bodyParser = require('body-parser');
 var express = require('express'),
     app = express();
@@ -39,13 +39,16 @@ post_task_done = function(req, res) {
         workflow_id: req.params.workflow_id
     };
 
-    stats.mark_task_done(task);
-    task_repository.mark_task_done(task, (err) => {
-        if (err) {
-            res.status(500).send("Error: " + err);
-        } else {
-            res.send('ok');
-        }
+    lock.writeLock(function (release) {
+        stats.mark_task_done(task);
+        task_repository.mark_task_done(task, (err) => {
+            release();
+            if (err) {
+                res.status(500).send("Error: " + err);
+            } else {
+                res.send('ok');
+            }
+        });
     });
 };
 
@@ -55,74 +58,99 @@ post_task_busy = function(req, res) {
         workflow_id: req.params.workflow_id
     };
 
-    stats.mark_task_start(task);
-    task_repository.mark_task_busy(task, (err) => {
-        if (err) {
-            res.status(500).send("Error: " + err);
-        } else {
-            res.send('ok');
-        }
+    lock.writeLock(function (release) {
+        stats.mark_task_start(task);
+        task_repository.mark_task_busy(task, (err) => {
+            release();
+            if (err) {
+                res.status(500).send("Error: " + err);
+            } else {
+                res.send('ok');
+            }
+        });
     });
 };
 
 get_task_worker = function(req, res) {
-    task_repository.get_all_free_worker_tasks((error, tasks) => {
-        if (error) {
-            res.status(500).send("Error: " + error);
-        } else if (tasks === undefined || tasks.length === 0) {
-            res.status(404).send("No todo tasks found.");
-        } else {
-            policy.select_task(tasks, (task) => {
-                stats.mark_task_start({task_id:task.task_id,workflow_id:task.workflow_id});
-                task_repository.mark_task_busy(task, () => {
-                    res.setHeader('Content-Type', 'application/json');
-                    res.send(JSON.stringify(task, null, 3));
+    lock.readLock(function (release) {
+        task_repository.get_all_free_worker_tasks((error, tasks) => {
+            release();
+            if (error) {
+                res.status(500).send("Error: " + error);
+            } else if (tasks === undefined || tasks.length === 0) {
+                res.status(404).send("No todo tasks found.");
+            } else {
+                policy.select_task(tasks, (task) => {
+
+                    lock.writeLock(function (release) {
+                        stats.mark_task_start({task_id:task.task_id,workflow_id:task.workflow_id});
+                        task_repository.mark_task_busy(task, () => {
+                            release();
+                            res.setHeader('Content-Type', 'application/json');
+                            res.send(JSON.stringify(task, null, 3));
+                        });
+                    });
+
                 });
-            });
-        }
+            }
+        });
     });
 };
 
 get_all_human_tasks = function(req, res) {
-    task_repository.get_all_unfinished_human_tasks((error, tasks) => {
-        if (error) {
-            res.status(500).send("Error: " + error);
-        } else if (tasks === undefined || tasks.length === 0) {
-            res.setHeader('Content-Type', 'application/json');
-            res.send(JSON.stringify([], null, 3));
-        } else {
-            res.setHeader('Content-Type', 'application/json');
-            res.send(JSON.stringify(tasks, null, 3));
-        }
+    lock.readLock(function (release) {
+        task_repository.get_all_unfinished_human_tasks((error, tasks) => {
+            release();
+            if (error) {
+                res.status(500).send("Error: " + error);
+            } else if (tasks === undefined || tasks.length === 0) {
+                res.setHeader('Content-Type', 'application/json');
+                res.send(JSON.stringify([], null, 3));
+            } else {
+                res.setHeader('Content-Type', 'application/json');
+                res.send(JSON.stringify(tasks, null, 3));
+            }
+        });
     });
 };
 
 get_human_task = function(req, res) {
-    task_repository.get_all_free_human_tasks((error, tasks) => {
-        if (error) {
-            res.status(500).send("Error: " + error);
-        } else if (tasks === undefined || tasks.length === 0) {
-            res.status(404).send("No todo tasks found.");
-        } else {
-            policy.select_task(tasks, (task) => {
-                stats.mark_task_start({task_id:task.task_id,workflow_id:task.workflow_id});
-                task_repository.mark_task_busy(task, () => {
-                    res.setHeader('Content-Type', 'application/json');
-                    res.send(JSON.stringify(task, null, 3));
+    lock.readLock(function (release) {
+        task_repository.get_all_free_human_tasks((error, tasks) => {
+            release();
+            if (error) {
+                res.status(500).send("Error: " + error);
+            } else if (tasks === undefined || tasks.length === 0) {
+                res.status(404).send("No todo tasks found.");
+            } else {
+                policy.select_task(tasks, (task) => {
+
+                    lock.writeLock(function (release) {
+                        stats.mark_task_start({task_id:task.task_id,workflow_id:task.workflow_id});
+                        task_repository.mark_task_busy(task, () => {
+                            release();
+                            res.setHeader('Content-Type', 'application/json');
+                            res.send(JSON.stringify(task, null, 3));
+                        });
+                    });
+
                 });
-            });
-        }
+            }
+        });
     });
 };
 
 get_task_count = function(req, res) {
-    task_repository.get_all_tasks((error, tasks) => {
-        if (error) {
-            res.status(500).send("Error: " + error);
-        } else {
-            res.setHeader('Content-Type', 'application/json');
-            res.send(JSON.stringify(tasks.length, null, 3));
-        }
+    lock.readLock(function (release) {
+        task_repository.get_all_tasks((error, tasks) => {
+            release();
+            if (error) {
+                res.status(500).send("Error: " + error);
+            } else {
+                res.setHeader('Content-Type', 'application/json');
+                res.send(JSON.stringify(tasks.length, null, 3));
+            }
+        });
     });
 };
 
@@ -141,7 +169,7 @@ setup_routes = function() {
 
 // Server startup
 start_server = function() {
-    setInterval(stats.check_timeouts, stats_interval);
+    setInterval(() => {stats.check_timeouts(lock);}, stats_interval);
     app.listen(3210, () => console.log('Elastic Scheduler listening on port 3210!'));
 };
 
