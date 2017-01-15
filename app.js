@@ -136,6 +136,12 @@ get_task_count = function(req, res) {
     });
 };
 
+
+post_policy = function(req, res) {
+    resources.set_policy(req.params.policy);
+    res.send('ok');
+};
+
 // ROUTING
 setup_routes = function() {
     app.get('/task/count', get_task_count);
@@ -147,6 +153,8 @@ setup_routes = function() {
     app.get('/tasks/human', get_all_human_tasks);
 
     app.get('/status', (req, res) => res.send('ok'));
+
+    app.post('/policy/:policy', post_policy);
 };
 
 // Server startup
