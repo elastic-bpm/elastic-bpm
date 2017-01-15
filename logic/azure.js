@@ -4,6 +4,7 @@ var eventEmitter = new events.EventEmitter();
 var vms = [];
 var code = "";
 var status = "not_started";
+var update_timeout = 5000; // 5 seconds
 
 log_output = function (output) {
     process.stdout.write(output);
@@ -40,16 +41,16 @@ azure_set_account = function(callback) {
   set_account.stdout.on('data', log_output);
   set_account.stderr.on('data', log_output);
 
-  set_account.on('close', (code2) => callback());
+  set_account.on('close', () => callback());
 };
 
 azure_load_vms = function(callback) {
+  console.log("Loading vms...");
   list_vms = spawn('azure',['vm','list', '--json']);
   
   vm_data = "";
 
   list_vms.stdout.on('data', (data) => { 
-    //console.log('stdout: ' + data);
     vm_data += data;
   });
   list_vms.stderr.on('data', log_output);
@@ -57,12 +58,17 @@ azure_load_vms = function(callback) {
   list_vms.on('close', (code3) => {
     try {
       vms = JSON.parse(vm_data);
+      console.log("Loaded " + vms.length + " machines.");
     } catch(e) {
-      console.log(e); // error in the string, we try again in 10 seconds
+      console.log(e); // error in the string, we try again later
       console.log('Full VMdata: ' + vm_data);
+
+      // Force a diagnostic
+      temp = spawn('azure',['vm','list', '--json', '-vv']);
+      temp.stdout.on('data', console.log);
     }
 
-    setTimeout(() => azure_load_vms(callback), 10000);
+    setTimeout(() => azure_load_vms(callback), update_timeout);
     callback();
   });
 };
