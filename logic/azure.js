@@ -55,11 +55,11 @@ azure_load_vms = function(callback) {
   list_vms.stderr.on('data', log_output);
 
   list_vms.on('close', (code3) => {
-    console.log('Full VMdata: ' + vm_data);
     try {
       vms = JSON.parse(vm_data);
     } catch(e) {
-      console.log(e); // error in the above string, we try again in 10 seconds
+      console.log(e); // error in the string, we try again in 10 seconds
+      console.log('Full VMdata: ' + vm_data);
     }
 
     setTimeout(() => azure_load_vms(callback), 10000);
