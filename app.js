@@ -6,6 +6,7 @@ var express = require('express'),
 app.use(bodyParser.json());
 
 const stats_interval = 10000; // 10 secs
+const resource_interval = 5000; // 5 secs
 
 const os = require('os');
 var log4js = require('log4js');
@@ -30,6 +31,7 @@ log4js.configure({
 var task_repository = require('./repositories/tasks');
 var policy = require('./policies/random');
 var stats = require('./stats/stats');
+var resources = require('./resources/resources');
 
 post_task_done = function(req, res) {
     task = {
@@ -150,6 +152,7 @@ setup_routes = function() {
 // Server startup
 start_server = function() {
     setInterval(() => {stats.check_timeouts();}, stats_interval);
+    setInterval(() => {resources.check_resources();}, resource_interval);
     app.listen(3210, () => console.log('Elastic Scheduler listening on port 3210!'));
 };
 
