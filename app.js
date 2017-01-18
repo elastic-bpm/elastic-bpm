@@ -310,6 +310,26 @@ post_task_busy = function(req, res) {
     });
 };
 
+get_scheduler_policy = function(req, res) {
+    elastic_scheduler.get_policy((error, data) => {return_data(res, error, data);});
+};
+
+post_scheduler_policy = function(req, res) {
+    elastic_scheduler.post_policy(req.params.policy, (error, data) => {return_data(res, error, data);});
+};
+
+get_scheduler_machine_count = function(req, res) {
+    elastic_scheduler.get_machine_count((error, data) => {return_data(res, error, data);});
+};
+
+get_scheduler_at_start_amount = function(req, res) {
+    elastic_scheduler.get_at_start_amount((error, data) => {return_data(res, error, data);});
+};
+
+post_scheduler_at_start_amount = function(req, res) {
+    elastic_scheduler.post_at_start_amount(req.params.amount, (error, data) => {return_data(res, error, data);});
+};
+
 post_start_humans = function(req, res) {
     elastic_human.start_humans(req.body, (error) => {
         if (error) {
@@ -369,6 +389,13 @@ setup_routes = function() {
 
    app.post('/starthumans', post_start_humans);
    app.get('/human/info', get_human_info);
+
+   app.post('/scheduler/policy/:policy', post_scheduler_policy);
+   app.get('/scheduler/policy', get_scheduler_policy);
+   app.get('/scheduler/machinecount', get_scheduler_machine_count);
+   app.get('/scheduler/at_start_amount', get_scheduler_at_start_amount);
+   app.post('/scheduler/at_start_amount/:amount', post_scheduler_at_start_amount);
+   
 };
 
 // Emit events

@@ -69,13 +69,14 @@
                         </div>
                     </li>
                     <li><a href="#dashboard" data-toggle="tab"><i class="fa fa-dashboard fa-fw"></i> Dashboard</a></li>
-                    <li><a href="#timeline" data-toggle="tab"><i class="fa fa-calendar fa-fw"></i> Timeline</a></li>
+                    <li><a href="#timeline" data-toggle="tab"><i class="fa fa-clock-o fa-fw"></i> Timeline</a></li>
                     <li><a href="#console" data-toggle="tab"><i class="fa fa-terminal fa-fw"></i> Console</a></li>
                     <li><a href="#containers" data-toggle="tab"><i class="fa fa-ship fa-fw"></i> Docker</a></li>
                     <li><a href="#machines" data-toggle="tab"><i class="fa fa-laptop fa-fw"></i> Machines</a></li>
                     <li><a href="#workflows" data-toggle="tab"><i class="fa fa-sitemap fa-fw"></i> Workflows</a></li>
                     <li><a href="#workers" data-toggle="tab"><i class="fa fa-cogs fa-fw"></i> Workers</a></li>
                     <li><a href="#humans" data-toggle="tab"><i class="fa fa-users fa-fw"></i> Humans</a></li>
+                    <li><a href="#scheduler" data-toggle="tab"><i class="fa fa-calendar fa-fw"></i> Scheduler</a></li>
                 </ul>
 
             </div>
@@ -92,6 +93,7 @@
         <div id="workflows" class="container-fluid tab-pane"></div>
         <div id="workers" class="container-fluid tab-pane"></div>
         <div id="humans" class="container-fluid tab-pane"></div>
+        <div id="scheduler" class="container-fluid tab-pane"></div>
 	</div>
 
 </div>
@@ -127,6 +129,7 @@
 <script src="js/workers.js"></script>
 <script src="js/console.js"></script>
 <script src="js/humans.js"></script>
+<script src="js/scheduler.js"></script>
 
 <script id="main">
     var global_status_data = [];
@@ -153,8 +156,10 @@
         containers_init(socket, interval);
         workers_init(socket, interval);
         humans_init(socket, 2*interval);
+        scheduler_init(socket, interval);
 	});
 </script>
 
 </body>
 </html>
+

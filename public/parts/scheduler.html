@@ -1,0 +1,89 @@
+<div class="row">
+    <div class="col-lg-12">
+        <h1 class="page-header">Scheduler</h1>
+    </div>
+</div>
+
+<div id="scheduler-info"></div>
+
+<div class="panel panel-default">
+
+    <div class="panel-heading">
+        <h4 class="panel-title">
+            <i class="fa fa-calendar fa-fw"></i> Scheduler settings
+        </h4>
+    </div>
+    <div id="scheduler-settings-panel" class="panel-body">
+        <div class="row" style="padding: 5px">
+            
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>Set Policy</label>
+                    <select id="scheduler-policy" class="form-control">
+                        <option>- pick -</option>
+                        <option>Off</option>
+                        <option>AtStart</option>
+                        <option>OnDemand</option>
+                        <option>Learning</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <button id="set-at-start-amount-button" type="button" class="btn btn-primary">Set at start amount</button><br />
+                <input style="width: 80%;" id="set-at-start-amount" type="text" data-slider-min="0" data-slider-max="15" data-slider-step="1" data-slider-value="1"/>
+            </div>
+
+        </div>
+    </div>
+    <!-- /.panel-body -->
+
+</div>
+<div class="panel panel-default">
+
+    <div class="panel-heading">
+        <h4 class="panel-title">
+            <i class="fa fa-calendar fa-fw"></i> Scheduler running info
+        </h4>
+    </div>
+    <div id="scheduler-info-panel" class="panel-body">
+        <div class="row" style="padding: 5px">
+
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>Current Policy</label>
+                    <input class="form-control" id="scheduler-get-policy" type="text" placeholder="Policy" disabled="">
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>At start amount</label>
+                    <input class="form-control" id="scheduler-get-amount" type="text" placeholder="Policy" disabled="">
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>Running Machines</label>
+                    <input class="form-control" id="scheduler-get-machines" type="text" placeholder="-1" disabled="">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>Machines spinning up <i class="fa fa-arrow-up" aria-hidden="true"></i></label>
+                    <input class="form-control" id="scheduler-get-machines-up" type="text" placeholder="-1" disabled="">
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>Machines shutting down <i class="fa fa-arrow-down" aria-hidden="true"></i></label>
+                    <input class="form-control" id="scheduler-get-machines-down" type="text" placeholder="-1" disabled="">
+                </div>
+            </div>
+
+        </div>
+    </div>
+    <!-- /.panel-body -->
+    
+</div>
