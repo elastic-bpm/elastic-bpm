@@ -9,6 +9,18 @@ var resources_module = (function () {
 
     my.policy = "Off"; // Start in OFF mode
     my.at_start_amount = 1;
+    
+    my.set_at_start_amount = function(at_start_amount, callback) {
+        my.at_start_amount = at_start_amount;
+        console.log("At start amount set to: " + my.at_start_amount);
+        callback(null, my.at_start_amount);
+
+        my.check_resources();
+    };
+
+    my.get_at_start_amount = function(callback) {
+        callback(null, my.at_start_amount);
+    };
 
     my.check_resources = function() {
         // First determine what policy is in effect
@@ -169,12 +181,10 @@ var resources_module = (function () {
                         console.log(error);
                     } else {
                         var activeCount = getActiveMachineCount();
-                        console.log("Current active machines: " + activeCount);
                         var diff = amount - activeCount;
 
                         if (diff > 0) {
                             var scalingUpCount = getScalingUpCount();
-                            console.log("Current amount of machines scaling up: " + scalingUpCount);
                             var toActivate = amount - (activeCount + scalingUpCount);
                             if (toActivate > 0) {
                                 console.log("Scaling up " + toActivate + " machines, to get to " + amount);
@@ -184,7 +194,6 @@ var resources_module = (function () {
                             }
                         } else if (diff < 0) {
                             var scalingDownCount = getScalingDownCount();
-                            console.log("Current amount of machines scaling down: " + scalingDownCount);
                             var toDeactivate = (activeCount - scalingDownCount) - amount;
                             if (toDeactivate > 0) {
                                 console.log("Scaling down " + toDeactivate + " machines to reach " + amount);
@@ -200,10 +209,24 @@ var resources_module = (function () {
         });
     };
 
-    my.set_policy = function(policy) {
+    my.set_policy = function(policy, callback) {
         // Add check for valid options?
         my.policy = policy;
         console.log("Policy set to: " + policy);
+        callback(null, my.policy);
+
+        my.check_resources();
+    };
+
+    my.get_policy = function(callback) {
+        callback(null, my.policy);
+    };
+
+    my.get_machine_count = function(callback) {
+        active = getActiveMachineCount();
+        up = getScalingUpCount();
+        down = getScalingDownCount();
+        callback(null, {active: active, up: up, down: down});
     };
 
     return my;
@@ -211,3 +234,7 @@ var resources_module = (function () {
 
 exports.check_resources = resources_module.check_resources;
 exports.set_policy = resources_module.set_policy;
+exports.get_policy = resources_module.get_policy;
+exports.get_machine_count = resources_module.get_machine_count;
+exports.get_at_start_amount = resources_module.get_at_start_amount;
+exports.set_at_start_amount = resources_module.set_at_start_amount;

@@ -138,8 +138,53 @@ get_task_count = function(req, res) {
 
 
 post_policy = function(req, res) {
-    resources.set_policy(req.params.policy);
-    res.send('ok');
+    resources.set_policy(req.params.policy, (error, policy) => {
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify({policy: policy}, null, 3));
+    });
+};
+
+get_policy = function(req, res) {
+    resources.get_policy((error, policy) => {
+        if (error) {
+            console.log(error);
+            res.status(500).send("Error: " + error);
+        } else {
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify({policy: policy}, null, 3));
+        }
+    });
+};
+
+get_machine_count = function(req, res) {
+    resources.get_machine_count((error, data) => {
+        if (error) {
+            console.log(error);
+            res.status(500).send("Error: " + error);
+        } else {
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify(data, null, 3));
+        }
+    });
+};
+
+post_at_start_amount = function(req, res) {
+    resources.set_at_start_amount(req.params.amount, (error, amount) => {
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify({amount: amount}, null, 3));
+    });
+};
+
+get_at_start_amount = function(req, res) {
+    resources.get_at_start_amount((error, amount) => {
+        if (error) {
+            console.log(error);
+            res.status(500).send("Error: " + error);
+        } else {
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify({amount: amount}, null, 3));
+        }
+    });
 };
 
 // ROUTING
@@ -155,12 +200,22 @@ setup_routes = function() {
     app.get('/status', (req, res) => res.send('ok'));
 
     app.post('/policy/:policy', post_policy);
+    app.get('/policy', get_policy);
+
+    app.get('/machinecount', get_machine_count);
+
+    app.get('/at_start_amount', get_at_start_amount);
+    app.post('/at_start_amount/:amount', post_at_start_amount);
 };
 
 // Server startup
 start_server = function() {
+    stats.check_timeouts();
     setInterval(() => {stats.check_timeouts();}, stats_interval);
+    
+    resources.check_resources();
     setInterval(() => {resources.check_resources();}, resource_interval);
+    
     app.listen(3210, () => console.log('Elastic Scheduler listening on port 3210!'));
 };
 
