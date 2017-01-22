@@ -4,7 +4,8 @@ var resources_module = (function () {
     var my = {}; // public module
     var Client = require('node-rest-client').Client;
     var client = new Client();
-    var host = process.env.SCALING || "localhost";
+    var scaling_host = process.env.SCALING || "localhost";
+    var docker_host = process.env.DOCKER || "localhost";
     var machines = {};
 
     my.policy = "Off"; // Start in OFF mode
@@ -12,11 +13,22 @@ var resources_module = (function () {
     my.on_demand_amount = 2;
     my.learning_amount = 3;
     
-    my.set_at_start_amount = function(at_start_amount, callback) {
-        my.at_start_amount = at_start_amount;
-        console.log("At start amount set to: " + my.at_start_amount);
-        callback(null, my.at_start_amount);
+    my.set_amount = function(policy, amount, callback) {
+        if (policy === "atstart") {
+            my.at_start_amount = amount;
+            console.log("At start amount set to: " + my.at_start_amount);
+        } else if (policy === "ondemand") {
+            my.on_demand_amount = amount;
+            console.log("On demand amount set to: " + my.on_demand_amount);
+        } else if (policy === "learning") {
+            my.learning_amount = amount;
+            console.log("Learning amount set to: " + my.learning_amount);
+        } else {
+            console.log("Policy: " + policy + " not known.");
+            callback("Policy: " + policy + " not known.", null);
+        }
 
+        callback(null, my.amount);
         my.check_resources();
     };
 
@@ -62,7 +74,7 @@ var resources_module = (function () {
     };
 
     var updateMachines = function(callback) {
-        req = client.get("http://"+host+":8888/virtualmachines", function (data, response) {
+        req = client.get("http://"+scaling_host+":8888/virtualmachines", function (data, response) {
             data.forEach(function(vm) {
                 if (vm.name.startsWith("node")) {
                     if (machines[vm.name] === undefined) {
@@ -140,7 +152,7 @@ var resources_module = (function () {
         machines[key].activated = true;
 
         // Call scaling API with key
-        req = client.post("http://"+host+":8888/virtualmachines/" + machines[key].resourceGroup + "/" + key, function (data, response) {
+        req = client.post("http://"+scaling_host+":8888/virtualmachines/" + machines[key].resourceGroup + "/" + key, function (data, response) {
             console.log(data);
         });
         req.on('error', (err) => console.log(err));
@@ -168,15 +180,14 @@ var resources_module = (function () {
         machines[key].deactivated = true;
 
         // Call scaling API with key
-        req = client.delete("http://"+host+":8888/virtualmachines/" + machines[key].resourceGroup + "/" + key, function (data, response) {
+        req = client.delete("http://"+scaling_host+":8888/virtualmachines/" + machines[key].resourceGroup + "/" + key, function (data, response) {
             console.log(data);
         });
         req.on('error', (err) => console.log(err));
     };
 
     var getStatus = function(callback) {
-        // Call scaling API with key
-        req = client.get("http://"+host+":8888/status", function (data, response) {
+        req = client.get("http://"+scaling_host+":8888/status", function (data, response) {
             if (response.statusCode === 200) {
                 callback("ok");
             } else if (response.statusCode === 206) {
@@ -259,4 +270,4 @@ exports.set_policy = resources_module.set_policy;
 exports.get_policy = resources_module.get_policy;
 exports.get_machine_count = resources_module.get_machine_count;
 exports.get_amount = resources_module.get_amount;
-exports.set_at_start_amount = resources_module.set_at_start_amount;
+exports.set_amount = resources_module.set_amount;

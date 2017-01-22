@@ -168,8 +168,8 @@ get_machine_count = function(req, res) {
     });
 };
 
-post_at_start_amount = function(req, res) {
-    resources.set_at_start_amount(req.params.amount, (error, amount) => {
+post_amount = function(req, res) {
+    resources.set_amount(req.params.policy, req.params.amount, (error, amount) => {
         res.setHeader('Content-Type', 'application/json');
         res.send(JSON.stringify({amount: amount}, null, 3));
     });
@@ -205,7 +205,7 @@ setup_routes = function() {
     app.get('/machinecount', get_machine_count);
 
     app.get('/amount', get_amount);
-    app.post('/at_start_amount/:amount', post_at_start_amount);
+    app.post('/amount/:policy/:amount', post_amount);
 };
 
 // Server startup
