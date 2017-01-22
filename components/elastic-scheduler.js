@@ -120,8 +120,8 @@ elastic_scheduler_component = (function () {
         });
     };
 
-    es.post_at_start_amount = function(amount, callback) {
-        var req = client.post("http://" + host + ":3210/at_start_amount/"+amount, (data, response) => {
+    es.post_amount = function(policy, amount, callback) {
+        var req = client.post("http://" + host + ":3210/amount/"+ policy + "/" + amount, (data, response) => {
             if (response.statusCode == 200) {
                 callback(null, data);
             } else {
@@ -145,4 +145,4 @@ exports.get_policy = elastic_scheduler_component.get_policy;
 exports.post_policy = elastic_scheduler_component.post_policy;
 exports.get_machine_count = elastic_scheduler_component.get_machine_count;
 exports.get_amount = elastic_scheduler_component.get_amount;
-exports.post_at_start_amount = elastic_scheduler_component.post_at_start_amount;
+exports.post_amount = elastic_scheduler_component.post_amount;

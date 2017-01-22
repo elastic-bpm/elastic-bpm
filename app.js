@@ -326,8 +326,8 @@ get_scheduler_amount = function(req, res) {
     elastic_scheduler.get_amount((error, data) => {return_data(res, error, data);});
 };
 
-post_scheduler_at_start_amount = function(req, res) {
-    elastic_scheduler.post_at_start_amount(req.params.amount, (error, data) => {return_data(res, error, data);});
+post_scheduler_amount = function(req, res) {
+    elastic_scheduler.post_amount(req.params.policy, req.params.amount, (error, data) => {return_data(res, error, data);});
 };
 
 post_start_humans = function(req, res) {
@@ -394,7 +394,7 @@ setup_routes = function() {
    app.get('/scheduler/policy', get_scheduler_policy);
    app.get('/scheduler/machinecount', get_scheduler_machine_count);
    app.get('/scheduler/amount', get_scheduler_amount);
-   app.post('/scheduler/at_start_amount/:amount', post_scheduler_at_start_amount);
+   app.post('/scheduler/amount/:policy/:amount', post_scheduler_amount);
 };
 
 // Emit events

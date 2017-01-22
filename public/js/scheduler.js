@@ -13,18 +13,18 @@ scheduler_init = function(socket, interval) {
 
         $("#set-at-start-amount").slider();
         $("#set-at-start-amount-button").on('click', function(event) {
-            scheduler_set_at_start_amount($("#set-at-start-amount").val());
+            scheduler_set_amount("atstart", $("#set-at-start-amount").val());
         });
 
         $("#set-on-demand-amount").slider();
         $("#set-on-demand-amount-button").on('click', function(event) {
-            scheduler_set_on_demand_amount($("#set-on-demand-amount").val());
+            scheduler_set_amount("ondemand", $("#set-on-demand-amount").val());
         });
 
 
         $("#set-learning-amount").slider();
         $("#set-learning-amount-button").on('click', function(event) {
-            scheduler_set_learning_amount($("#set-learning-amount").val());
+            scheduler_set_amount("learning", $("#set-learning-amount").val());
         });
 
 
@@ -43,12 +43,12 @@ scheduler_update_policy = function(policy) {
     });
 };
 
-scheduler_set_at_start_amount = function(amount) {
-    $.post("/scheduler/at_start_amount/" + amount, (data) => {
-        console.log("Updated at start amount to: " + data.amount);
+scheduler_set_amount = function(policy, amount) {
+    $.post("/scheduler/amount/" + policy + "/" + amount, (data) => {
+        console.log("Updated "+policy+" amount to: " + data.amount);
         update_scheduler_info();
     }).fail(() => {
-        console.log("Unable to update at start amount");
+        console.log("Unable to update "+policy+" amount");
     });
 };
 
