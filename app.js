@@ -9,6 +9,26 @@ var io = require('socket.io')(server);
 var multiparty = require('multiparty');
 const fs = require('fs');
 
+const os = require('os');
+var log4js = require('log4js');
+log4js.configure({
+    appenders: [
+        { type: 'console' },
+        {
+            "host": "137.116.195.67",
+            "port": 12201,
+            "type": "gelf",
+            "hostname": "elastic-dashboard@" + os.hostname(),
+            "layout": {
+                "type": "pattern",
+                "pattern": "%m"
+            },
+            category: [ 'console' ]
+        }
+    ],
+    replaceConsole: true
+});
+
 var redis_listener = require('./components/redis-listener');
 var elastic_api = require('./components/elastic-api');
 var elastic_scaling = require('./components/elastic-scaling');
