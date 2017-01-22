@@ -39,6 +39,7 @@
      depends_on:
       - api
       - scaling
+      - docker
      ports:
       - "3210:3210"
    docker:

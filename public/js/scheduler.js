@@ -16,6 +16,18 @@ scheduler_init = function(socket, interval) {
             scheduler_set_at_start_amount($("#set-at-start-amount").val());
         });
 
+        $("#set-on-demand-amount").slider();
+        $("#set-on-demand-amount-button").on('click', function(event) {
+            scheduler_set_on_demand_amount($("#set-on-demand-amount").val());
+        });
+
+
+        $("#set-learning-amount").slider();
+        $("#set-learning-amount-button").on('click', function(event) {
+            scheduler_set_learning_amount($("#set-learning-amount").val());
+        });
+
+
         update_scheduler_info();
         setInterval(update_scheduler_info, interval);
         console.log("Scheduler init");
@@ -47,10 +59,12 @@ update_scheduler_info = function() {
         console.log("Unable to get policy");
     });
 
-    $.get("/scheduler/at_start_amount", (data) => {
-        $("#scheduler-get-amount").val(data.amount);
+    $.get("/scheduler/amount", (data) => {
+        $("#scheduler-get-amount-at-start").val(data.at_start);
+        $("#scheduler-get-amount-on-demand").val(data.on_demand);
+        $("#scheduler-get-amount-learning").val(data.learning);
     }).fail(() => {
-        console.log("Unable to get at start amount");
+        console.log("Unable to get amount of machines");
     });
 
     $.get("/scheduler/machinecount", (data) => {

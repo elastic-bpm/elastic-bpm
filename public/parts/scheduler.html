@@ -29,9 +29,19 @@
                 </div>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-md-2">
                 <button id="set-at-start-amount-button" type="button" class="btn btn-primary">Set at start amount</button><br />
-                <input style="width: 80%;" id="set-at-start-amount" type="text" data-slider-min="0" data-slider-max="15" data-slider-step="1" data-slider-value="1"/>
+                <input style="width: 80%;" id="set-at-start-amount" type="text" data-slider-min="0" data-slider-max="15" data-slider-step="1" data-slider-value="10"/>
+            </div>
+
+            <div class="col-md-2">
+                <button id="set-on-demand-amount-button" type="button" class="btn btn-primary">Set on demand amount</button><br />
+                <input style="width: 80%;" id="set-on-demand-amount" type="text" data-slider-min="0" data-slider-max="15" data-slider-step="1" data-slider-value="15"/>
+            </div>
+
+            <div class="col-md-2">
+                <button id="set-learning-amount-button" type="button" class="btn btn-primary">Set learning amount</button><br />
+                <input style="width: 80%;" id="set-learning-amount" type="text" data-slider-min="0" data-slider-max="15" data-slider-step="1" data-slider-value="15"/>
             </div>
 
         </div>
@@ -59,9 +69,25 @@
             <div class="col-md-2">
                 <div class="form-group">
                     <label>At start amount</label>
-                    <input class="form-control" id="scheduler-get-amount" type="text" placeholder="Policy" disabled="">
+                    <input class="form-control" id="scheduler-get-amount-at-start" type="text" placeholder="Policy" disabled="">
                 </div>
             </div>
+
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>On demand amount</label>
+                    <input class="form-control" id="scheduler-get-amount-on-demand" type="text" placeholder="Policy" disabled="">
+                </div>
+            </div>
+
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label>Learning amount</label>
+                    <input class="form-control" id="scheduler-get-amount-learning" type="text" placeholder="Policy" disabled="">
+                </div>
+            </div>
+        </div>
+        <div class="row" style="padding: 5px">
 
             <div class="col-md-2">
                 <div class="form-group">
