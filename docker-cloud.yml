@@ -22,7 +22,12 @@ redis:
   autoredeploy: true
 scaling:
   environment:
-    - subscriptionId=<add-subscription-id>
+    - subscriptionId
+    - resourceGroupName
+    - CLIENT_ID
+    - DOMAIN
+    - APPLICATION_SECRET
+    - AZURE_SUBSCRIPTION_ID
   image: 'djbnjack/elastic-scaling:latest'
   autoredeploy: true
   links:
