@@ -5,11 +5,7 @@
   "main": "app.js",
   "dependencies": {
     "azure-arm-compute": "^0.19.1",
-    "azure-arm-devtestlabs": "^0.1.1",
-    "azure-arm-resource": "^1.6.1-preview",
-    "azure-cli": "latest",
     "body-parser": "^1.15.2",
-    "cross-spawn": "latest",
     "events": "^1.1.1",
     "express": "^4.14.0",
     "log4js": "^1.1.0",

@@ -2,43 +2,32 @@
 
 var azure_sdk = (function () {
     var msRestAzure = require('ms-rest-azure');
-    var ResourceManagementClient = require('azure-arm-resource').ResourceManagementClient;
     var ComputeClient = require('azure-arm-compute');
-    var DevTestLabsClient = require('azure-arm-devtestlabs');
     var clientId = process.env.CLIENT_ID;
     var domain = process.env.DOMAIN;
     var secret = process.env.APPLICATION_SECRET;
     var subscriptionId = process.env.AZURE_SUBSCRIPTION_ID;
     var resourceGroupName = process.env.resourceGroupName;
     var credentials = new msRestAzure.ApplicationTokenCredentials(clientId, domain, secret);
-    var resourceClient = new ResourceManagementClient(credentials, subscriptionId);
     var computeClient = new ComputeClient(credentials, subscriptionId);
-    var devTestLabsClient = new DevTestLabsClient(credentials, subscriptionId);
 
     var my = {}; // public module
     my.vms = [];
     my.status = "start";
 
     var updateVMs = function() {
-        //computeClient.virtualMachines.get("DockerSwarm-master-01-381608", "master-01",  {expand: "instanceView"}, function (err, result, request, response) {
         computeClient.virtualMachines.listAll(function (err, result, request, response) {
-        //devTestLabsClient.virtualMachine.list(resourceGroupName, "DockerSwarm",  function (err, result, request, response) {
-        //resourceClient.resourceGroups.listResources(resourceGroupName, {expand: "instanceView"}, function (err, result, request, response) {
             if (err) {
                 console.log(err);
             } else {
                 new_vms = [];
                 result.forEach(function(element) {
                   id_arr = element.id.split('/');
-                  //console.log("Resource Group: " + id_arr[4]);
-                  //console.log("VM name: " + element.name);
                   computeClient.virtualMachines.get(id_arr[4], element.name,  {expand: "instanceView"}, function (err, result, request, response) {
                       console.log(element.name + " - " + result.instanceView.statuses[1].displayStatus);
                   });
                 });
 
-                //console.log(result);
-                //console.log(result.instanceView.statuses);
                 my.vms = result;
             }
         });
