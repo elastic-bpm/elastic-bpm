@@ -23,7 +23,7 @@ log4js.configure({
     replaceConsole: true
 });
 
-var azure = require('./logic/azure.js');
+var azure = require('./logic/azure-sdk.js');
 
 get_virtualmachines = function (req, res) {
     vms = azure.get_vms();
