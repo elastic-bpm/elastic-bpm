@@ -175,14 +175,14 @@ post_at_start_amount = function(req, res) {
     });
 };
 
-get_at_start_amount = function(req, res) {
-    resources.get_at_start_amount((error, amount) => {
+get_amount = function(req, res) {
+    resources.get_amount((error, amount) => {
         if (error) {
             console.log(error);
             res.status(500).send("Error: " + error);
         } else {
             res.setHeader('Content-Type', 'application/json');
-            res.send(JSON.stringify({amount: amount}, null, 3));
+            res.send(JSON.stringify(amount, null, 3));
         }
     });
 };
@@ -204,7 +204,7 @@ setup_routes = function() {
 
     app.get('/machinecount', get_machine_count);
 
-    app.get('/at_start_amount', get_at_start_amount);
+    app.get('/amount', get_amount);
     app.post('/at_start_amount/:amount', post_at_start_amount);
 };
 

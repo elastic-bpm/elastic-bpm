@@ -9,6 +9,8 @@ var resources_module = (function () {
 
     my.policy = "Off"; // Start in OFF mode
     my.at_start_amount = 1;
+    my.on_demand_amount = 2;
+    my.learning_amount = 3;
     
     my.set_at_start_amount = function(at_start_amount, callback) {
         my.at_start_amount = at_start_amount;
@@ -18,21 +20,37 @@ var resources_module = (function () {
         my.check_resources();
     };
 
-    my.get_at_start_amount = function(callback) {
-        callback(null, my.at_start_amount);
+    my.get_amount = function(callback) {
+        callback(null, {at_start: my.at_start_amount, on_demand: my.on_demand_amount, learning: my.learning_amount});
     };
 
     my.check_resources = function() {
         // First determine what policy is in effect
         if (my.policy === "Off") {
-            set_machine_amount(0);
+            set_machine_amount(0, () => {});
         } else if (my.policy === "AtStart") {
-            set_machine_amount(my.at_start_amount);
+            set_machine_amount(my.at_start_amount, (error, diff) => {
+                if (!error && diff === 0) {
+                    check_resources_atstart();
+                }
+            });
         } else if (my.policy === "OnDemand") {
-            check_resources_ondemand();
+            set_machine_amount(my.on_demand_amount, (error, diff) => {
+                if (!error && diff === 0) {
+                    check_resources_ondemand();
+                }
+            });
         } else if (my.policy === "Learning") {
-            check_resources_learning();
+            set_machine_amount(my.learning_amount, (error, diff) => {
+                if (!error && diff === 0) {
+                    check_resources_learning();
+                }
+            });
         }
+    };
+
+    var check_resources_atstart = function() {
+        console.log("Checking resource for atstart policy.");
     };
 
     var check_resources_ondemand = function() {
@@ -170,15 +188,17 @@ var resources_module = (function () {
         req.on('error', (err) => callback(err));
     };
 
-    var set_machine_amount = function(amount) {
+    var set_machine_amount = function(amount, callback) {
         getStatus(function(status) {
             if (status !== "ok") {
                 console.log(status);
+                callback(status, null);
             } else {
 
                 updateMachines(function(error) {
                     if (error) {
                         console.log(error);
+                        callback(error, null);
                     } else {
                         var activeCount = getActiveMachineCount();
                         var diff = amount - activeCount;
@@ -202,6 +222,8 @@ var resources_module = (function () {
                                 }
                             }
                         }
+
+                        callback(null, diff);
                     }
                 });
 
@@ -236,5 +258,5 @@ exports.check_resources = resources_module.check_resources;
 exports.set_policy = resources_module.set_policy;
 exports.get_policy = resources_module.get_policy;
 exports.get_machine_count = resources_module.get_machine_count;
-exports.get_at_start_amount = resources_module.get_at_start_amount;
+exports.get_amount = resources_module.get_amount;
 exports.set_at_start_amount = resources_module.set_at_start_amount;
