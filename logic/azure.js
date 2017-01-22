@@ -65,7 +65,7 @@ azure_load_vms = function(callback) {
 
       // Force a diagnostic
       temp = spawn('azure',['vm','list', '--json', '-vv']);
-      temp.stdout.on('data', console.log);
+      temp.stdout.on('data', (output) => {console.log("" + output);});
     }
 
     setTimeout(() => azure_load_vms(callback), update_timeout);
