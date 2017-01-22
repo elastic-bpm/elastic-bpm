@@ -7,12 +7,11 @@ var azure_sdk = (function () {
     var domain = process.env.DOMAIN;
     var secret = process.env.APPLICATION_SECRET;
     var subscriptionId = process.env.AZURE_SUBSCRIPTION_ID;
-    var resourceGroupName = process.env.resourceGroupName;
     var credentials = new msRestAzure.ApplicationTokenCredentials(clientId, domain, secret);
     var computeClient = new ComputeClient(credentials, subscriptionId);
 
     var my = {}; // public module
-    my.vms = [];
+    my.vms = {};
     my.status = "start";
 
     var updateVMs = function() {
@@ -24,11 +23,24 @@ var azure_sdk = (function () {
                 result.forEach(function(element) {
                   id_arr = element.id.split('/');
                   computeClient.virtualMachines.get(id_arr[4], element.name,  {expand: "instanceView"}, function (err, result, request, response) {
-                      console.log(element.name + " - " + result.instanceView.statuses[1].displayStatus);
+                      //console.log(element.name + " - " + result.instanceView.statuses[1].displayStatus);
+                      if (err) {
+                          console.log(err);
+                      } else {
+                        if (result.instanceView.statuses.length === 2) {
+                            result.powerState = result.instanceView.statuses[1].displayStatus;
+                        } else if (result.instanceView.statuses.length === 1) {
+                            result.powerState = result.instanceView.statuses[0].displayStatus;
+                        } else {
+                            console.log(result.instanceView.statuses);
+                            result.powerState = "unknown";
+                        }
+
+                        result.resourceGroupName = result.id.split('/')[4];
+                        my.vms[result.name] = result;
+                      }
                   });
                 });
-
-                my.vms = result;
             }
         });
     };
@@ -43,7 +55,13 @@ var azure_sdk = (function () {
     };
 
     my.get_vms = function() {
-        return my.vms;
+        vm_array = [];
+
+        Object.keys(my.vms).forEach(function(key, index) {
+            vm_array.push(this[key]);
+        }, my.vms);
+
+        return vm_array;
     };
 
     // NEVER USED
@@ -56,10 +74,24 @@ var azure_sdk = (function () {
     };
 
     my.stop_vm = function(resourcegrp, virtualmachine, callback) {
+        console.log("Now stopping ", resourcegrp, virtualmachine);
+        computeClient.virtualMachines.deallocate(resourcegrp, virtualmachine, function(error){
+            if (error) {
+                console.log(error);
+            }
+        });
+
         callback();
     };
 
     my.start_vm = function(resourcegrp, virtualmachine, callback) {
+        console.log("Now starting ", resourcegrp, virtualmachine);
+        computeClient.virtualMachines.start(resourcegrp, virtualmachine, function(error){
+            if (error) {
+                console.log(error);
+            }
+        });
+
         callback();
     };
 
