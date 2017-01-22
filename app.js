@@ -9,6 +9,26 @@ var express = require('express'),
     app = express();
 app.use(bodyParser.json());
 
+const os = require('os');
+var log4js = require('log4js');
+log4js.configure({
+    appenders: [
+        { type: 'console' },
+        {
+            "host": "137.116.195.67",
+            "port": 12201,
+            "type": "gelf",
+            "hostname": "elastic-docker@" + os.hostname(),
+            "layout": {
+                "type": "pattern",
+                "pattern": "%m"
+            },
+            category: [ 'console' ]
+        }
+    ],
+    replaceConsole: true
+});
+
 get_containers_local = function(req, res) {
     get_containers(req, res, docker_local);
 };
@@ -65,7 +85,14 @@ get_nodes = function() {
             console.log("Error: " + err);
         } else {
             data.forEach((node) => {
-                nodes[node.ID] = node.Description.Hostname;
+                if (node.Spec.Role !== "manager") {
+                    nodes[node.ID] = {
+                        hostname: node.Description.Hostname,
+                        availability: node.Spec.Availability,
+                        status: node.Status.State
+                    };
+                    //console.log(nodes[node.ID]);
+                }
             });
         }
     });
@@ -81,7 +108,7 @@ get_workers = function(req, res) {
                     task.Status.Err = "";
                 } 
                 if (nodes[task.NodeID] !== undefined) {
-                    task.NodeID = nodes[task.NodeID];
+                    task.NodeID = nodes[task.NodeID].hostname || "unknown";
                 }
                 return task;
             });
@@ -231,6 +258,7 @@ setup_routes = function() {
 // Server startup
 start_server = function() {
     get_nodes();
+    setInterval(get_nodes, 5000); // 5 secs
     app.listen(4444, () => console.log('elastic-docker listening on port 4444!'));
 };
 
