@@ -79,7 +79,7 @@ get_services = function(req, res) {
 };
 
 nodes = {};
-get_nodes = function() {
+update_nodes = function() {
     docker_remote.listNodes((err, data) => {
         if (err) {
             console.log("Error: " + err);
@@ -87,6 +87,7 @@ get_nodes = function() {
             data.forEach((node) => {
                 if (node.Spec.Role !== "manager") {
                     nodes[node.ID] = {
+                        id: node.ID,
                         hostname: node.Description.Hostname,
                         availability: node.Spec.Availability,
                         status: node.Status.State
@@ -95,6 +96,46 @@ get_nodes = function() {
                 }
             });
         }
+    });
+};
+
+get_nodes = function(req, res) {
+    node_arr = [];
+
+    Object.keys(nodes).forEach(function(key, index) {
+       node_arr.push(nodes[key]);
+    }, nodes);
+
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify(node_arr, null, 3));                
+};
+
+set_node = function(req, res) {
+    var availability = req.params.availability;
+    if (availability !== "active" && availability !== "drain") {
+        console.log("Unknown availability: " + availability);
+        res.status(500).send("Unknown availability: " + availability);
+        return;
+    }
+
+    var node = docker_remote.getNode(nodes[req.params.name].id);
+    node.inspect((err,node_info) => {
+        // Update node with new availability
+        update = {
+            version: node_info.Version.Index,
+            Availability: availability,
+            Role: "worker",
+        };
+
+        node.update(update, (err, data) => {
+            if (err) {
+                res.status(500).send(err);
+            } else {
+                res.setHeader('Content-Type', 'application/json');
+                res.send(JSON.stringify(update, null, 3));    
+            }
+        });
+
     });
 };
 
@@ -252,13 +293,16 @@ setup_routes = function() {
 
     app.get('/workers', get_workers);
 
+    app.get('/nodes', get_nodes);
+    app.post('/node/:name/:availability', set_node);
+
     app.get('/status', (req, res) => res.send('ok'));
 };
 
 // Server startup
 start_server = function() {
-    get_nodes();
-    setInterval(get_nodes, 5000); // 5 secs
+    update_nodes();
+    setInterval(update_nodes, 5000); // 5 secs
     app.listen(4444, () => console.log('elastic-docker listening on port 4444!'));
 };
 

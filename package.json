@@ -25,7 +25,7 @@
   "homepage": "https://github.com/DJBnjack/elastic-docker#readme",
   "dependencies": {
     "body-parser": "^1.15.2",
-    "dockerode": "2.3.1",
+    "dockerode": "djbnjack/dockerode",
     "express": "^4.14.0",
     "log4js": "^1.1.0"
   }
