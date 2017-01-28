@@ -40,10 +40,10 @@ init_node_table = function() {
                     start_disabled = data.availability === "drain" ? "" : "disabled";
                     stop_disabled = data.availability === "active" ? "" : "disabled";
                     return "<button " +
-                                "onclick=\"set_node_availability('"+data.id+"','active')\" "+
+                                "onclick=\"set_node_availability('"+data.hostname+"','active')\" "+
                                 "class=\"btn btn-success btn-xs "+start_disabled+"\">set to active</button>&nbsp;" +
                             "<button "+
-                                "onclick=\"set_node_availability('"+data.id+"','drain')\" "+
+                                "onclick=\"set_node_availability('"+data.hostname+"','drain')\" "+
                                 "class=\"btn btn-danger btn-xs "+stop_disabled+"\">set to drain</button>";
                 }
             }
@@ -53,9 +53,9 @@ init_node_table = function() {
     init_node_table_flag = true;
 };
 
-function set_node_availability(id, availability){
-    console.log("Setting node " + id + " to " + availability);
-    $.post( "node/" + id + "/" + availability, function( data ) {
+function set_node_availability(hostname, availability){
+    console.log("Setting node " + hostname + " to " + availability);
+    $.post( "node/" + hostname + "/" + availability, function( data ) {
         console.log("Result from set node: ");
         console.log(data);
     });

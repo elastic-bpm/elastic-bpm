@@ -82,8 +82,8 @@ e_get_nodes = function(callback) {
     callback(null, e_docker_nodes);
 };
 
-e_set_node = function(node_id, availability, callback) {
-    var req = client.post("http://" + process.env.DOCKER_HOST + ":4444/node/" + node_id + "/" + availability, (data, response) => {
+e_set_node = function(hostname, availability, callback) {
+    var req = client.post("http://" + process.env.DOCKER_HOST + ":4444/node/" + hostname + "/" + availability, (data, response) => {
         if (response.statusCode == 200) {
             callback(null, data);
         } else {
