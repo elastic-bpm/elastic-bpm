@@ -112,6 +112,18 @@ get_nodes = function(req, res) {
     res.send(JSON.stringify(node_arr, null, 3));                
 };
 
+get_node_by_hostname = function(hostname) {
+    node = undefined;
+
+    Object.keys(nodes).forEach(function(key, index) {
+        if (nodes[key].hostname == hostname) {
+            node = nodes[key];
+        }
+    }, nodes);
+    
+    return node;
+};
+
 set_node = function(req, res) {
     var availability = req.params.availability;
     if (availability !== "active" && availability !== "drain") {
@@ -120,26 +132,29 @@ set_node = function(req, res) {
         return;
     }
 
-    var node = docker_remote.getNode(nodes[req.params.node_id].id);
+    var node = docker_remote.getNode(get_node_by_hostname(req.params.hostname).id);
     node.inspect((err,node_info) => {
-        // Update node with new availability
-        update = {
-            version: node_info.Version.Index,
-            Availability: availability,
-            Role: "worker",
-        };
+        if (err) {
+            console.log("Error: " + err);
+        } else {
+            // Update node with new availability
+            update = {
+                version: node_info.Version.Index,
+                Availability: availability,
+                Role: "worker",
+            };
 
-        node.update(update, (err, data) => {
-            if (err) {
-                res.status(500).send(err);
-            } else {
-                update_nodes(function () {
-                    res.setHeader('Content-Type', 'application/json');
-                    res.send(JSON.stringify(update, null, 3));    
-                });
-            }
-        });
-
+            node.update(update, (err, data) => {
+                if (err) {
+                    res.status(500).send(err);
+                } else {
+                    update_nodes(function () {
+                        res.setHeader('Content-Type', 'application/json');
+                        res.send(JSON.stringify(update, null, 3));    
+                    });
+                }
+            });
+        }
     });
 };
 
@@ -298,7 +313,7 @@ setup_routes = function() {
     app.get('/workers', get_workers);
 
     app.get('/nodes', get_nodes);
-    app.post('/node/:node_id/:availability', set_node);
+    app.post('/node/:hostname/:availability', set_node);
 
     app.get('/status', (req, res) => res.send('ok'));
 };
