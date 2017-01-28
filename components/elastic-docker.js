@@ -67,6 +67,21 @@ e_get_docker_info_remote = function(callback) {
     callback(null, e_docker_info_remote);
 };
 
+e_docker_nodes = [];
+e_refresh_nodes = function() {
+    e_get_data("http://" + process.env.DOCKER_HOST + ":4444/nodes", (error, data) => {
+        if (error) {
+            console.log("Error getting information on nodes: " + error);
+        } else {
+            e_docker_nodes = data;          
+        }
+    });
+};
+
+e_get_nodes = function(callback) {
+    callback(null, e_docker_nodes);
+};
+
 services = [];
 e_refresh_services = function() {
     e_get_data("http://" + process.env.DOCKER_HOST + ":4444/services", (error, data) => {
@@ -165,13 +180,16 @@ e_create_workers = function(callback) {
 };
 
 e_setup_updates = function() {
-    timeout = 1000;
+    timeout = 1000; // 1 sec
 
     e_refresh_workers();
     setInterval(e_refresh_workers, 10*timeout);
 
     e_refresh_services();
     setInterval(e_refresh_services, 10*timeout);
+
+    e_refresh_nodes();
+    setInterval(e_refresh_nodes, 10*timeout);
 
     e_refresh_docker_info_remote();
     setInterval(e_refresh_docker_info_remote, 60*timeout);
@@ -183,6 +201,7 @@ exports.get_containers_remote = e_get_containers_remote;
 exports.get_docker_info_local = e_get_docker_info_local;
 exports.get_docker_info_remote = e_get_docker_info_remote;
 exports.get_services = e_get_services;
+exports.get_nodes = e_get_nodes;
 exports.get_workers = e_get_workers;
 exports.delete_workers = e_delete_workers;
 exports.create_workers = e_create_workers;

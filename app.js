@@ -194,6 +194,10 @@ get_services = function(req, res) {
     elastic_docker.get_services((error, data) => {return_data(res, error, data);});
 };
 
+get_nodes = function(req, res) {
+    elastic_docker.get_nodes((error, data) => {return_data(res, error, data);});
+};
+
 get_workers = function(req, res) {
     elastic_docker.get_workers((error, data) => {return_data(res, error, data);});
 };
@@ -403,6 +407,8 @@ setup_routes = function() {
    app.delete('/services/workers', delete_workers);
    app.post('/services/workers', create_workers);
 
+   app.get('/nodes', get_nodes);
+
    app.get('/tasks/human', get_human_tasks);
    app.post('/task/:workflow_id/:task_id/busy', post_task_busy);
    app.post('/task/:workflow_id/:task_id', post_task_done);
@@ -415,6 +421,7 @@ setup_routes = function() {
    app.get('/scheduler/machinecount', get_scheduler_machine_count);
    app.get('/scheduler/amount', get_scheduler_amount);
    app.post('/scheduler/amount/:policy/:amount', post_scheduler_amount);
+
 };
 
 // Emit events

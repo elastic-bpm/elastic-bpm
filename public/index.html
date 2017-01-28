@@ -73,9 +73,10 @@
                     <li><a href="#console" data-toggle="tab"><i class="fa fa-terminal fa-fw"></i> Console</a></li>
                     <li><a href="#containers" data-toggle="tab"><i class="fa fa-ship fa-fw"></i> Docker</a></li>
                     <li><a href="#machines" data-toggle="tab"><i class="fa fa-laptop fa-fw"></i> Machines</a></li>
-                    <li><a href="#workflows" data-toggle="tab"><i class="fa fa-sitemap fa-fw"></i> Workflows</a></li>
+                    <li><a href="#nodes" data-toggle="tab"><i class="fa fa-laptop fa-fw"></i> Nodes</a></li>
                     <li><a href="#workers" data-toggle="tab"><i class="fa fa-cogs fa-fw"></i> Workers</a></li>
                     <li><a href="#humans" data-toggle="tab"><i class="fa fa-users fa-fw"></i> Humans</a></li>
+                    <li><a href="#workflows" data-toggle="tab"><i class="fa fa-sitemap fa-fw"></i> Workflows</a></li>
                     <li><a href="#scheduler" data-toggle="tab"><i class="fa fa-calendar fa-fw"></i> Scheduler</a></li>
                 </ul>
 
@@ -89,6 +90,7 @@
 		<div id="timeline" class="container-fluid tab-pane"></div>
 		<div id="console" class="container-fluid tab-pane"></div>
         <div id="machines" class="container-fluid tab-pane"></div>
+        <div id="nodes" class="container-fluid tab-pane"></div>
         <div id="containers" class="container-fluid tab-pane"></div>
         <div id="workflows" class="container-fluid tab-pane"></div>
         <div id="workers" class="container-fluid tab-pane"></div>
@@ -125,6 +127,7 @@
 <script src="js/dashboard.js"></script>
 <script src="js/workflows.js"></script>
 <script src="js/machines.js"></script>
+<script src="js/nodes.js"></script>
 <script src="js/containers.js"></script>
 <script src="js/workers.js"></script>
 <script src="js/console.js"></script>
@@ -153,6 +156,7 @@
         dashboard_init(socket, interval);
         workflows_init(socket, 2*interval);
         machines_init(socket, interval);
+        nodes_init(socket, interval);
         containers_init(socket, interval);
         workers_init(socket, interval);
         humans_init(socket, 2*interval);
