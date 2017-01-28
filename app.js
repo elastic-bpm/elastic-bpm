@@ -79,7 +79,7 @@ get_services = function(req, res) {
 };
 
 nodes = {};
-update_nodes = function() {
+update_nodes = function(callback) {
     docker_remote.listNodes((err, data) => {
         if (err) {
             console.log("Error: " + err);
@@ -96,6 +96,8 @@ update_nodes = function() {
                 }
             });
         }
+        
+        if (callback) callback();
     });
 };
 
@@ -118,7 +120,7 @@ set_node = function(req, res) {
         return;
     }
 
-    var node = docker_remote.getNode(nodes[req.params.name].id);
+    var node = docker_remote.getNode(nodes[req.params.node_id].id);
     node.inspect((err,node_info) => {
         // Update node with new availability
         update = {
@@ -131,8 +133,10 @@ set_node = function(req, res) {
             if (err) {
                 res.status(500).send(err);
             } else {
-                res.setHeader('Content-Type', 'application/json');
-                res.send(JSON.stringify(update, null, 3));    
+                update_nodes(function () {
+                    res.setHeader('Content-Type', 'application/json');
+                    res.send(JSON.stringify(update, null, 3));    
+                });
             }
         });
 
@@ -294,7 +298,7 @@ setup_routes = function() {
     app.get('/workers', get_workers);
 
     app.get('/nodes', get_nodes);
-    app.post('/node/:name/:availability', set_node);
+    app.post('/node/:node_id/:availability', set_node);
 
     app.get('/status', (req, res) => res.send('ok'));
 };
