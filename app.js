@@ -38,10 +38,7 @@ get_status = function(req, res) {
     if (msg === 'done') {
         msg = 'ok';
         statusCode = 200;
-    } else if (msg === 'login') {
-        msg = azure.get_code();
-        statusCode = 206;
-    } 
+    }
 
     res.setHeader('Content-Type', 'application/json');
     res.status(Number(statusCode)).send(JSON.stringify(msg, null, 3));

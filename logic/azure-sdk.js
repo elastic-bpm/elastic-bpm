@@ -61,12 +61,11 @@ var azure_sdk = (function () {
             vm_array.push(this[key]);
         }, my.vms);
 
-        return vm_array;
-    };
-
-    // NEVER USED
-    my.get_code = function() {
-        return "123";
+        // Sort is 'in place', but also returns the sorted array
+        return vm_array.sort(function(a, b) {
+            if (a.name === b.name) return 0; // never going to happen
+            return a.name < b.name ? -1 : 1;
+        });
     };
 
     my.get_status = function() {
@@ -100,7 +99,6 @@ var azure_sdk = (function () {
 
 exports.start_events = azure_sdk.start_events;
 exports.get_vms = azure_sdk.get_vms;
-exports.get_code = azure_sdk.get_code;
 exports.get_status = azure_sdk.get_status;
 exports.stop_vm = azure_sdk.stop_vm;
 exports.start_vm = azure_sdk.start_vm;
