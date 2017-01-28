@@ -176,14 +176,33 @@ var resources_module = (function () {
         }
         console.log("Scaling down VM: " + key);
 
-        // Register machines as scaled
-        machines[key].deactivated = true;
 
-        // Call scaling API with key
-        req = client.delete("http://"+scaling_host+":8888/virtualmachines/" + machines[key].resourceGroup + "/" + key, function (data, response) {
-            console.log(data);
+        // Set machine status to drain
+        req = client.post("http://"+docker_host+":4444/node/" + key + "/drain", function(data, response) {
+            if (response.statusCode == 200) {
+
+                // Scale workers down a notch
+                console.log("Scaling workers down 4");
+
+                // Call scaling API with key
+                req2 = client.delete("http://"+scaling_host+":8888/virtualmachines/" + machines[key].resourceGroup + "/" + key, function (data, response) {
+                    console.log(data);
+                    
+                    // Register machines as scaled
+                    machines[key].deactivated = true;
+
+                });
+                req2.on('error', (err) => console.log(err));
+
+            } else {
+
+                console.log("Error while setting node to drain!");
+                console.log(data);
+
+            }
         });
         req.on('error', (err) => console.log(err));
+
     };
 
     var getStatus = function(callback) {
