@@ -198,6 +198,10 @@ get_nodes = function(req, res) {
     elastic_docker.get_nodes((error, data) => {return_data(res, error, data);});
 };
 
+post_node = function(req, res) {
+    elastic_docker.set_node(req.params.node_id, req.params.availability, (error, data) => {return_data(res, error, data);});
+};
+
 get_workers = function(req, res) {
     elastic_docker.get_workers((error, data) => {return_data(res, error, data);});
 };
@@ -408,6 +412,7 @@ setup_routes = function() {
    app.post('/services/workers', create_workers);
 
    app.get('/nodes', get_nodes);
+   app.post('/node/:node_id/:availability', post_node);
 
    app.get('/tasks/human', get_human_tasks);
    app.post('/task/:workflow_id/:task_id/busy', post_task_busy);

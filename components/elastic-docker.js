@@ -82,6 +82,16 @@ e_get_nodes = function(callback) {
     callback(null, e_docker_nodes);
 };
 
+e_set_node = function(node_id, availability, callback) {
+    var req = client.post("http://" + process.env.DOCKER_HOST + ":4444/node/" + node_id + "/" + availability, (data, response) => {
+        if (response.statusCode == 200) {
+            callback(null, data);
+        } else {
+            callback("Error: " + data, null);
+        }
+    });
+};
+
 services = [];
 e_refresh_services = function() {
     e_get_data("http://" + process.env.DOCKER_HOST + ":4444/services", (error, data) => {
@@ -202,6 +212,7 @@ exports.get_docker_info_local = e_get_docker_info_local;
 exports.get_docker_info_remote = e_get_docker_info_remote;
 exports.get_services = e_get_services;
 exports.get_nodes = e_get_nodes;
+exports.set_node = e_set_node;
 exports.get_workers = e_get_workers;
 exports.delete_workers = e_delete_workers;
 exports.create_workers = e_create_workers;
