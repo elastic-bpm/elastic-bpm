@@ -169,6 +169,8 @@ get_workers = function(req, res) {
                 } 
                 if (nodes[task.NodeID] !== undefined) {
                     task.NodeID = nodes[task.NodeID].hostname || "unknown";
+                } else {
+                    task.NodeID = "none yet";
                 }
                 return task;
             });
