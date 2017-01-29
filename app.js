@@ -29,6 +29,23 @@ log4js.configure({
     replaceConsole: true
 });
 
+const service_amount = 15;
+var services = {};
+for (var i = 1; i <= service_amount; i++) {
+    var i_str = i < 10 ? "0" + i : i;
+    services["elastic-workers-" + i_str] = "node-"+i_str;
+}
+
+getServiceArray = function() {
+    services_array = [];
+
+    Object.keys(services).forEach(function(key, index) {
+        services_array.push(key);
+    }, services);
+
+    return services_array;
+};
+
 get_containers_local = function(req, res) {
     get_containers(req, res, docker_local);
 };
@@ -127,8 +144,7 @@ get_node_by_hostname = function(hostname) {
 set_node = function(req, res) {
     var availability = req.params.availability;
     if (availability !== "active" && availability !== "drain") {
-        console.log("Unknown availability: " + availability);
-        res.status(500).send("Unknown availability: " + availability);
+        send_error(res, "Unknown availability: " + availability);
         return;
     }
 
@@ -136,6 +152,7 @@ set_node = function(req, res) {
     node.inspect((err,node_info) => {
         if (err) {
             console.log("Error: " + err);
+            return;
         } else {
             // Update node with new availability
             update = {
@@ -146,7 +163,8 @@ set_node = function(req, res) {
 
             node.update(update, (err, data) => {
                 if (err) {
-                    res.status(500).send(err);
+                    send_error(res, err);
+                    return;
                 } else {
                     update_nodes(function () {
                         res.setHeader('Content-Type', 'application/json');
@@ -158,10 +176,26 @@ set_node = function(req, res) {
     });
 };
 
+var create_filter = function() {
+    var services_array = getServiceArray();
+    var filter = '{"name":[';
+    
+    services_array.forEach(function(element, index) {
+        if (index < services_array.length - 1) {
+            filter += '"' + element + '",';
+        } else {
+            filter += '"' + element + '"';
+        }
+    });
+
+    filter += ']}';
+    return filter;
+};
+
 get_workers = function(req, res) {
-    docker_remote.listTasks({filters:'{"service":["elastic-workers"]}'}, (err, data) => {
+    docker_remote.listTasks({filters: create_filter()}, (err, data) => {
         if (err) {
-            res.status(500).send(err);
+            send_error(res, err);
         } else {
             data = data.map((task) => {
                 if (task.Status.Err === undefined) {
@@ -195,26 +229,36 @@ update_workers = function(req, res) {
                 return;
             }
 
-            worker_service_info = data.filter((item) => item.Spec.Name === "elastic-workers")[0];
+            services_array = getServiceArray();
+            worker_service_info = data.filter((item) => services_array.indexOf(item.Spec.Name) > -1);
+            if (worker_service_info === undefined) {
 
-            update = worker_service_info.Spec; 
-            update.version = worker_service_info.Version.Index;
-            update.Mode = {
-                Replicated: {
-                    Replicas: amount
-                }
-            };
+                send_error(res, "Service not found...?");
+                return;
 
-            worker_service = docker_remote.getService(worker_service_info.ID);
-            worker_service.update(update, (err2, data2) => {
-                if (err2) {
-                    send_error(res, "" + err2);
-                } else {
-                    console.log(data2);
-                    res.setHeader('Content-Type', 'application/json');
-                    res.send(JSON.stringify(data2, null, 3));      
-                }
-            });
+            } else {
+
+                worker_service_info.forEach(function(info) {
+                    update = info.Spec; 
+                    update.version = info.Version.Index;
+                    update.Mode = {
+                        Replicated: {
+                            Replicas: amount
+                        }
+                    };
+
+                    worker_service = docker_remote.getService(info.ID);
+                    worker_service.update(update, (err2, data2) => {
+                        if (err2) {
+                            send_error(res, "" + err2);
+                            return;
+                        }                         
+                    });
+                });
+
+                res.setHeader('Content-Type', 'application/json');
+                res.send(JSON.stringify("ok", null, 3));      
+            }
 
         });
     } else {
@@ -229,30 +273,33 @@ delete_workers = function(req, res) {
             return;
         }
 
-        worker_service_info = data.filter((item) => item.Spec.Name === "elastic-workers")[0];
-
+        services_array = getServiceArray();
+        worker_service_info = data.filter((item) => services_array.indexOf(item.Spec.Name) > -1);
         if (worker_service_info === undefined) {
 
             send_error(res, "Worker service not found.");
 
         } else {
 
-            worker_service = docker_remote.getService(worker_service_info.ID);
-            worker_service.remove((err2, data2) => {
-                if (err2) {
-                    send_error(res, "" + err2);
-                } else {
-                    res.setHeader('Content-Type', 'application/json');
-                    res.send(JSON.stringify('ok', null, 3));      
-                }
+            worker_service_info.forEach(function(info) {
+                worker_service = docker_remote.getService(info.ID);
+                worker_service.remove((err2, data2) => {
+                    if (err2) {
+                        send_error(res, "" + err2);
+                        return;
+                    }
+                });
             });
+
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify('ok', null, 3));      
         }
     });
 };
 
 create_workers = function(req, res) {
     opts = {
-      "Name": "elastic-workers",
+      "Name": "elastic-workers-01",
       "TaskTemplate": {
         "ContainerSpec": {
           "Image": "djbnjack/elastic-worker",
@@ -268,7 +315,9 @@ create_workers = function(req, res) {
           "Condition": "any",
           "MaxAttempts": 0
         },
-        "Placement": {},
+        "Placement": {
+            "Constraints": []
+        },
         "LogDriver": {
             "Name": "gelf",
             "Options": {
@@ -290,14 +339,22 @@ create_workers = function(req, res) {
       }
     };
     
-    docker_remote.createService(opts, (err, data) => {
-        if (err) {
-            res.status(500).send(err);
-        } else {
-            res.setHeader('Content-Type', 'application/json');
-            res.send(JSON.stringify(data, null, 3));            
-        }
+    services_array = getServiceArray();
+    services_array.forEach(function(service_name) {
+        var n_opts = JSON.parse(JSON.stringify(opts));
+        n_opts.Name = service_name;
+        n_opts.TaskTemplate.Placement.Constraints.push('node.hostname == ' + services[service_name]);
+        console.log(n_opts);
+        docker_remote.createService(n_opts, (err, data) => {
+            if (err) {
+                send_error(res, err);
+                return;
+            }
+        });
     });
+
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify("ok", null, 3));            
 };
 
 // ROUTING
