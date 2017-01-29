@@ -7,6 +7,7 @@ var resources_module = (function () {
     var scaling_host = process.env.SCALING || "localhost";
     var docker_host = process.env.DOCKER || "localhost";
     var machines = {};
+    const workers_per_machine = 4;
 
     my.policy = "Off"; // Start in OFF mode
     my.at_start_amount = 1;
@@ -177,22 +178,57 @@ var resources_module = (function () {
         console.log("Scaling down VM: " + key);
 
 
+        // THIS NEEDS RX or functions?!
+
         // Set machine status to drain
         req = client.post("http://"+docker_host+":4444/node/" + key + "/drain", function(data, response) {
             if (response.statusCode == 200) {
 
-                // Scale workers down a notch
-                console.log("Scaling workers down 4");
+                // Get amount of workers
+                req_workers = client.get("http://"+docker_host+":4444/workers", function(data, response) {
+                    if (response.statusCode == 200) {
 
-                // Call scaling API with key
-                req2 = client.delete("http://"+scaling_host+":8888/virtualmachines/" + machines[key].resourceGroup + "/" + key, function (data, response) {
-                    console.log(data);
-                    
-                    // Register machines as scaled
-                    machines[key].deactivated = true;
+                        if (data.length > 0) {
+                            var target_amount = Math.max(data.length - workers_per_machine, 0);
+
+                            // Scale workers down a notch
+                            console.log("Scaling workers down to " + target_amount);
+                            var args = {data: { scale: target_amount }};
+                            scale_workers = client.put("http://"+docker_host+":4444/services/workers", args, function(data, response) {
+                                if (response.statusCode == 200) {
+                                    console.log("Scaled workers down to " + target_amount);
+
+                                    // Scale machine down
+                                    req2 = client.delete("http://"+scaling_host+":8888/virtualmachines/" + machines[key].resourceGroup + "/" + key, function (data, response) {
+                                        console.log(data);
+                                        
+                                        // Register machines as scaled
+                                        machines[key].deactivated = true;
+
+                                    });
+                                    req2.on('error', (err) => console.log(err));
+
+                                } else {
+                                    console.log("Error: " + data);
+                                }
+                            });
+
+                        } else {
+
+                            // No scaling of workers needed at 0
+                            console.log("0 workers, so nothing to scale.");
+
+                        }
+
+                    } else {
+
+                        console.log("Error while getting worker amount!");
+                        console.log(data);
+
+                    }
 
                 });
-                req2.on('error', (err) => console.log(err));
+                req_workers.on('error', (err) => console.log(err));
 
             } else {
 
