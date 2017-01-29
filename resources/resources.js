@@ -159,6 +159,79 @@ var resources_module = (function () {
         req.on('error', (err) => console.log(err));
     };
 
+    var scaleWorkers = function(target_amount, callback) {
+        console.log("Scaling to " + target_amount);
+        var args = {data: { scale: target_amount }};
+        scale_workers = client.put("http://"+docker_host+":4444/services/workers", args, function(data, response) {
+            if (response.statusCode == 200) {
+                console.log("Scaled workers to " + target_amount);
+                callback();
+            } else {
+                console.log("Error while scaling workers!");
+                console.log(data);
+                callback(data);
+            }
+        });
+        scale_workers.on('error', (err) => {
+            console.log("Error while scaling workers!");
+            console.log(err);
+            callback(err);
+        });
+    };
+
+    var setMachineAvailability = function(hostname, availability, callback) {
+        req = client.post("http://"+docker_host+":4444/node/" + hostname + "/drain", function(data, response) {
+            if (response.statusCode == 200) {
+                console.log("Set machine " + hostname + " to " + availability);
+                callback();
+            } else {
+                console.log("Error while setting machine " + hostname + " to " + availability);
+                console.log(data);
+                callback(data);
+            }
+        });
+        req.on('error', (err) => {
+            console.log("Error while setting machine " + hostname + " to " + availability);
+            console.log(err);
+            callback(err);
+        });
+    };
+
+    var shutdownMachine = function(resourceGroup, hostname, callback) {
+        req = client.delete("http://"+scaling_host+":8888/virtualmachines/" + resourceGroup + "/" + hostname, function (data, response) {
+            if (response.statusCode == 200) {
+                callback();
+            } else {
+                console.log("Error while shutting down machine " + hostname);
+                console.log(data);
+                callback(data);
+            }
+        });
+        req.on('error', (err) => {
+            console.log("Error while shutting down machine " + hostname);
+            console.log(err);
+            callback(err);
+        });
+    };
+
+    var getWorkerAmount = function(callback) {
+        req = client.get("http://"+docker_host+":4444/workers", function(data, response) {
+            if (response.statusCode == 200) {
+                callback(null, data.length);
+            } else {
+                console.log("Error while getting worker amount!");
+                console.log(data);
+                callback(data);
+            }
+
+        });
+        req.on('error', (err) => {
+            console.log("Error while getting worker amount!");
+            console.log(err);
+            callback(err);
+        });
+    };
+
     var scaleOneDown = function() {
         // Select machine to scale
         var key = Object.keys(machines).find(function(key) {
@@ -178,67 +251,39 @@ var resources_module = (function () {
         console.log("Scaling down VM: " + key);
 
 
-        // THIS NEEDS RX or functions?!
+        // THIS NEEDS RX?!
 
         // Set machine status to drain
-        req = client.post("http://"+docker_host+":4444/node/" + key + "/drain", function(data, response) {
-            if (response.statusCode == 200) {
-
-                // Get amount of workers
-                req_workers = client.get("http://"+docker_host+":4444/workers", function(data, response) {
-                    if (response.statusCode == 200) {
-
-                        if (data.length > 0) {
-                            var target_amount = Math.max(data.length - workers_per_machine, 0);
-
-                            // Scale workers down a notch
-                            console.log("Scaling workers down to " + target_amount);
-                            var args = {data: { scale: target_amount }};
-                            scale_workers = client.put("http://"+docker_host+":4444/services/workers", args, function(data, response) {
-                                if (response.statusCode == 200) {
-                                    console.log("Scaled workers down to " + target_amount);
-
-                                    // Scale machine down
-                                    req2 = client.delete("http://"+scaling_host+":8888/virtualmachines/" + machines[key].resourceGroup + "/" + key, function (data, response) {
-                                        console.log(data);
-                                        
-                                        // Register machines as scaled
-                                        machines[key].deactivated = true;
-
+        setMachineAvailability(key, "drain", function(error) {
+            if (!error) {
+                getWorkerAmount(function(error, worker_amount) {
+                    if (!error) {
+                        if (worker_amount > 0) {
+                            var target_amount = Math.max(worker_amount - workers_per_machine, 0);
+                            scaleWorkers(target_amount, function(error){
+                                if (!error) {
+                                    shutdownMachine(machines[key].resourceGroup, key, function(error) {
+                                        if (!error) {
+                                            // DONE, Register machines as scaled
+                                            machines[key].deactivated = true;
+                                        }
                                     });
-                                    req2.on('error', (err) => console.log(err));
-
-                                } else {
-                                    console.log("Error: " + data);
                                 }
                             });
-
                         } else {
-
                             // No scaling of workers needed at 0
                             console.log("0 workers, so nothing to scale.");
-
+                            shutdownMachine(machines[key].resourceGroup, key, function(error) {
+                                if (!error) {
+                                    // DONE, Register machines as scaled
+                                    machines[key].deactivated = true;
+                                }
+                            });
                         }
-
-                    } else {
-
-                        console.log("Error while getting worker amount!");
-                        console.log(data);
-
                     }
-
                 });
-                req_workers.on('error', (err) => console.log(err));
-
-            } else {
-
-                console.log("Error while setting node to drain!");
-                console.log(data);
-
             }
         });
-        req.on('error', (err) => console.log(err));
-
     };
 
     var getStatus = function(callback) {
