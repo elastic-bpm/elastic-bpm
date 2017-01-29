@@ -238,6 +238,7 @@ update_workers = function(req, res) {
 
             } else {
 
+                error = "";
                 worker_service_info.forEach(function(info) {
                     update = info.Spec; 
                     update.version = info.Version.Index;
@@ -248,16 +249,15 @@ update_workers = function(req, res) {
                     };
 
                     worker_service = docker_remote.getService(info.ID);
-                    worker_service.update(update, (err2, data2) => {
-                        if (err2) {
-                            send_error(res, "" + err2);
-                            return;
-                        }                         
-                    });
+                    worker_service.update(update, (err2, data2) => {if (err2) error += err;});
                 });
 
-                res.setHeader('Content-Type', 'application/json');
-                res.send(JSON.stringify("ok", null, 3));      
+                if (error) {
+                    send_error(error);
+                } else {
+                    res.setHeader('Content-Type', 'application/json');
+                    res.send(JSON.stringify("ok", null, 3));      
+                }
             }
 
         });
@@ -281,18 +281,18 @@ delete_workers = function(req, res) {
 
         } else {
 
+            error = "";
             worker_service_info.forEach(function(info) {
                 worker_service = docker_remote.getService(info.ID);
-                worker_service.remove((err2, data2) => {
-                    if (err2) {
-                        send_error(res, "" + err2);
-                        return;
-                    }
-                });
+                worker_service.remove((err2, data2) => {if (err2) error += err;});
             });
 
-            res.setHeader('Content-Type', 'application/json');
-            res.send(JSON.stringify('ok', null, 3));      
+            if (error) {
+                send_error(error);
+            } else {
+                res.setHeader('Content-Type', 'application/json');
+                res.send(JSON.stringify('ok', null, 3));      
+            }
         }
     });
 };
@@ -339,22 +339,23 @@ create_workers = function(req, res) {
       }
     };
     
+    error = "";
+
     services_array = getServiceArray();
     services_array.forEach(function(service_name) {
         var n_opts = JSON.parse(JSON.stringify(opts));
         n_opts.Name = service_name;
         n_opts.TaskTemplate.Placement.Constraints.push('node.hostname == ' + services[service_name]);
         console.log(n_opts);
-        docker_remote.createService(n_opts, (err, data) => {
-            if (err) {
-                send_error(res, err);
-                return;
-            }
-        });
+        docker_remote.createService(n_opts, (err, data) => {if (err) error += err;});
     });
 
-    res.setHeader('Content-Type', 'application/json');
-    res.send(JSON.stringify("ok", null, 3));            
+    if (error) {
+        send_error(res, error);
+    } else {
+        res.setHeader('Content-Type', 'application/json');
+        res.send(JSON.stringify("ok", null, 3));            
+    }
 };
 
 // ROUTING
