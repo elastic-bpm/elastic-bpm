@@ -221,7 +221,7 @@ var resources_module = (function () {
         });
     };
 
-
+    // Can still fail??
     var startMachine = function(resourceGroup, hostname, callback) {
         req = client.post("http://"+scaling_host+":8888/virtualmachines/" + resourceGroup + "/" + hostname, function (data, response) {
             if (response.statusCode == 200) {
@@ -239,6 +239,7 @@ var resources_module = (function () {
         });
     };
 
+    // Can still fail??
     var shutdownMachine = function(resourceGroup, hostname, callback) {
         req = client.delete("http://"+scaling_host+":8888/virtualmachines/" + resourceGroup + "/" + hostname, function (data, response) {
             if (response.statusCode == 200) {
