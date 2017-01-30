@@ -131,7 +131,12 @@ var resources_module = (function () {
         return count;
     };
 
-    var scaleOneUp = function() {
+    var scaleUp = function(amount) {
+        if (amount === 0) {
+            scaling = false;
+            return;
+        }
+
         // Select machine to scale
         var key = Object.keys(machines).find(function(key) {
             if (machines[key].state !== "VM running" && 
@@ -147,20 +152,26 @@ var resources_module = (function () {
             console.log("No machines to scale.");
             return;
         }
-        console.log("Scaling up VM: " + key);
 
+        console.log("Scaling up VM: " + key);
         setMachineAvailability(key, "active", function(error) {
             if (!error) {
                  startMachine(machines[key].resourceGroup, key, function(error) {
                     if (!error) {
                         machines[key].activated = true;
+                        scaleUp(amount - 1);
                     }
                 });
             }
         });
     };
 
-    var scaleOneDown = function() {
+    var scaleDown = function(amount) {
+        if (amount === 0) {
+            scaling = false;
+            return;
+        }
+
         // Select machine to scale
         var key = Object.keys(machines).find(function(key) {
             if (machines[key].state !== "VM deallocated" && 
@@ -176,13 +187,14 @@ var resources_module = (function () {
             console.log("No machines to scale.");
             return;
         }
-        console.log("Scaling down VM: " + key);
 
+        console.log("Scaling down VM: " + key);
         setMachineAvailability(key, "drain", function(error) {
             if (!error) {                
                 shutdownMachine(machines[key].resourceGroup, key, function(error) {
                     if (!error) {
                         machines[key].deactivated = true;
+                        scaleDown(amount - 1);
                     }
                 });
             }
@@ -253,13 +265,13 @@ var resources_module = (function () {
         req.on('error', (err) => callback(err));
     };
 
+    var scaling = false;
     var set_machine_amount = function(amount, callback) {
         getStatus(function(status) {
             if (status !== "ok") {
                 console.log(status);
                 callback(status, null);
             } else {
-
                 updateMachines(function(error) {
                     if (error) {
                         console.log(error);
@@ -268,32 +280,29 @@ var resources_module = (function () {
                         var activeCount = getActiveMachineCount();
                         var diff = amount - activeCount;
 
-                        if (diff > 0) {
-                            var scalingUpCount = getScalingUpCount();
-                            var toActivate = amount - (activeCount + scalingUpCount);
-                            if (toActivate > 0) {
-                                console.log("Scaling up " + toActivate + " machines, to get to " + amount);
-                                for (var i = 0; i < toActivate; i++) {
-                                    scaleOneUp();
+                        // Already scaling stuff!
+                        if (scaling) {
+                            callback(null, diff);    
+                        } else {
+                        
+                            if (diff !== 0) scaling = true;
+                            if (diff > 0) {
+                                var scalingUpCount = getScalingUpCount();
+                                var toActivate = amount - (activeCount + scalingUpCount);
+                                if (toActivate > 0) {
+                                    console.log("Scaling up " + toActivate + " machines, to get to " + amount);
+                                    scaleUp(toActivate);
+                                }
+                            } else if (diff < 0) {
+                                var toDeactivate = Math.abs(diff);
+                                if (toDeactivate > 0) {
+                                    console.log("Scaling down " + toDeactivate + " machines to reach " + amount);
+                                    scaleDown(toDeactivate);
                                 }
                             }
-                        } else if (diff < 0) {
 
-                            // OK, so DIFF does not take into account shutting down machines.
-                            // Example: Going from 15 -> 0, 8 are shutting down, 7 live = 0 change!!
-                            // Count machines "deactivated" as running for going down?
-
-                            var scalingDownCount = getScalingDownCount();
-                            var toDeactivate = (activeCount - scalingDownCount) - amount;
-                            if (toDeactivate > 0) {
-                                console.log("Scaling down " + toDeactivate + " machines to reach " + amount);
-                                for (var j = 0; j < toDeactivate; j++) {
-                                    scaleOneDown();
-                                }
-                            }
+                            callback(null, diff);
                         }
-
-                        callback(null, diff);
                     }
                 });
 
