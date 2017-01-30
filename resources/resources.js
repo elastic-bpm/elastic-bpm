@@ -133,7 +133,7 @@ var resources_module = (function () {
 
     var scaleUp = function(amount) {
         if (amount === 0) {
-            scaling = false;
+            my.scaling = false;
             return;
         }
 
@@ -150,6 +150,7 @@ var resources_module = (function () {
         // Failed
         if (key === undefined) {
             console.log("No machines to scale.");
+            my.scaling = false;
             return;
         }
 
@@ -168,7 +169,7 @@ var resources_module = (function () {
 
     var scaleDown = function(amount) {
         if (amount === 0) {
-            scaling = false;
+            my.scaling = false;
             return;
         }
 
@@ -185,6 +186,7 @@ var resources_module = (function () {
         // Failed
         if (key === undefined) {
             console.log("No machines to scale.");
+            my.scaling = false;
             return;
         }
 
@@ -265,7 +267,7 @@ var resources_module = (function () {
         req.on('error', (err) => callback(err));
     };
 
-    var scaling = false;
+    my.scaling = false;
     var set_machine_amount = function(amount, callback) {
         getStatus(function(status) {
             if (status !== "ok") {
@@ -281,11 +283,12 @@ var resources_module = (function () {
                         var diff = amount - activeCount;
 
                         // Already scaling stuff!
-                        if (scaling) {
+                        if (my.scaling) {
+                            console.log("Not scaling " + diff + " machines, already scaling.");
                             callback(null, diff);    
                         } else {
                         
-                            if (diff !== 0) scaling = true;
+                            if (diff !== 0) my.scaling = true;
                             if (diff > 0) {
                                 var scalingUpCount = getScalingUpCount();
                                 var toActivate = amount - (activeCount + scalingUpCount);
@@ -294,6 +297,8 @@ var resources_module = (function () {
                                     scaleUp(toActivate);
                                 }
                             } else if (diff < 0) {
+                                // NOT QUITE IT YET, need to take into account currently scaling down machines?
+                                // How about: Counting all NOT CURRENTLY SCALING DOWN active machines as active instead of +/-?
                                 var toDeactivate = Math.abs(diff);
                                 if (toDeactivate > 0) {
                                     console.log("Scaling down " + toDeactivate + " machines to reach " + amount);
