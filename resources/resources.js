@@ -282,6 +282,11 @@ var resources_module = (function () {
                     } else {
                         var activeCount = getActiveMachineCount();
                         var diff = amount - activeCount;
+                        if (diff === 0) {
+                            console.log("Nothing to scale.");
+                            my.scaling = false;
+                            callback(null, diff);
+                        }
 
                         // Already scaling stuff!
                         if (my.scaling) {
