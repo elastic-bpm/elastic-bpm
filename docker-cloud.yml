@@ -22,8 +22,6 @@ redis:
   autoredeploy: true
 scaling:
   environment:
-    - subscriptionId
-    - resourceGroupName
     - CLIENT_ID
     - DOMAIN
     - APPLICATION_SECRET
