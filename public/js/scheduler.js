@@ -31,6 +31,10 @@ scheduler_init = function(socket, interval) {
             scheduler_start_execution('AtStart');
         });
 
+        $("#scheduler-reset-execution").on('click', function(event) {
+            scheduler_reset_execution();
+        });
+
         update_scheduler_info();
         setInterval(update_scheduler_info, interval);
         console.log("Scheduler init");
