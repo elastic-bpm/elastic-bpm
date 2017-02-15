@@ -42,84 +42,23 @@ scheduler_init = function(socket, interval) {
 };
 
 scheduler_reset_execution = function() {
-    reset_workers(() => {});
-    scheduler_delete_all_workflows();
-    scheduler_update_policy("Off");
-
-    $("#scheduler-set-policy").removeClass("fa-check-circle-o fa-circle-o-notch fa-spin fa-fw").addClass("fa-circle-o");
-    $("#scheduler-wait-machines").removeClass("fa-check-circle-o fa-circle-o-notch fa-spin fa-fw").addClass("fa-circle-o");
-    $("#scheduler-wait-nodes").removeClass("fa-check-circle-o fa-circle-o-notch fa-spin fa-fw").addClass("fa-circle-o");
-    $("#scheduler-reset-workers-1").removeClass("fa-check-circle-o fa-circle-o-notch fa-spin fa-fw").addClass("fa-circle-o");
-    $("#scheduler-scale-workers").removeClass("fa-check-circle-o fa-circle-o-notch fa-spin fa-fw").addClass("fa-circle-o");
-    $("#scheduler-start-humans").removeClass("fa-check-circle-o fa-circle-o-notch fa-spin fa-fw").addClass("fa-circle-o");
-    $("#scheduler-upload-workflow").removeClass("fa-check-circle-o fa-circle-o-notch fa-spin fa-fw").addClass("fa-circle-o");
-    $("#scheduler-wait-for-finished").removeClass("fa-check-circle-o fa-circle-o-notch fa-spin fa-fw").addClass("fa-circle-o");
-    $("#scheduler-reset-workers-2").removeClass("fa-check-circle-o fa-circle-o-notch fa-spin fa-fw").addClass("fa-circle-o");
-    $("#scheduler-delete-workflows").removeClass("fa-check-circle-o fa-circle-o-notch fa-spin fa-fw").addClass("fa-circle-o");
-    $("#scheduler-set-policy-off").removeClass("fa-check-circle-o fa-circle-o-notch fa-spin fa-fw").addClass("fa-circle-o");
+    $.delete('/scheduler/execution', function(data) {
+        update_scheduler_info();
+    });
 };
 
 scheduler_start_execution = function(policy) {
-    scheduler_update_policy(policy);
-    $("#scheduler-set-policy").removeClass("fa-circle-o").addClass("fa-check-circle-o");
-    $("#scheduler-wait-machines").removeClass("fa-circle-o").addClass("fa-circle-o-notch fa-spin fa-fw");
-
+    var amount = 0;
     if (policy === "AtStart") {
-        setTimeout(() => scheduler_wait_for_machines($("#scheduler-get-amount-at-start").val()), 1000);
+        amount = $("#scheduler-get-amount-at-start").val();
     }
     if (policy === "OnDemand") {
-        setTimeout(() => scheduler_wait_for_machines($("#scheduler-get-amount-on-demand").val()), 1000);
+        amount = ("#scheduler-get-amount-on-demand").val();
     }
     if (policy === "Learning") {
-        setTimeout(() => scheduler_wait_for_machines($("#scheduler-get-amount-learning").val()), 1000);
+        amount = $("#scheduler-get-amount-learning").val();
     }
-};
 
-scheduler_wait_for_machines = function(target_machines) {
-    if (target_machines == $("#scheduler-get-machines").val()) {
-        $("#scheduler-wait-machines").removeClass("fa-circle-o-notch fa-spin fa-fw").addClass("fa-check-circle-o");
-        $("#scheduler-wait-nodes").removeClass("fa-circle-o").addClass("fa-circle-o-notch fa-spin fa-fw");
-        scheduler_wait_for_nodes(target_machines);
-    } else {
-        setTimeout(() => scheduler_wait_for_machines(target_machines), 1000);
-    }
-};
-
-scheduler_wait_for_nodes = function(target_nodes) {
-    if (target_nodes == $("#scheduler-get-ready-nodes").val()) {
-        $("#scheduler-wait-nodes").removeClass("fa-circle-o-notch fa-spin fa-fw").addClass("fa-check-circle-o");
-        reset_workers(() => {
-            $("#scheduler-reset-workers-1").removeClass("fa-circle-o").addClass("fa-check-circle-o");
-            $("#scheduler-scale-workers").removeClass("fa-circle-o").addClass("fa-circle-o-notch fa-spin fa-fw");
-            setTimeout(() => scheduler_scale_workers(4), 5000);
-        });
-    } else {
-        setTimeout(() => scheduler_wait_for_nodes(target_nodes), 1000);
-    }
-};
-
-scheduler_scale_workers = function(amount) {
-    scale_workers(amount, () => {
-        $("#scheduler-scale-workers").removeClass("fa-circle-o-notch fa-spin fa-fw").addClass("fa-check-circle-o");
-        scheduler_start_humans();          
-    });
-};
-
-scheduler_start_humans = function() {
-    var data = { 
-        on: $("#humans-on-time").val(), 
-        off: $("#humans-off-time").val(),
-        init: $("#humans-init-time").val(), 
-        total: $("#humans-total-time").val(),
-        amount: $("#humans-amount").val()
-    };
-    start_humans(data, () => {
-        $("#scheduler-start-humans").removeClass("fa-circle-o").addClass("fa-check-circle-o");
-        scheduler_upload_workflow_script();
-    });
-};
-
-scheduler_upload_workflow_script = function() {
     var formData = new FormData();
 
     // HTML file input, chosen by user
@@ -127,44 +66,18 @@ scheduler_upload_workflow_script = function() {
     formData.append("workflow", fileInput.files[0]);
 
     var request = new XMLHttpRequest();
-    request.open("POST", "/workflows/file");
+    request.open("POST", "/scheduler/execution/"+ policy +"/" + amount);
     request.onreadystatechange = function (aEvt) {
         if (request.readyState == 4) {
             if(request.status == 200) {
-                $("#scheduler-upload-workflow").removeClass("fa-circle-o").addClass("fa-check-circle-o");
-                $("#scheduler-wait-for-finished").removeClass("fa-circle-o").addClass("fa-circle-o-notch fa-spin fa-fw");
-                scheduler_wait_finished();
+                console.log("Started execution!");
+                update_scheduler_info();
             } else {
                 console.log("Error uploading script: " + aEvt.target.responseText);
             }
         }
     };
     request.send(formData);
-};
-
-// Might take a while...
-scheduler_wait_finished = function() {
-    $.get('/human/info', function(data) {
-        total_moment = moment(data.startTime + data.totalTime);
-        if(total_moment.isBefore()) {
-            $("#scheduler-wait-for-finished").removeClass("fa-circle-o-notch fa-spin fa-fw").addClass("fa-check-circle-o");
-            reset_workers(() => {
-                $("#scheduler-reset-workers-2").removeClass("fa-circle-o").addClass("fa-check-circle-o");
-                scheduler_delete_all_workflows();                
-            });
-        } else {
-            setTimeout(scheduler_wait_finished, 10000); // Could calculate how long it still takes...!
-        }
-    });
-};
-
-scheduler_delete_all_workflows = function() {
-    delete_all_workflows(() => {
-        $("#scheduler-delete-workflows").removeClass("fa-circle-o").addClass("fa-check-circle-o");
-        
-        scheduler_update_policy("Off");
-        $("#scheduler-set-policy-off").removeClass("fa-circle-o").addClass("fa-check-circle-o");
-    });
 };
 
 scheduler_update_policy = function(policy) {
@@ -213,5 +126,17 @@ update_scheduler_info = function() {
         $("#scheduler-get-ready-nodes").val(amount); 
     }).fail(() => {
         console.log("Unable to get node status");
+    });
+
+    $.get("/scheduler/execution", (data) => {
+        Object.keys(data).forEach(function(key, index) {
+            if (this[key] === "done") {
+                $("#"+key).removeClass("fa-circle-o fa-circle-o-notch fa-spin fa-fw").addClass("fa-check-circle-o")
+            } else if (this[key] === "busy") {
+                $("#"+key).removeClass("fa-check-circle-o fa-circle-o").addClass("fa-circle-o-notch fa-spin fa-fw")
+            } else {
+                $("#"+key).removeClass("fa-check-circle-o fa-circle-o-notch fa-spin fa-fw").addClass("fa-circle-o")
+            }
+        }, data);
     });
 };

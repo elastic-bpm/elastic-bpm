@@ -8,6 +8,7 @@ var server = require('http').createServer(app);
 var io = require('socket.io')(server);
 var multiparty = require('multiparty');
 const fs = require('fs');
+var moment = require('moment');
 
 const os = require('os');
 var log4js = require('log4js');
@@ -233,35 +234,185 @@ create_workflow = function(req, res) {
     elastic_api.create_workflow(req.body, (error, data) => {return_data(res, error, data);});
 };
 
-create_workflow_using_file = function(req, res) {
+get_workflows_from_file = function(req, callback) {
     var form = new multiparty.Form();
- 
     form.parse(req, function(err, fields, files) {
         if (err) {
-            res.status(500).send("Error creating workflow: " + err);            
+            callback(err, null);
         } else if (files === undefined || files.workflow === undefined) {
-            res.status(500).send("Error creating workflow, file not found.");
+            callback("Error creating workflow, file not found.", null);
         } else {
             workflows = {};
              try {
                 workflows = JSON.parse(fs.readFileSync(files.workflow[0].path, 'utf8'));
                 fs.unlink(files.workflow[0].path, (unlink_err) => {
                     if (unlink_err){
-                        res.status(500).send("Error unlinking file: " + unlink_err);
+                        callback(unlink_err, null);
                     } else {
-                        elastic_api.create_multiple_workflows(workflows, (error, data) => {
-                            if (error) {
-                                res.status(500).send(error);
-                            } else {
-                                res.setHeader('Content-Type', 'application/json');
-                                res.send(JSON.stringify(data, null, 3));
-                            }
-                        });
+                        callback(null, workflows);
                     }
                 });
             } catch (e) {
-                res.status(500).send("Error parsing workflow: " + e);
+                callback(e, null);                
             }
+        }
+    });
+};
+
+scheduler_execute = function(req, res) {
+    var policy = req.params.policy;
+    var amount = req.params.amount;
+    get_workflows_from_file(req, (error, workflows) => {
+        if (error) {
+            res.status(500).send("Error parsing workflow: " + e);
+        } else {
+            res.send("ok");
+            setTimeout(() => scheduler_start_execute(policy, amount, workflows), 1000);
+        }
+    });
+};
+
+var scheduler_exeuction_data = {
+    "scheduler-set-policy": "todo",
+    "scheduler-wait-machines": "todo",
+    "scheduler-wait-nodes": "todo",
+    "scheduler-reset-workers-1": "todo",
+    "scheduler-scale-workers": "todo",
+    "scheduler-start-humans": "todo",
+    "scheduler-upload-workflow": "todo",
+    "scheduler-wait-for-finished": "todo",
+    "scheduler-reset-workers-2": "todo",
+    "scheduler-delete-workflows": "todo",
+    "scheduler-set-policy-off": "todo"
+};
+
+scheduler_start_execute = function(policy, amount, workflows) {
+    elastic_scheduler.post_policy(policy, () => {
+        scheduler_exeuction_data["scheduler-set-policy"] = "done";
+        scheduler_exeuction_data["scheduler-wait-machines"] = "busy";
+        scheduler_wait_for_machines(amount, () => {
+            scheduler_exeuction_data["scheduler-wait-machines"] = "done";
+            scheduler_exeuction_data["scheduler-wait-nodes"] = "busy";
+            scheduler_wait_for_nodes(amount, () => {
+                scheduler_exeuction_data["scheduler-wait-nodes"] = "done";
+                elastic_docker.delete_workers(() => {
+                    elastic_docker.create_workers(() => {});
+                });
+                scheduler_exeuction_data["scheduler-reset-workers-1"] = "done";
+                setTimeout(() => {
+                    scheduler_scale_workers(4);
+                    scheduler_exeuction_data["scheduler-scale-workers"] = "done";
+                    scheduler_start_humans();  
+                    scheduler_exeuction_data["scheduler-start-humans"] = "done";
+                    elastic_api.create_multiple_workflows(workflows, (error, data) => {
+                        if (error) {
+                            console.log(error);
+                        } else {
+                            scheduler_exeuction_data["scheduler-upload-workflow"] = "done";
+                            scheduler_exeuction_data["scheduler-wait-for-finished"] = "busy";
+                            scheduler_wait_for_humans(() => {
+                                scheduler_exeuction_data["scheduler-wait-for-finished"] = "done";
+                                scheduler_execution_reset();
+                            });
+                        }
+                    });                          
+                }, 5000);
+            });
+        });
+    });
+};
+
+scheduler_wait_for_humans = function(callback) {
+    elastic_human.get_human_info((error, data) => {
+        if (error) {
+            console.log(error);
+        } else {
+            total_moment = moment(data.startTime + data.totalTime);
+            if(total_moment.isBefore()) {
+                callback();
+            } else {
+                setTimeout(() => scheduler_wait_for_humans(callback), 5000);
+            }
+        }
+    });
+};
+
+delete_scheduler_execution = function(req, res) {
+    scheduler_execution_reset(() => {return_data(res, null, "ok");});
+};
+
+scheduler_execution_reset = function() {
+    elastic_docker.delete_workers(() => {
+        elastic_docker.create_workers(() => {});
+    });
+
+    elastic_api.delete_all_workflows(() => {});
+
+    elastic_scheduler.post_policy("Off", () => {});
+
+    scheduler_exeuction_data = {
+        "scheduler-set-policy": "todo",
+        "scheduler-wait-machines": "todo",
+        "scheduler-wait-nodes": "todo",
+        "scheduler-reset-workers-1": "todo",
+        "scheduler-scale-workers": "todo",
+        "scheduler-start-humans": "todo",
+        "scheduler-upload-workflow": "todo",
+        "scheduler-wait-for-finished": "todo",
+        "scheduler-reset-workers-2": "todo",
+        "scheduler-delete-workflows": "todo",
+        "scheduler-set-policy-off": "todo"
+    };
+};
+
+scheduler_wait_for_machines = function(target_machines, callback) {
+    elastic_scheduler.get_machine_count((error, data) => {
+        if (!error && target_machines == data.active) {
+            callback();
+        } else {
+            setTimeout(() => scheduler_wait_for_machines(target_machines, callback), 1000);
+        }
+    });
+};
+
+scheduler_wait_for_nodes = function(target_nodes, callback) {
+    elastic_docker.get_nodes((error, data) => {
+        if (!error && target_nodes == data.filter((n) => n.status === "ready").length) {
+            callback();
+        } else {
+            setTimeout(() => scheduler_wait_for_nodes(target_nodes, callback), 1000);
+        }
+    });
+};
+
+scheduler_scale_workers = function(amount) {
+    elastic_docker.update_workers(JSON.stringify({"scale": amount}), () => {});
+};
+
+scheduler_start_humans = function() {
+    var data = { 
+        on: 9, 
+        off: 15,
+        init: 8, 
+        total: 41,
+        amount: 5
+    };
+    elastic_human.start_humans(data, () => {});
+};
+
+create_workflow_using_file = function(req, res) {
+    get_workflows_from_file(req, (error, workflows) => {
+        if (error) {
+            res.status(500).send("Error parsing workflow: " + e);
+        } else {
+            elastic_api.create_multiple_workflows(workflows, (error, data) => {
+                if (error) {
+                    res.status(500).send(error);
+                } else {
+                    res.setHeader('Content-Type', 'application/json');
+                    res.send(JSON.stringify(data, null, 3));
+                }
+            });
         }
     });
 };
@@ -358,6 +509,16 @@ post_scheduler_amount = function(req, res) {
     elastic_scheduler.post_amount(req.params.policy, req.params.amount, (error, data) => {return_data(res, error, data);});
 };
 
+get_scheduler_execution = function(req, res) {
+    res.setHeader('Content-Type', 'application/json');
+    res.send(JSON.stringify(scheduler_exeuction_data, null, 3));
+};
+
+delete_scheduler_execution = function(req, res) {
+    scheduler_execution_reset();
+};
+
+
 post_start_humans = function(req, res) {
     elastic_human.start_humans(req.body, (error) => {
         if (error) {
@@ -425,6 +586,9 @@ setup_routes = function() {
    app.get('/scheduler/policy', get_scheduler_policy);
    app.get('/scheduler/machinecount', get_scheduler_machine_count);
    app.get('/scheduler/amount', get_scheduler_amount);
+   app.get('/scheduler/execution', get_scheduler_execution);
+   app.delete('/scheduler/execution', delete_scheduler_execution);
+   app.post('/scheduler/execution/:policy/:amount',scheduler_execute);
    app.post('/scheduler/amount/:policy/:amount', post_scheduler_amount);
 
 };
