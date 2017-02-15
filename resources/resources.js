@@ -89,6 +89,16 @@ var resources_module = (function () {
                             machines[vm.name] = {};
                         }
 
+                        // Seems to happen now?
+                        if (vm.powerState === "VM stopped") {
+                            machines[vm.name] = {};
+                            shutdownMachine(machines[vm.name].resourceGroup, vm.name, function(error) {
+                                if (!error) {
+                                    machines[vm.name].deactivated = true;
+                                }
+                            });
+                        }
+
                         // Update state
                         machines[vm.name].state = vm.powerState;
                         machines[vm.name].resourceGroup = vm.resourceGroupName;
@@ -286,6 +296,7 @@ var resources_module = (function () {
                             console.log("Nothing to scale.");
                             my.scaling = false;
                             callback(null, diff);
+                            return;
                         }
 
                         // Already scaling stuff!
@@ -303,8 +314,7 @@ var resources_module = (function () {
                                     scaleUp(toActivate);
                                 }
                             } else if (diff < 0) {
-                                // NOT QUITE IT YET, need to take into account currently scaling down machines?
-                                // How about: Counting all NOT CURRENTLY SCALING DOWN active machines as active instead of +/-?
+                                // This works better than taking the scaling down machines into account
                                 var toDeactivate = Math.abs(diff);
                                 if (toDeactivate > 0) {
                                     console.log("Scaling down " + toDeactivate + " machines to reach " + amount);
