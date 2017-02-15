@@ -18,16 +18,7 @@ humans_init = function(socket, interval) {
                 total: $("#humans-total-time").val(),
                 amount: $("#humans-amount").val()
             };
-            $.ajax({
-                type: "POST",
-                url: "/starthumans",
-                processData: false,
-                contentType: 'application/json',
-                data: JSON.stringify(data),
-                success: function(r) {
-                    console.log(r);
-                }
-            });
+            start_humans(data, (r) => console.log(r));
         });
 
         update_human_task_table();
@@ -35,6 +26,19 @@ humans_init = function(socket, interval) {
 
         update_human_info();
         setInterval(update_human_info, interval);
+    });
+};
+
+start_humans = function(data, callback) {
+    $.ajax({
+        type: "POST",
+        url: "/starthumans",
+        processData: false,
+        contentType: 'application/json',
+        data: JSON.stringify(data),
+        success: function(r) {
+            callback(r);
+        }
     });
 };
 
