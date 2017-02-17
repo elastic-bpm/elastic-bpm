@@ -30,7 +30,15 @@ scheduler_init = function(socket, interval) {
         $("#scheduler-atstart-execution").on('click', function(event) {
             scheduler_start_execution('AtStart');
         });
-
+        
+        $("#scheduler-ondemand-execution").on('click', function(event) {
+            scheduler_start_execution('OnDemand');
+        });
+        
+        $("#scheduler-learning-execution").on('click', function(event) {
+            scheduler_start_execution('Learning');
+        });
+        
         $("#scheduler-reset-execution").on('click', function(event) {
             scheduler_reset_execution();
         });
@@ -53,7 +61,7 @@ scheduler_start_execution = function(policy) {
         amount = $("#scheduler-get-amount-at-start").val();
     }
     if (policy === "OnDemand") {
-        amount = ("#scheduler-get-amount-on-demand").val();
+        amount = $("#scheduler-get-amount-on-demand").val();
     }
     if (policy === "Learning") {
         amount = $("#scheduler-get-amount-learning").val();

@@ -264,7 +264,7 @@ scheduler_execute = function(req, res) {
     var amount = req.params.amount;
     get_workflows_from_file(req, (error, workflows) => {
         if (error) {
-            res.status(500).send("Error parsing workflow: " + e);
+            res.status(500).send("Error parsing workflow: " + error);
         } else {
             res.send("ok");
             setTimeout(() => scheduler_start_execute(policy, amount, workflows), 1000);
