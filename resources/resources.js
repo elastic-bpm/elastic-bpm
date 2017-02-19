@@ -2,6 +2,7 @@
 
 var resources_module = (function () {
     var my = {}; // public module
+    var load = require('./load.js');
     var Client = require('node-rest-client').Client;
     var client = new Client();
     var scaling_host = process.env.SCALING || "localhost";
@@ -80,7 +81,15 @@ var resources_module = (function () {
     };
 
     var check_resources_ondemand = function() {
-        console.log("Checking resource for ondemand policy.");
+        console.log("Checking load of machines for ondemand policy.");
+        req = client.get("http://"+scaling_host+":8888/virtualmachines", function (data, response) {
+            data.forEach(function(vm) {
+                console.log("Getting load for: " + vm);
+                load.get_load(vm, (load_data) => {
+                    console.log(load_data);
+                });
+            });
+        });
     };
 
     var check_resources_learning = function() {
