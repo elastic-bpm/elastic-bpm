@@ -1,5 +1,7 @@
 /*jshint esversion: 6 */
 
+// TOOD: USE PROMISE & ASYNC AWAIT
+
 var resources_module = (function () {
     var my = {}; // public module
     var load = require('./load.js');
@@ -102,20 +104,30 @@ var resources_module = (function () {
             var live_machines = Object.keys(machines).filter((key) => {
                 // true if machine = available
                 // false if machine = drain
+                // TODO: rewrite this to ASYNC AWAIT!!
+                var machineIsAvailable = await getMachineAvailability(key, (err, data) => {});
+                return machineIsAvailable;
             });
 
             // If load for all available machines is higher than x
             var has_high_load = (key) => {machines[key].load > x};
             if (live_machines.every(has_high_load)) {
-                // Scale up
+                // Set a new machine to available
+
+                // 1. Get machine which is not set to available yet
+                // 1b. If no machine extra available -- too bad
+                // 2. Set machine to available
             } else {
                 // If load is lower than y for a machine, and other machines are not all higher than x
                 var has_low_load = (key) => {machines[key].load < y};
                 var lower = live_machines.filter(has_low_load);
-                if (lower.length > 0) {
+                if (lower.length > 1) {
+                    // Set [0] to drain
+                } else if (lower.length === 1) {
                     var higher = live_machines.filter(has_high_load);
-                    // TEST FOR AMOUNT OF MACHINES HAVING TOO HIGH
-                    // Scale down this or these machine(s)
+                    if (higher.length !== live_machines.length - 1) {
+                        // Set this machine to drain
+                    }
                 }
             }
         });
@@ -283,6 +295,23 @@ var resources_module = (function () {
         });
         req.on('error', (err) => {
             console.log("Error while setting machine " + hostname + " to " + availability);
+            console.log(err);
+            callback(err);
+        });
+    };
+
+    var getMachineAvailability = function(hostname, callback) {
+        req = client.get("http://"+docker_host+":4444/node/" + hostname, function(data, response) {
+            if (response.statusCode == 200) {
+                callback(null, data);
+            } else {
+                console.log("Error while getting machine " + hostname + " availability.");
+                console.log(data);
+                callback(data);
+            }
+        });
+        req.on('error', (err) => {
+            console.log("Error while getting machine " + hostname + " availability.");
             console.log(err);
             callback(err);
         });

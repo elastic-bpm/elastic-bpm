@@ -5,8 +5,8 @@
   "main": "app.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start:local": "set DEBUG=express:* & nodemon app.js",
-    "start": "node app.js",
+    "start:local": "set DEBUG=express:* & node --harmony-async-await app.js",
+    "start": "node --harmony-async-await app.js",
     "wait": "timeout 3",
     "docker:reload": "npm run docker:kill && npm run docker:build && npm run wait && npm run docker:run",
     "docker:kill": "docker rm elastic-scheduler --force || echo 'ok'",
