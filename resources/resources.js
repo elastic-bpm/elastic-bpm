@@ -296,37 +296,35 @@ var resources_module = (function () {
                             console.log("Nothing to scale.");
                             my.scaling = false;
                             callback(null, diff);
-                            return;
-                        }
-
-                        // Already scaling stuff!
-                        if (my.scaling) {
-                            console.log("Not scaling " + diff + " machines, already scaling.");
-                            callback(null, diff);    
                         } else {
-                        
-                            if (diff !== 0) my.scaling = true;
-                            if (diff > 0) {
-                                var scalingUpCount = getScalingUpCount();
-                                var toActivate = amount - (activeCount + scalingUpCount);
-                                if (toActivate > 0) {
-                                    console.log("Scaling up " + toActivate + " machines, to get to " + amount);
-                                    scaleUp(toActivate);
-                                }
-                            } else if (diff < 0) {
-                                // This works better than taking the scaling down machines into account
-                                var toDeactivate = Math.abs(diff);
-                                if (toDeactivate > 0) {
-                                    console.log("Scaling down " + toDeactivate + " machines to reach " + amount);
-                                    scaleDown(toDeactivate);
+
+                            // Already scaling stuff!
+                            if (my.scaling) {
+                                console.log("Not scaling " + diff + " machines, already scaling.");    
+                            } else {
+                                my.scaling = true;
+                                if (diff > 0) {
+                                    var scalingUpCount = getScalingUpCount();
+                                    var toActivate = amount - (activeCount + scalingUpCount);
+                                    if (toActivate > 0) {
+                                        console.log("Scaling up " + toActivate + " machines, to get to " + amount);
+                                        scaleUp(toActivate);
+                                    }
+                                } else if (diff < 0) {
+                                    // This works better than taking the scaling down machines into account
+                                    var toDeactivate = Math.abs(diff);
+                                    if (toDeactivate > 0) {
+                                        console.log("Scaling down " + toDeactivate + " machines to reach " + amount);
+                                        scaleDown(toDeactivate);
+                                    }
                                 }
                             }
-
-                            callback(null, diff);
                         }
+
+                        // DONE, give back diff
+                        callback(null, diff);
                     }
                 });
-
             }
         });
     };
