@@ -82,13 +82,42 @@ var resources_module = (function () {
 
     var check_resources_ondemand = function() {
         console.log("Checking load of machines for ondemand policy.");
+
         req = client.get("http://"+scaling_host+":8888/virtualmachines", function (data, response) {
             data.forEach(function(vm) {
-                console.log("Getting load for: " + vm);
-                load.get_load(vm, (load_data) => {
-                    console.log(load_data);
-                });
+                if (vm.name.startsWith("node")) {
+                    if (machines[vm.name] === undefined) {
+                        machines[vm.name] = {};
+                    }
+                    
+                    console.log("Getting load for: " + vm);
+                    load.get_load(vm, (load_data) => {
+                        console.log(load_data);
+                        // TODO: Update with real value
+                        machines[key].load = load_data.system.load;
+                    });
+                } 
             });
+
+            var live_machines = Object.keys(machines).filter((key) => {
+                // true if machine = available
+                // false if machine = drain
+            });
+
+            // If load for all available machines is higher than x
+            var has_high_load = (key) => {machines[key].load > x};
+            if (live_machines.every(has_high_load)) {
+                // Scale up
+            } else {
+                // If load is lower than y for a machine, and other machines are not all higher than x
+                var has_low_load = (key) => {machines[key].load < y};
+                var lower = live_machines.filter(has_low_load);
+                if (lower.length > 0) {
+                    var higher = live_machines.filter(has_high_load);
+                    // TEST FOR AMOUNT OF MACHINES HAVING TOO HIGH
+                    // Scale down this or these machine(s)
+                }
+            }
         });
     };
 
