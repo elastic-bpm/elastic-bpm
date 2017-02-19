@@ -171,6 +171,9 @@ var resources_module = (function () {
                     if (!error) {
                         machines[key].activated = true;
                         scaleUp(amount - 1);
+                    } else {
+                        // RETRY?
+                        scaleUp(amount);
                     }
                 });
             }
@@ -207,6 +210,9 @@ var resources_module = (function () {
                     if (!error) {
                         machines[key].deactivated = true;
                         scaleDown(amount - 1);
+                    } else {
+                        // RETRY?
+                        scaleDown(amount);
                     }
                 });
             }
