@@ -62,8 +62,21 @@ var resources_module = (function () {
         }
     };
 
+    var get_loads = function() {
+        // Get active machine names array
+        // [ "node-01", "node-02", "node-03", ... ]
+
+        // Get load per machine
+        // Save this is a new array
+
+        // Return the loads.
+
+
+        // PERHAPS, make this an interval-based update??
+    }
+
     var check_resources_atstart = function() {
-        console.log("Checking resource for atstart policy.");
+        console.log("Checking resources for atstart policy.");
     };
 
     var check_resources_ondemand = function() {
