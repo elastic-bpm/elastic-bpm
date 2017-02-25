@@ -1,0 +1,23 @@
+{
+  "name": "elastic-dashboard-api",
+  "version": "1.0.0",
+  "description": "API backend for the elastic-dashboard",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/elastic-bpm/elastic-dashboard-api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/elastic-bpm/elastic-dashboard-api/issues"
+  },
+  "homepage": "https://github.com/elastic-bpm/elastic-dashboard-api#readme",
+  "dependencies": {
+    "express": "^4.14.1",
+    "log4js": "^1.1.0"
+  }
+}
