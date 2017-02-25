@@ -105,8 +105,8 @@ var resources_module = (function () {
                 // true if machine = available
                 // false if machine = drain
                 // TODO: rewrite this to ASYNC AWAIT!!
-                var machineIsAvailable = await getMachineAvailability(key, (err, data) => {});
-                return machineIsAvailable;
+                //var machineIsAvailable = await getMachineAvailability(key, (err, data) => {});
+                //return machineIsAvailable;
             });
 
             // If load for all available machines is higher than x
