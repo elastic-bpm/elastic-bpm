@@ -6,6 +6,7 @@ var server = require('http').createServer(app);
 
 var workflows = require('./components/workflows');
 var redis = require('./components/redis');
+var docker = require('./components/docker');
 
 const os = require('os');
 var log4js = require('log4js');
@@ -31,26 +32,34 @@ get_workflow_status = function(req, res) {
     let status = workflows.check_status();
 
     res.setHeader('Content-Type', 'application/json');
-    res.status(status.statusCode).send(status);
+    res.status(status.statusCode).send(status.message);
 };
 
 get_redis_status = function(req, res) {
     let status = redis.check_status();
 
     res.setHeader('Content-Type', 'application/json');
-    res.status(status.statusCode).send(status);
-}
+    res.status(status.statusCode).send(status.message);
+};
+
+get_docker_status = function(req, res) {
+    let status = docker.check_status();
+
+    res.setHeader('Content-Type', 'application/json');
+    res.status(status.statusCode).send(status.message);
+};
 
 // ROUTING
 setup_routes = function() {
    app.get('/api/redis/status', get_redis_status);
    app.get('/api/workflow/status', get_workflow_status);
+   app.get('/api/docker/status', get_docker_status);
 };
 
 start_check_status = function() {
-    // nothing yet
     workflows.update_status(2000);
     redis.update_status(2000);
+    docker.update_status(2000);
 };
 
 // Server startup
