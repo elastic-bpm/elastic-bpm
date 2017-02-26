@@ -1,17 +1,17 @@
 /*jshint esversion: 6 */
 
-workflow_component = (function () {
+human_component = (function () {
     var Client = require('node-rest-client').Client;
     var client = new Client();
     var component = {};
-    var workflow_host = process.env.API_HOST || 'localhost';
+    var human_host = process.env.HUMAN_HOST || 'localhost';
     component.status = {
         message: "not updated yet",
         statusCode: 500
     };
 
     component.update_status = function(interval) {
-        var req = client.get("http://" + workflow_host + ":3000/status", (data, response) => {
+        var req = client.get("http://" + human_host + ":5555/status", (data, response) => {
             component.status.statusCode = response.statusCode;
             component.status.message = response.statusMessage;
 
@@ -33,5 +33,5 @@ workflow_component = (function () {
     return component;
 }());
 
-exports.check_status = workflow_component.check_status;
-exports.update_status = workflow_component.update_status;
+exports.check_status = human_component.check_status;
+exports.update_status = human_component.update_status;

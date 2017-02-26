@@ -5,8 +5,8 @@ redis_component = (function () {
     var client = {};
     var component = {};
     component.status = {
-        message: "connecting",
-        statusCode: 404
+        message: "not updated yet",
+        statusCode: 500
     };
 
     component.update_status = function(interval) {

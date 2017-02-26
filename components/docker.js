@@ -6,8 +6,8 @@ docker_component = (function () {
     var docker_host = process.env.DOCKER_HOST || 'localhost';
     var component = {};
     component.status = {
-        message: "connecting",
-        statusCode: 404
+        message: "not updated yet",
+        statusCode: 500
     };
 
     component.update_status = function(interval) {

@@ -7,6 +7,9 @@ var server = require('http').createServer(app);
 var workflows = require('./components/workflows');
 var redis = require('./components/redis');
 var docker = require('./components/docker');
+var human = require('./components/human');
+var scaling = require('./components/scaling');
+var scheduler = require('./components/scheduler');
 
 const os = require('os');
 var log4js = require('log4js');
@@ -28,38 +31,29 @@ log4js.configure({
     replaceConsole: true
 });
 
-get_workflow_status = function(req, res) {
-    let status = workflows.check_status();
-
-    res.setHeader('Content-Type', 'application/json');
-    res.status(status.statusCode).send(status.message);
-};
-
-get_redis_status = function(req, res) {
-    let status = redis.check_status();
-
-    res.setHeader('Content-Type', 'application/json');
-    res.status(status.statusCode).send(status.message);
-};
-
-get_docker_status = function(req, res) {
-    let status = docker.check_status();
-
+return_status = function(check, req, res) {
+    let status = check();
     res.setHeader('Content-Type', 'application/json');
     res.status(status.statusCode).send(status.message);
 };
 
 // ROUTING
 setup_routes = function() {
-   app.get('/api/redis/status', get_redis_status);
-   app.get('/api/workflow/status', get_workflow_status);
-   app.get('/api/docker/status', get_docker_status);
+   app.get('/api/redis/status', (req, res) => return_status(redis.check_status, req, res));
+   app.get('/api/workflow/status', (req, res) => return_status(workflows.check_status, req, res));
+   app.get('/api/docker/status', (req, res) => return_status(docker.check_status, req, res));
+   app.get('/api/human/status', (req, res) => return_status(human.check_status, req, res));
+   app.get('/api/scaling/status', (req, res) => return_status(scaling.check_status, req, res));
+   app.get('/api/scheduler/status', (req, res) => return_status(scheduler.check_status, req, res));
 };
 
 start_check_status = function() {
     workflows.update_status(2000);
     redis.update_status(2000);
     docker.update_status(2000);
+    human.update_status(2000);
+    scaling.update_status(2000);
+    scheduler.update_status(2000);
 };
 
 // Server startup
