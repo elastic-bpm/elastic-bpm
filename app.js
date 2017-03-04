@@ -37,11 +37,20 @@ return_status = function(check, req, res) {
     res.status(status.statusCode).send(status.message);
 };
 
+return_json = function(getObject, req, res) {
+    let returnJson = JSON.stringify(getObject(), null, 2);
+    res.setHeader('Content-Type', 'application/json');
+    res.send(returnJson);
+}
+
 // ROUTING
 setup_routes = function() {
    app.get('/api/redis/status', (req, res) => return_status(redis.check_status, req, res));
    app.get('/api/workflow/status', (req, res) => return_status(workflows.check_status, req, res));
+   
    app.get('/api/docker/status', (req, res) => return_status(docker.check_status, req, res));
+   app.get('/api/docker/info/remote', (req, res) => return_json(docker.get_remote_info, req, res));
+
    app.get('/api/human/status', (req, res) => return_status(human.check_status, req, res));
    app.get('/api/scaling/status', (req, res) => return_status(scaling.check_status, req, res));
    app.get('/api/scheduler/status', (req, res) => return_status(scheduler.check_status, req, res));

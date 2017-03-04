@@ -30,8 +30,13 @@ docker_component = (function () {
         return component.status;
     };
 
+    component.get_remote_info = function() {
+        return {"info": "ok"};
+    }
+
     return component;
 }());
 
 exports.check_status = docker_component.check_status;
 exports.update_status = docker_component.update_status;
+exports.get_remote_info = docker_component.get_remote_info;
