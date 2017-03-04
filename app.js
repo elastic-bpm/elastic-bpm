@@ -50,6 +50,8 @@ setup_routes = function() {
    
    app.get('/api/docker/status', (req, res) => return_status(docker.check_status, req, res));
    app.get('/api/docker/info/remote', (req, res) => return_json(docker.get_remote_info, req, res));
+   app.get('/api/docker/containers/remote', (req, res) => return_json(docker.get_remote_containers, req, res));
+   app.get('/api/docker/services/remote', (req, res) => return_json(docker.get_remote_services, req, res));
 
    app.get('/api/human/status', (req, res) => return_status(human.check_status, req, res));
    app.get('/api/scaling/status', (req, res) => return_status(scaling.check_status, req, res));
@@ -59,7 +61,9 @@ setup_routes = function() {
 start_check_status = function() {
     workflows.update_status(2000);
     redis.update_status(2000);
-    docker.update_status(2000);
+    
+    docker.start_updates(2000);
+
     human.update_status(2000);
     scaling.update_status(2000);
     scheduler.update_status(2000);
