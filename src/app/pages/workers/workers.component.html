@@ -1,30 +1,38 @@
 <app-warning-panel [status]="dockerStatus" title="Docker" *ngIf="dockerStatus.statusCode !== 200"></app-warning-panel>
 
-<app-bs-panel *ngIf="dockerStatus.statusCode === 200" title="Worker utilities">
-  <div class="row" style="padding: 5px">
+<app-bs-panel *ngIf="dockerStatus.statusCode === 200" title="Worker Utilities">
+  <div class="row">
       <div class="col-md-4">
-          Current amount of workers: <span id="current-worker-amount"></span><br />
+          Current amount of workers: <span>{{workers.length}}</span><br />
       </div>
       <div class="col-md-4">
-          <button id="reset-workers-service-button" type="button" class="btn btn-danger">Reset workers service</button>
+          <button type="button" class="btn btn-danger">Reset workers service</button>
       </div>
   </div>
 </app-bs-panel>
 
-<app-bs-panel *ngIf="dockerStatus.statusCode === 200" title="Running workers">
-    <div class="dataTable_wrapper">
-        <table class="table table-bordered table-hover" id="workers-table">
-            <thead>
-                <tr>
-                    <th>created</th>
-                    <th>id</th>
-                    <th>node</th>
-                    <th>desired state</th>
-                    <th>current state</th>
-                    <th>error</th>
-                </tr>
-            </thead>
-            <tbody id="workers-table-body"></tbody>
-        </table>
-    </div>
+<app-bs-panel *ngIf="dockerStatus.statusCode === 200" title="Running Workers">
+    <table class="table table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>created</th>
+                <th>id</th>
+                <th>node</th>
+                <th>desired state</th>
+                <th>current state</th>
+                <th>error</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor='let worker of workers'>
+                <td>{{worker.CreatedAt}}</td>
+                <td>{{worker.ID}}</td>
+                <td>{{worker.NodeID}}</td>
+                <td>{{worker.DesiredState}}</td>
+                <td>{{worker.Status.State}}</td>
+                <td>??</td>
+            </tr>
+        </tbody>
+    </table>
+    <!-- <pre>{{workers | json}}</pre> -->
 </app-bs-panel>

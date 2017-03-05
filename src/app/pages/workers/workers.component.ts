@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { StatusService } from '../../services/status.service';
+import { DockerService } from '../../services/docker.service';
 import { Status } from '../../classes/status.class';
 
 @Component({
@@ -10,11 +11,13 @@ import { Status } from '../../classes/status.class';
 export class WorkersComponent implements OnInit {
   title = 'Workers';
   dockerStatus: Status;
+  workers: any[] = [];
 
-  constructor(private statusService: StatusService) { }
+  constructor(private statusService: StatusService, private dockerService: DockerService) { }
 
   ngOnInit() {
     this.getDockerStatus();
+    this.dockerService.workers.subscribe(workers => this.workers = workers);
   }
 
   getDockerStatus(): void {
