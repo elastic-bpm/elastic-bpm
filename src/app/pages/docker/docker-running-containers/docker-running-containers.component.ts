@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 @Component({
   selector: 'app-docker-running-containers',
@@ -6,6 +6,8 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./docker-running-containers.component.css']
 })
 export class DockerRunningContainersComponent implements OnInit {
+  @Input()
+  containers: any[] = [];
 
   constructor() { }
 

@@ -20,6 +20,8 @@ export class DockerComponent implements OnInit {
   ngOnInit() {
     this.registerDockerStatus();
     this.dockerService.remoteInfo.subscribe(info => this.remoteInfo = info);
+    this.dockerService.remoteContainers.subscribe(containers => this.remoteContainers = containers);
+    this.dockerService.remoteServices.subscribe(services => this.remoteServices = services);
   }
 
   registerDockerStatus(): void {

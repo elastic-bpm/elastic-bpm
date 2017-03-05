@@ -5,10 +5,15 @@
                 <th>service name</th>
                 <th>image</th>
                 <th>mode</th>
-                <th>replicas</th>
             </tr>
         </thead>
-        <tbody></tbody>
+        <tbody>
+            <tr *ngFor='let service of services'>
+                <td>{{service.Spec.Name}}</td>
+                <td>{{service.Spec.TaskTemplate.ContainerSpec.Image}}</td>
+                <td>{{service.Spec.Mode | json}}</td>
+            </tr>
+        </tbody>
     </table>
 
     <ng-content></ng-content>
