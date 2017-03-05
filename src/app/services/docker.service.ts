@@ -8,11 +8,37 @@ export class DockerService {
     remoteInfo: BehaviorSubject<{}> = new BehaviorSubject({});
     remoteContainers: BehaviorSubject<any[]> = new BehaviorSubject([]);
     remoteServices: BehaviorSubject<any[]> = new BehaviorSubject([]);
+    nodes: BehaviorSubject<any[]> = new BehaviorSubject([]);
 
     constructor(private http: Http) {
         this.updateRemoteInfo(2000);
         this.updateRemoteContainers(2000);
         this.updateRemoteServices(2000);
+        this.updateNodes(2000);
+    }
+
+    updateNodes(interval) {
+        const sortNodes = (a, b) => {
+            if (a.hostname < b.hostname) {
+                return -1;
+            } else {
+                return 1;
+            }
+        };
+
+        this.http
+            .get('/api/docker/nodes')
+            .map(res => res.json())
+            .subscribe(
+                res => {
+                    this.nodes.next(res.sort(sortNodes));
+                    setTimeout(() => this.updateNodes(interval), interval);
+                },
+                error => {
+                    console.log(error);
+                    setTimeout(() => this.updateNodes(interval), interval);
+                }
+            );
     }
 
     updateRemoteInfo(interval) {
