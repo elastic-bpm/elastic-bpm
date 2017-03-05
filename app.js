@@ -35,18 +35,18 @@ log4js.configure({
     replaceConsole: true
 });
 
-return_status = function(check, req, res) {
+var return_status = function(check, req, res) {
     let status = check();
     res.setHeader('Content-Type', 'application/json');
     res.status(status.statusCode).send(status.message);
 };
 
-return_json = function(getObject, req, res) {
+var return_json = function(getObject, req, res) {
     res.setHeader('Content-Type', 'application/json');
     res.send(JSON.stringify(getObject(), null, 2));
-}
+};
 
-return_json_post = function(postObject, req, res) {
+var return_json_post = function(postObject, req, res) {
     res.setHeader('Content-Type', 'application/json');
     postObject(req.body, (error, data) => {
         if (error) {
@@ -55,13 +55,40 @@ return_json_post = function(postObject, req, res) {
             res.send(JSON.stringify(data, null, 2));
         };
     });
-}
+};
+
+var create_workflows_from_file = function(req, res) {
+    workflows.create_workflows_from_file(req, (error, data) => {
+        if (error) {
+            res.status(500).send(error);
+        } else {
+            console.log(data);
+            res.send(JSON.stringify(data, null, 2));
+        };
+    });
+};
+
+var delete_workflow = function(req, res) {
+    workflows.delete_workflow(req.params['workflow_id'], (error, data) => {
+        if (error) {
+            res.status(500).send(error);
+        } else {
+            res.send(JSON.stringify(data, null, 2));
+        };
+    });
+};
 
 // ROUTING
 setup_routes = function() {
    app.get('/api/redis/status', (req, res) => return_status(redis.check_status, req, res));
+
    app.get('/api/workflow/status', (req, res) => return_status(workflows.check_status, req, res));
-   
+   app.get('/api/workflow/workflows', (req, res) => return_json(workflows.get_workflows, req, res));
+   app.post('/api/workflow/workflows', (req, res) => return_json_post(workflows.create_workflow, req, res));
+   app.delete('/api/workflow/workflows', (req, res) => return_json_post(workflows.delete_all_workflows, req, res));
+   app.delete('/api/workflow/workflows/:workflow_id', (req, res) => delete_workflow(req, res));
+   app.post('/api/workflow/workflows/file', (req, res) => create_workflows_from_file(req, res));
+
    app.get('/api/docker/status', (req, res) => return_status(docker.check_status, req, res));
    app.get('/api/docker/info/remote', (req, res) => return_json(docker.get_remote_info, req, res));
    app.get('/api/docker/containers/remote', (req, res) => return_json(docker.get_remote_containers, req, res));
@@ -81,10 +108,10 @@ setup_routes = function() {
 };
 
 start_check_status = function() {
-    workflows.update_status(2000);
     redis.update_status(2000);
     scheduler.update_status(2000);
     
+    workflows.start_updates(2000);
     docker.start_updates(2000);
     human.start_updates(2000);
     scaling.start_updates(2000);
