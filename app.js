@@ -38,9 +38,8 @@ return_status = function(check, req, res) {
 };
 
 return_json = function(getObject, req, res) {
-    let returnJson = JSON.stringify(getObject(), null, 2);
     res.setHeader('Content-Type', 'application/json');
-    res.send(returnJson);
+    res.send(JSON.stringify(getObject(), null, 2));
 }
 
 // ROUTING
