@@ -83,11 +83,11 @@ setup_routes = function() {
 start_check_status = function() {
     workflows.update_status(2000);
     redis.update_status(2000);
+    scheduler.update_status(2000);
     
     docker.start_updates(2000);
     human.start_updates(2000);
     scaling.start_updates(2000);
-    scheduler.update_status(2000);
 };
 
 // Server startup

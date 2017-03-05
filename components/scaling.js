@@ -16,7 +16,7 @@ scaling_component = (function () {
         update_virtualmachines(10*interval);
     }
 
-    update_status = function(interval) {
+    var update_status = function(interval) {
         var req = client.get("http://" + scaling_host + ":8888/status", (data, response) => {
             status.statusCode = response.statusCode;
             status.message = response.statusMessage;
@@ -32,7 +32,7 @@ scaling_component = (function () {
         });
     }
 
-    update_virtualmachines = function(interval) {
+    var update_virtualmachines = function(interval) {
         var req = client.get("http://" + scaling_host + ":8888/virtualmachines", (data, response) => {
             virtualmachines = data;
             setTimeout(() => update_virtualmachines(interval), interval);

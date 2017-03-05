@@ -14,10 +14,9 @@ human_component = (function () {
     component.start_updates = function(interval) {
         update_status(interval);
         update_info(interval);
-
     };
 
-    update_info = function(interval) {
+    var update_info = function(interval) {
         var req = client.get("http://" + human_host + ":5555/info", (data, response) => {
             info = data;
             setTimeout(() => update_info(interval), interval);
@@ -32,7 +31,7 @@ human_component = (function () {
 
     };
 
-    update_status = function(interval) {
+    var update_status = function(interval) {
         var req = client.get("http://" + human_host + ":5555/status", (data, response) => {
             status.statusCode = response.statusCode;
             status.message = response.statusMessage;
