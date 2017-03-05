@@ -2,6 +2,10 @@
 
 var express = require('express'),
     app = express();
+
+var bodyParser = require('body-parser');
+app.use(bodyParser.json());
+
 var server = require('http').createServer(app);
 
 var workflows = require('./components/workflows');
@@ -42,6 +46,17 @@ return_json = function(getObject, req, res) {
     res.send(JSON.stringify(getObject(), null, 2));
 }
 
+return_json_post = function(postObject, req, res) {
+    res.setHeader('Content-Type', 'application/json');
+    postObject(req.body, (error, data) => {
+        if (error) {
+            res.status(500).send(error);
+        } else {
+            res.send(JSON.stringify(data, null, 2));
+        };
+    });
+}
+
 // ROUTING
 setup_routes = function() {
    app.get('/api/redis/status', (req, res) => return_status(redis.check_status, req, res));
@@ -55,6 +70,9 @@ setup_routes = function() {
    app.get('/api/docker/workers', (req, res) => return_json(docker.get_workers, req, res));
 
    app.get('/api/human/status', (req, res) => return_status(human.check_status, req, res));
+   app.get('/api/human/info', (req, res) => return_json(human.get_info, req, res));
+   app.post('/api/human/start', (req, res) => return_json_post(human.start_humans, req, res));
+   app.post('/api/human/stop', (req, res) => return_json_post(human.stop_humans, req, res));
    
    app.get('/api/scaling/status', (req, res) => return_status(scaling.check_status, req, res));
    app.get('/api/scaling/virtualmachines', (req, res) => return_json(scaling.get_virtualmachines, req, res));
@@ -67,8 +85,7 @@ start_check_status = function() {
     redis.update_status(2000);
     
     docker.start_updates(2000);
-
-    human.update_status(2000);
+    human.start_updates(2000);
     scaling.start_updates(2000);
     scheduler.update_status(2000);
 };
