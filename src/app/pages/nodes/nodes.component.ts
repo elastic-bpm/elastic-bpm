@@ -27,4 +27,20 @@ export class NodesComponent implements OnInit {
         : {name: 'Docker', statusCode: 500, message: 'no status'};
     });
   }
+
+  setNodeDrain(hostname): void {
+    this.dockerService.setNodeAvailability(hostname, 'drain', (error) => {
+      if (error) {
+        console.log(error);
+      }
+    });
+  }
+
+  setNodeActive(hostname): void {
+    this.dockerService.setNodeAvailability(hostname, 'active', (error) => {
+      if (error) {
+        console.log(error);
+      }
+    });
+  }
 }

@@ -35,13 +35,25 @@ export class DockerService {
             .subscribe(
                 res => {
                     this.workers.next(res.sort(sortWorkers));
-                    setTimeout(() => this.updateWorkers(interval), interval);
+                    if (interval > 0) {
+                        setTimeout(() => this.updateWorkers(interval), interval);
+                    }
                 },
                 error => {
                     console.log(error);
                     setTimeout(() => this.updateWorkers(interval), interval);
                 }
             );
+    }
+
+    setNodeAvailability(hostname, availability, cb) {
+        this.http
+            .post('/api/docker/nodes/' + hostname + '/' + availability, null)
+            .map(res => res.json())
+            .subscribe(res => {
+                this.updateNodes(0);
+                cb(null, res);
+            }, error => cb(error, null));
     }
 
     updateNodes(interval) {
@@ -59,7 +71,9 @@ export class DockerService {
             .subscribe(
                 res => {
                     this.nodes.next(res.sort(sortNodes));
-                    setTimeout(() => this.updateNodes(interval), interval);
+                    if (interval > 0) {
+                        setTimeout(() => this.updateNodes(interval), interval);
+                    }
                 },
                 error => {
                     console.log(error);
