@@ -78,6 +78,16 @@ var delete_workflow = function(req, res) {
     });
 };
 
+var set_node_availability = function(req, res) {
+    docker.set_node_availability(req.params['hostname'], req.params['availability'], (error, data) => {
+        if (error) {
+            res.status(500).send(error);
+        } else {
+            res.send(JSON.stringify(data, null, 2));
+        };
+    });
+};
+
 // ROUTING
 setup_routes = function() {
    app.get('/api/redis/status', (req, res) => return_status(redis.check_status, req, res));
@@ -93,7 +103,10 @@ setup_routes = function() {
    app.get('/api/docker/info/remote', (req, res) => return_json(docker.get_remote_info, req, res));
    app.get('/api/docker/containers/remote', (req, res) => return_json(docker.get_remote_containers, req, res));
    app.get('/api/docker/services/remote', (req, res) => return_json(docker.get_remote_services, req, res));
+
    app.get('/api/docker/nodes', (req, res) => return_json(docker.get_nodes, req, res));
+   app.post('/api/docker/nodes/:hostname/:availability', set_node_availability);
+
    app.get('/api/docker/workers', (req, res) => return_json(docker.get_workers, req, res));
 
    app.get('/api/human/status', (req, res) => return_status(human.check_status, req, res));

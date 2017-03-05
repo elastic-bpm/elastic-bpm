@@ -19,7 +19,7 @@ docker_component = (function () {
         update_services(interval);
         update_nodes(interval);
         update_workers(interval);
-    }
+    };
 
     var update_status = function(interval) {
         var req = client.get("http://" + docker_host + ":4444/status", (data, response) => {
@@ -35,7 +35,7 @@ docker_component = (function () {
             
             setTimeout(() => update_status(interval), interval);
         });
-    }
+    };
 
     var update_info = function(interval) {
         var req = client.get("http://" + docker_host + ":4444/info/remote", (data, response) => {
@@ -46,7 +46,7 @@ docker_component = (function () {
         req.on('error', (error) => {
             setTimeout(() => update_info(interval), interval);
         });
-    }
+    };
 
     var update_containers = function(interval) {
         var req = client.get("http://" + docker_host + ":4444/containers/remote", (data, response) => {
@@ -57,7 +57,7 @@ docker_component = (function () {
         req.on('error', (error) => {
             setTimeout(() => update_containers(interval), interval);
         });
-    }
+    };
 
     var update_services = function(interval) {
         var req = client.get("http://" + docker_host + ":4444/services", (data, response) => {
@@ -68,7 +68,7 @@ docker_component = (function () {
         req.on('error', (error) => {
             setTimeout(() => update_services(interval), interval);
         });
-    }
+    };
 
     var update_nodes = function(interval) {
         var req = client.get("http://" + docker_host + ":4444/nodes", (data, response) => {
@@ -79,7 +79,7 @@ docker_component = (function () {
         req.on('error', (error) => {
             setTimeout(() => update_nodes(interval), interval);
         });        
-    }
+    };
 
     var update_workers = function(interval) {
         var req = client.get("http://" + docker_host + ":4444/workers", (data, response) => {
@@ -90,7 +90,7 @@ docker_component = (function () {
         req.on('error', (error) => {
             setTimeout(() => update_workers(interval), interval);
         });        
-    }
+    };
 
     component.check_status = function() {
         return status;
@@ -98,23 +98,33 @@ docker_component = (function () {
 
     component.get_remote_info = function() {
         return info;
-    }
+    };
 
     component.get_remote_containers = function() {
         return containers;
-    }
+    };
 
     component.get_remote_services = function() {
         return services;
-    }
+    };
 
     component.get_nodes = function() {
         return nodes;
-    }
+    };
 
     component.get_workers = function() {
         return workers;
-    }
+    };
+
+    component.set_node_availability = function(hostname, availability, cb) {
+        var req = client.post("http://" + docker_host + ":4444/node/" + hostname + "/" + availability, (data, response) => {
+            if (response.statusCode == 200) {
+                cb(null, data);
+            } else {
+                cb("Error: " + data, null);
+            }
+        });
+    };
 
     return component;
 }());
@@ -126,3 +136,4 @@ exports.get_remote_containers = docker_component.get_remote_containers;
 exports.get_remote_services = docker_component.get_remote_services;
 exports.get_nodes = docker_component.get_nodes;
 exports.get_workers = docker_component.get_workers;
+exports.set_node_availability = docker_component.set_node_availability;
