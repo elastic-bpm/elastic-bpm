@@ -10,6 +10,7 @@ docker_component = (function () {
     var containers = [];
     var services = [];
     var nodes = [];
+    var workers = ["abc"];
 
     component.start_updates = function(interval) {
         update_status(interval);
@@ -17,6 +18,7 @@ docker_component = (function () {
         update_containers(interval);
         update_services(interval);
         update_nodes(interval);
+        update_workers(interval);
     }
 
     var update_status = function(interval) {
@@ -79,6 +81,17 @@ docker_component = (function () {
         });        
     }
 
+    var update_workers = function(interval) {
+        var req = client.get("http://" + docker_host + ":4444/workers", (data, response) => {
+            workers = data;
+            setTimeout(() => update_workers(interval), interval);
+        });
+
+        req.on('error', (error) => {
+            setTimeout(() => update_workers(interval), interval);
+        });        
+    }
+
     component.check_status = function() {
         return status;
     };
@@ -99,6 +112,10 @@ docker_component = (function () {
         return nodes;
     }
 
+    component.get_workers = function() {
+        return workers;
+    }
+
     return component;
 }());
 
@@ -108,3 +125,4 @@ exports.get_remote_info = docker_component.get_remote_info;
 exports.get_remote_containers = docker_component.get_remote_containers;
 exports.get_remote_services = docker_component.get_remote_services;
 exports.get_nodes = docker_component.get_nodes;
+exports.get_workers = docker_component.get_workers;
