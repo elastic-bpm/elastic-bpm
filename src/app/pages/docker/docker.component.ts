@@ -11,27 +11,22 @@ import { Status } from '../../classes/status.class';
 export class DockerComponent implements OnInit {
   title = 'Docker';
   dockerStatus: Status;
+  remoteInfo = {};
+  remoteServices = [];
+  remoteContainers = [];
 
   constructor(private statusService: StatusService, private dockerService: DockerService) { }
 
   ngOnInit() {
-    this.getDockerStatus();
-    this.getRemoteInfo();
+    this.registerDockerStatus();
+    this.dockerService.remoteInfo.subscribe(info => this.remoteInfo = info);
   }
 
-  getDockerStatus(): void {
+  registerDockerStatus(): void {
     this.statusService.getStatusList().subscribe(status => {
       this.dockerStatus = status['docker'] !== undefined
         ?  status['docker']
         : {name: 'Docker', statusCode: 500, message: 'no status'};
     });
   }
-
-  getRemoteInfo(): void {
-    if (this.dockerStatus.statusCode === 200) {
-      console.log('Got info from inside component!');
-      console.log(this.dockerService.remoteInfo);
-    }
-  }
-
 }
