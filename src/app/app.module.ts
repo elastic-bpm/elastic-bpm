@@ -32,6 +32,7 @@ import { StatusService } from './services/status.service';
 import { DockerService } from './services/docker.service';
 import { MachineService } from './services/machine.service';
 import { HumanService } from './services/human.service';
+import { WorkflowService } from './services/workflow.service';
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -68,7 +69,8 @@ import { AppRoutingModule } from './app-routing.module';
     StatusService,
     DockerService,
     MachineService,
-    HumanService
+    HumanService,
+    WorkflowService
   ],
   bootstrap: [AppComponent]
 })

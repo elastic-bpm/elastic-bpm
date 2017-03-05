@@ -1,53 +1,25 @@
 <app-bs-panel title="Workflow Utilities">
-  <div class="row" style="padding: 5px">
+  <div class="row">
       <div class="col-md-2">
-          <button id="create-test-workflow-button" type="button" class="btn btn-primary">Create test-flow</button>
+          <button (click)="createTestFlow()" class="btn btn-primary">Create test-flow</button>
       </div>
       <div class="col-md-1">
-          <button id="workflow-script-button" type="button" class="btn btn-primary">Create flow</button>
+          <button (click)="createFlowFromFile()" class="btn btn-primary">Create flow</button>
       </div>
       <div class="col-md-5">
           <div class="form-group">
               <label>Upload workflow script</label>
-              <input id="workflow-script-file" type="file">
+              <input (change)="fileChanged($event)" type="file">
           </div>    
       </div>
-      <div class="col-md-4">
-          <button id="workflow-delete-all-button" type="button" class="btn btn-danger">Delete all workflows</button>
+      <div class="pull-right" style="margin-right: 10px;">
+          <button (click)="deleteAllWorkflows()" class="btn btn-danger">Delete all workflows</button>
       </div>
   </div>
-
-  <form id="workflow-create-form" role="form">
-  <div class="row">
-      <div class="col-lg-6">
-          <div class="form-group">
-              <input id="workflow-name" class="form-control" placeholder="Name">
-          </div>
-          <div class="form-group">
-              <input id="workflow-owner" class="form-control" placeholder="Owner">
-          </div>
-      </div>
-      <div class="col-lg-6">
-          <div class="form-group">
-              <input id="workflow-nodes" class="form-control" placeholder="Nodes">
-          </div>
-          <div class="form-group">
-              <input id="workflow-edges" class="form-control" placeholder="Edges">
-          </div>
-      </div>
-  </div> <!-- /row -->
-  <div class="row">
-      <div class="col-lg-6">
-          <button id="workflow-create-button" type='button' class="btn btn-default">Create custom workflow</button>
-          <button type="reset" class="btn btn-default">Reset form</button>
-      </div>
-  </div> <!-- /row -->
-  </form>
 </app-bs-panel>
 
 <app-bs-panel title="Running Workflows">
-  <div class="dataTable_wrapper">
-    <table class="table table-bordered table-hover" id="workflow-table">
+    <table class="table table-bordered table-hover">
         <thead>
             <tr>
                 <th>created</th>
@@ -62,7 +34,20 @@
                 <th>actions</th>
             </tr>
         </thead>
-        <tbody id="workflows-table-body"></tbody>
+        <tbody>
+            <tr *ngFor='let workflow of workflows'>
+                <td>{{workflow.created | date:'d-M-y, H:mm:ss'}}</td>
+                <td>{{workflow.id}}</td>
+                <td>{{workflow.name}}</td>
+                <td>{{workflow.owner}}</td>
+                <td>Graph</td>
+                <td>{{workflow.status}}</td>
+                <td>{{workflow.todo_nodes.length}}</td>
+                <td>{{workflow.busy_nodes.length}}</td>
+                <td>{{workflow.done_nodes.length}}</td>
+                <td><button (click)="deleteWorkflow(workflow.id)" class="btn btn-danger">Delete</button></td>
+            </tr>
+        </tbody>
     </table>
-  </div>
+    <!-- <pre>{{workflows | json}}</pre> -->
 </app-bs-panel>
