@@ -1,0 +1,17 @@
+<app-warning-panel [status]="dockerStatus" title="Docker" *ngIf="dockerStatus.statusCode !== 200"></app-warning-panel>
+<app-bs-panel *ngIf="dockerStatus.statusCode === 200" title="Nodes">
+  <div class="table-responsive">
+      <table class="table table-striped table-bordered table-hover">
+          <thead>
+              <tr>
+                  <th>hostname</th>
+                  <th>id</th>
+                  <th>availability</th>
+                  <th>status</th>
+                  <th>actions</th>
+              </tr>
+          </thead>
+          <tbody></tbody>
+      </table>
+  </div>
+</app-bs-panel>

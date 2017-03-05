@@ -1,0 +1,69 @@
+
+<app-bs-panel title="Automated Human">
+  <div class="row" style="padding: 5px">
+    <div class="col-md-6">
+        <div class="table-responsive">
+            <table class="table table-striped table-condensed">
+                <tbody>
+                    <tr>
+                        <td>Humans started: </td>
+                        <td id="humans-info-started">123</td>
+                    </tr>
+                    <tr>
+                        <td>Amount of humans: </td>
+                        <td id="humans-info-amount">123</td>
+                    </tr>
+                    <tr>
+                        <td>Currently humans are</td>
+                        <td id="humans-info-paused"></td>
+                    </tr>
+                    <tr>
+                        <td id="humans-info-next-text">Time to ON/OFF: </td>
+                        <td id="humans-info-next">123</td>
+                    </tr>
+                    <tr>
+                        <td>Time finished: </td>
+                        <td id="humans-info-total">123</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="col-md-6">
+        <p>
+            Humans on time:
+            <input id="humans-on-time" type="text" value="9"/><br />
+            Humans off time:
+            <input id="humans-off-time" type="text" value="15"/><br />
+            Humans init time:
+            <input id="humans-init-time" type="text" value="8"/><br />
+            Humans total time:
+            <input id="humans-total-time" type="text" value="41"/><br />
+            Amount of humans:
+            <input id="humans-amount" type="text" value="5"/><br />
+        </p>
+        <p>
+            <button id="start-humans-button" type="button" class="btn btn-primary">Start</button>
+            <button id="stop-humans-button" type="button" class="btn btn-danger">Stop</button>
+        </p>
+    </div>
+  </div>
+</app-bs-panel>
+
+<app-bs-panel title="Available Tasks">
+  <div class="dataTable_wrapper">
+      <table class="table table-bordered table-hover" id="human-tasks-table">
+          <thead>
+              <tr>
+                  <th>workflow</th>
+                  <th>id</th>
+                  <th>status</th>
+                  <th>actions</th>
+              </tr>
+          </thead>
+          <tbody></tbody>
+      </table>
+  </div>
+  <!-- /.table-responsive -->
+</app-bs-panel>

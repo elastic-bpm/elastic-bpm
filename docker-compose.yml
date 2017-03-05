@@ -3,7 +3,8 @@
    dashboard:
      build: .
      ports:
-      - "8080:8080"
+      - "4200:4200"
+      - "35729:35729"
      depends_on:
       - redis
       - api
@@ -20,6 +21,8 @@
      depends_on:
       - redis
    redis:
+     ports:
+      - "6379:6379"
      image: redis
    scaling:
      build:

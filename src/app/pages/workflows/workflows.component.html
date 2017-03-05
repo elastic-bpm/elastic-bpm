@@ -1,0 +1,68 @@
+<app-bs-panel title="Workflow Utilities">
+  <div class="row" style="padding: 5px">
+      <div class="col-md-2">
+          <button id="create-test-workflow-button" type="button" class="btn btn-primary">Create test-flow</button>
+      </div>
+      <div class="col-md-1">
+          <button id="workflow-script-button" type="button" class="btn btn-primary">Create flow</button>
+      </div>
+      <div class="col-md-5">
+          <div class="form-group">
+              <label>Upload workflow script</label>
+              <input id="workflow-script-file" type="file">
+          </div>    
+      </div>
+      <div class="col-md-4">
+          <button id="workflow-delete-all-button" type="button" class="btn btn-danger">Delete all workflows</button>
+      </div>
+  </div>
+
+  <form id="workflow-create-form" role="form">
+  <div class="row">
+      <div class="col-lg-6">
+          <div class="form-group">
+              <input id="workflow-name" class="form-control" placeholder="Name">
+          </div>
+          <div class="form-group">
+              <input id="workflow-owner" class="form-control" placeholder="Owner">
+          </div>
+      </div>
+      <div class="col-lg-6">
+          <div class="form-group">
+              <input id="workflow-nodes" class="form-control" placeholder="Nodes">
+          </div>
+          <div class="form-group">
+              <input id="workflow-edges" class="form-control" placeholder="Edges">
+          </div>
+      </div>
+  </div> <!-- /row -->
+  <div class="row">
+      <div class="col-lg-6">
+          <button id="workflow-create-button" type='button' class="btn btn-default">Create custom workflow</button>
+          <button type="reset" class="btn btn-default">Reset form</button>
+      </div>
+  </div> <!-- /row -->
+  </form>
+</app-bs-panel>
+
+<app-bs-panel title="Running Workflows">
+  <div class="dataTable_wrapper">
+    <table class="table table-bordered table-hover" id="workflow-table">
+        <thead>
+            <tr>
+                <th>created</th>
+                <th>id</th>
+                <th>name</th>
+                <th>owner</th>
+                <th>info</th>
+                <th>status</th>
+                <th>todo</th>
+                <th>busy</th>
+                <th>done</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody id="workflows-table-body"></tbody>
+    </table>
+  </div>
+</app-bs-panel>

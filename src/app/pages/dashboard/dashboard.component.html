@@ -1,0 +1,17 @@
+<div class="row">
+  <div *ngFor="let status of statusList" class="col-sm-4">
+      <div class="hero-widget well well-lg">
+          <div class="icon">
+              <i 
+                [ngClass]="{'glyphicon-ok-sign good': status.statusCode === 200, 'glyphicon-remove-sign bad': status.statusCode != 200 }"
+                class="glyphicon"></i>
+          </div>
+          <div class="text">
+              <span class="value">{{status.name}}</span>
+              <label class="text-muted">{{status.message}}</label>
+              <br />
+              <label class="text-muted">Status:&nbsp;</label><label class="text-muted">{{status.statusCode}}</label>
+          </div>
+      </div>
+  </div>
+</div>

@@ -1,0 +1,4 @@
+<app-warning-panel [status]="dockerStatus" title="Docker" *ngIf="dockerStatus.statusCode !== 200"></app-warning-panel>
+<app-docker-running-services *ngIf="dockerStatus.statusCode === 200"></app-docker-running-services>
+<app-docker-running-containers *ngIf="dockerStatus.statusCode === 200"></app-docker-running-containers>
+<app-docker-info *ngIf="dockerStatus.statusCode === 200"></app-docker-info>

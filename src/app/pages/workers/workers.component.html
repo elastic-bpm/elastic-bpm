@@ -1,0 +1,30 @@
+<app-warning-panel [status]="dockerStatus" title="Docker" *ngIf="dockerStatus.statusCode !== 200"></app-warning-panel>
+
+<app-bs-panel *ngIf="dockerStatus.statusCode === 200" title="Worker utilities">
+  <div class="row" style="padding: 5px">
+      <div class="col-md-4">
+          Current amount of workers: <span id="current-worker-amount"></span><br />
+      </div>
+      <div class="col-md-4">
+          <button id="reset-workers-service-button" type="button" class="btn btn-danger">Reset workers service</button>
+      </div>
+  </div>
+</app-bs-panel>
+
+<app-bs-panel *ngIf="dockerStatus.statusCode === 200" title="Running workers">
+    <div class="dataTable_wrapper">
+        <table class="table table-bordered table-hover" id="workers-table">
+            <thead>
+                <tr>
+                    <th>created</th>
+                    <th>id</th>
+                    <th>node</th>
+                    <th>desired state</th>
+                    <th>current state</th>
+                    <th>error</th>
+                </tr>
+            </thead>
+            <tbody id="workers-table-body"></tbody>
+        </table>
+    </div>
+</app-bs-panel>

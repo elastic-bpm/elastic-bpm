@@ -1,0 +1,121 @@
+<app-bs-panel title="Scheduler Settings">
+  <div class="row" style="padding: 5px">
+      
+      <div class="col-md-2">
+        <label>Set Policy</label>
+        <select style="width: 10em" id="scheduler-policy" class="form-control">
+            <option>- pick -</option>
+            <option>Off</option>
+            <option>AtStart</option>
+            <option>OnDemand</option>
+            <option>Learning</option>
+        </select>
+      </div>
+
+      <div class="col-md-2">
+          <label>Set at start amount:</label>
+          <input style="width: 10em" id="set-at-start-amount" type="text" value="10" class="form-control"/>
+      </div>
+
+      <div class="col-md-2">
+          <label>Set on demand amount:</label>
+          <input style="width: 10em" id="set-on-demand-amount" type="text" value="15" class="form-control"/>
+      </div>
+
+      <div class="col-md-2">
+          <label>Set learning amount:</label>
+          <input style="width: 10em" id="set-learning-amount" type="text" value="15" class="form-control"/>
+      </div>
+
+  </div>
+</app-bs-panel>
+
+<app-bs-panel title="Scheduler Running Info">
+  <div class="row" style="padding: 5px">
+      <div class="col-md-2">
+          <div class="form-group">
+              <label>Current Policy</label>
+              <input class="form-control" id="scheduler-get-policy" type="text" placeholder="Policy" disabled="">
+          </div>
+      </div>
+
+      <div class="col-md-2">
+          <div class="form-group">
+              <label>At start amount</label>
+              <input class="form-control" id="scheduler-get-amount-at-start" type="text" placeholder="-1" disabled="">
+          </div>
+      </div>
+
+      <div class="col-md-2">
+          <div class="form-group">
+              <label>On demand amount</label>
+              <input class="form-control" id="scheduler-get-amount-on-demand" type="text" placeholder="-1" disabled="">
+          </div>
+      </div>
+
+      <div class="col-md-2">
+          <div class="form-group">
+              <label>Learning amount</label>
+              <input class="form-control" id="scheduler-get-amount-learning" type="text" placeholder="-1" disabled="">
+          </div>
+      </div>
+  </div>
+  <div class="row" style="padding: 5px">
+
+      <div class="col-md-2">
+          <div class="form-group">
+              <label>Running Machines</label>
+              <input class="form-control" id="scheduler-get-machines" type="text" placeholder="-1" disabled="">
+          </div>
+      </div>
+      <div class="col-md-2">
+          <div class="form-group">
+              <label>Ready swarm nodes <i class="fa fa-check" aria-hidden="true"></i></label>
+              <input class="form-control" id="scheduler-get-ready-nodes" type="text" placeholder="-1" disabled="">
+          </div>
+      </div>
+      <div class="col-md-2">
+          <div class="form-group">
+              <label>Machines spinning up <i class="fa fa-arrow-up" aria-hidden="true"></i></label>
+              <input class="form-control" id="scheduler-get-machines-up" type="text" placeholder="-1" disabled="">
+          </div>
+      </div>
+      <div class="col-md-2">
+          <div class="form-group">
+              <label>Machines shutting down <i class="fa fa-arrow-down" aria-hidden="true"></i></label>
+              <input class="form-control" id="scheduler-get-machines-down" type="text" placeholder="-1" disabled="">
+          </div>
+      </div>
+  </div>
+  <div class="row" style="padding: 5px">
+      <div class="col-md-4">
+          <button id="scheduler-atstart-execution" type="button" class="btn btn-primary">Execute AtStart</button>
+          <button id="scheduler-ondemand-execution" type="button" class="btn btn-primary">Execute OnDemand</button>
+          <button id="scheduler-learning-execution" type="button" class="btn btn-primary">Execute Learning</button>
+          <button id="scheduler-reset-execution" type="button" class="btn btn-warning">Reset</button>
+      </div>
+      <div class="col-md-2">
+          <div class="form-group">
+              <label>Upload workflow script</label>
+              <input id="scheduler-workflow-script-file" type="file">
+          </div>    
+      </div>
+  </div>
+  <div class="row" style="padding: 5px">
+      <div class="col-md-12">
+          <ul class="fa-ul">
+              <li><i id="scheduler-set-policy" class="fa-li fa fa-circle-o"></i> Set policy</li>
+              <li><i id="scheduler-wait-machines" class="fa-li fa fa-circle-o"></i> Wait for machines to scale</li>
+              <li><i id="scheduler-wait-nodes" class="fa-li fa fa-circle-o"></i> Wait for nodes to be ready</li>
+              <li><i id="scheduler-reset-workers-1" class="fa-li fa fa-circle-o"></i> Reset workers</li>
+              <li><i id="scheduler-scale-workers" class="fa-li fa fa-circle-o"></i> Scale workers</li>
+              <li><i id="scheduler-start-humans" class="fa-li fa fa-circle-o"></i> Start humans</li>
+              <li><i id="scheduler-upload-workflow" class="fa-li fa fa-circle-o"></i> Upload workflow</li>
+              <li><i id="scheduler-wait-for-finished" class="fa-li fa fa-circle-o"></i> Wait for humans finished</li>
+              <li><i id="scheduler-reset-workers-2" class="fa-li fa fa-circle-o"></i> Reset workers</li>
+              <li><i id="scheduler-delete-workflows" class="fa-li fa fa-circle-o"></i> Delete all workflows</li>
+              <li><i id="scheduler-set-policy-off" class="fa-li fa fa-circle-o"></i> Set policy to off</li>
+          </ul>
+      </div>
+  </div>
+</app-bs-panel>
