@@ -30,6 +30,7 @@ import { WarningPanelComponent } from './components/warning-panel/warning-panel.
 
 import { StatusService } from './services/status.service';
 import { DockerService } from './services/docker.service';
+import { MachineService } from './services/machine.service';
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -64,7 +65,8 @@ import { AppRoutingModule } from './app-routing.module';
   ],
   providers: [
     StatusService,
-    DockerService
+    DockerService,
+    MachineService
   ],
   bootstrap: [AppComponent]
 })

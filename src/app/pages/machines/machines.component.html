@@ -1,17 +1,24 @@
 <app-warning-panel [status]="scalingStatus" title="Scaling" *ngIf="scalingStatus.statusCode !== 200"></app-warning-panel>
 <app-bs-panel *ngIf="scalingStatus.statusCode === 200" title="Machines">
-  <div class="table-responsive">
-      <table class="table table-striped table-bordered table-hover">
-          <thead>
-              <tr>
-                  <th>name</th>
-                  <th>resource group</th>
-                  <th>size</th>
-                  <th>state</th>
-                  <th>actions</th>
-              </tr>
-          </thead>
-          <tbody id="machines-table-body"></tbody>
-      </table>
-  </div>
+    <table class="table table-striped table-bordered table-hover">
+        <thead>
+            <tr>
+                <th>name</th>
+                <th>resource group</th>
+                <th>size</th>
+                <th>state</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor='let machine of machines'>
+                <td>{{machine.name}}</td>
+                <td>{{machine.resourceGroupName}}</td>
+                <td>{{machine.hardwareProfile.vmSize}}</td>
+                <td>{{machine.powerState}}</td>
+                <td>Stop / Start</td>
+            </tr>
+        </tbody>
+    </table>
+    <!-- <pre>{{machines | json}}</pre> -->
 </app-bs-panel>

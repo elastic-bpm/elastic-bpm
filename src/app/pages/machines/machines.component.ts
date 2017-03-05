@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { StatusService } from '../../services/status.service';
+import { MachineService } from '../../services/machine.service';
 import { Status } from '../../classes/status.class';
 
 @Component({
@@ -10,11 +11,13 @@ import { Status } from '../../classes/status.class';
 export class MachinesComponent implements OnInit {
   title = 'Machines';
   scalingStatus: Status;
+  machines: any[] = [];
 
-  constructor(private statusService: StatusService) { }
+  constructor(private statusService: StatusService, private machineService: MachineService) { }
 
   ngOnInit() {
     this.getDockerStatus();
+    this.machineService.machines.subscribe(machines => this.machines = machines);
   }
 
   getDockerStatus(): void {
