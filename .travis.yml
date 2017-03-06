@@ -5,7 +5,13 @@ services:
  - docker
 
 install:
- - docker build -t elastic-dashboard .
+ - docker build -t djbnjack/elastic-dashboard .
 
 script:
- - docker run -it --rm elastic-dashboard npm run lint
+ - docker run -it --rm djbnjack/elastic-dashboard npm run lint
+
+ after_success:
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then
+    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+    docker push djbnjack/elastic-dashboard;
+    fi
