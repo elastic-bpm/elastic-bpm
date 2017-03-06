@@ -10,8 +10,8 @@ install:
 script:
  - docker run -it --rm djbnjack/elastic-dashboard npm run lint
 
- after_success:
-  - if [ "$TRAVIS_BRANCH" == "master" ]; then
-    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
-    docker push djbnjack/elastic-dashboard;
-    fi
+after_success:
+ - if [ "$TRAVIS_BRANCH" == "master" ]; then
+   docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+   docker push djbnjack/elastic-dashboard;
+   fi
