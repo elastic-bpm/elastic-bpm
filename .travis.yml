@@ -8,9 +8,6 @@ install:
  - docker build -t djbnjack/elastic-api .
 
 script:
- - docker run -it --rm djbnjack/elastic-api npm test
-
-after_success:
  - if [ "$TRAVIS_BRANCH" == "master" ]; then
    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
    docker push djbnjack/elastic-api;
