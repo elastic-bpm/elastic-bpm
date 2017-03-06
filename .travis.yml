@@ -1,6 +1,11 @@
+sudo: required
 language: node_js
-node_js:
-  - "node"
+
+services:
+ - docker
+
+before_install:
+ - docker build -t elastic-dashboard .
 
 script:
-  - npm run lint
+ - docker run -it --rm elastic-dashboard npm run lint
