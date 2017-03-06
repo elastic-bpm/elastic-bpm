@@ -27,7 +27,7 @@ export class DockerService {
             } else {
                 return 1;
             }
-        }
+        };
 
         this.http
             .get('/api/docker/workers')

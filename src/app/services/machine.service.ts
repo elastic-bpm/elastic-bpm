@@ -24,7 +24,7 @@ export class MachineService {
                     console.log(error);
                     setTimeout(() => this.updateMachines(interval), interval);
                 }
-            )
-    }
+            );
+    };
 
 }

@@ -39,5 +39,5 @@ export class HumanService {
             .post('/api/human/stop')
             .map(res => res.json())
             .subscribe(res => cb(null, res), error => cb(error, null));
-    }
+    };
 }

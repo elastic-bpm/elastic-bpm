@@ -10,13 +10,13 @@ import { Status } from '../../classes/status.class';
 export class DashboardComponent implements OnInit {
   title = 'Dashboard';
   statusDict = {};
-  statusList: Status[] = []; 
+  statusList: Status[] = [];
 
   constructor(private statusService: StatusService) { }
 
   ngOnInit() {
     this.getStatusList();
-  }
+  };
 
   getStatusList() {
     this.statusService.getStatusList().subscribe(dict => {
@@ -24,8 +24,8 @@ export class DashboardComponent implements OnInit {
       this.statusList = [];
       Object.keys(dict).forEach(item => {
         this.statusList.push(dict[item]);
-      })
+      });
     });
-  }
+  };
 
 }
