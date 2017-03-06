@@ -1,4 +1,7 @@
 language: node
 
+install:
+  - npm install
+
 script:
   - npm run lint
