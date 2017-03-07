@@ -16,15 +16,42 @@ export class MachineService {
             .get('/api/scaling/virtualmachines')
             .map(res => res.json())
             .subscribe(
-                res => {
-                    this.machines.next(res);
-                    setTimeout(() => this.updateMachines(interval), interval);
-                },
-                error => {
-                    console.log(error);
-                    setTimeout(() => this.updateMachines(interval), interval);
-                }
+            res => {
+                this.machines.next(res);
+                setTimeout(() => this.updateMachines(interval), interval);
+            },
+            error => {
+                console.log(error);
+                setTimeout(() => this.updateMachines(interval), interval);
+            }
             );
     };
 
+    startMachine(machineName: string, resourceGroup: string, callback): void {
+        this.http
+            .post('/api/scaling/virtualmachines/' + resourceGroup + '/' + machineName + '/start', null)
+            .map(res => res.json())
+            .subscribe(
+            res => {
+                callback();
+            },
+            error => {
+                callback(error);
+            }
+            );
+    }
+
+    stopMachine(machineName: string, resourceGroup: string, callback): void {
+        this.http
+            .post('/api/scaling/virtualmachines/' + resourceGroup + '/' + machineName + '/stop', null)
+            .map(res => res.json())
+            .subscribe(
+            res => {
+                callback();
+            },
+            error => {
+                callback(error);
+            }
+            );
+    }
 }

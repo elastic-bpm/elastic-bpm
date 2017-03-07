@@ -16,7 +16,16 @@
                 <td>{{machine.resourceGroupName}}</td>
                 <td>{{machine.hardwareProfile.vmSize}}</td>
                 <td>{{machine.powerState}}</td>
-                <td>Stop / Start</td>
+                <td>
+                    <button 
+                        (click)="startMachine(machine.name, machine.resourceGroupName)" 
+                        [disabled]="machine.powerState === 'VM running'" 
+                        class="btn btn-success btn-xs">Start</button>
+                    <button 
+                        (click)="stopMachine(machine.name, machine.resourceGroupName)" 
+                        [disabled]="machine.powerState !== 'VM running'" 
+                        class="btn btn-warning btn-xs">Deactivate</button>
+                </td>
             </tr>
         </tbody>
     </table>

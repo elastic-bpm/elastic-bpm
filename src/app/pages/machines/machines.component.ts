@@ -23,10 +23,24 @@ export class MachinesComponent implements OnInit {
   getDockerStatus(): void {
     this.statusService.getStatusList().subscribe(status => {
       this.scalingStatus = status['scaling'] !== undefined
-        ?  status['scaling']
-        : {name: 'Scaling', statusCode: 500, message: 'no status'};
+        ? status['scaling']
+        : { name: 'Scaling', statusCode: 500, message: 'no status' };
     });
   }
 
+  startMachine(machineName: string, resourceGroup: string): void {
+    this.machineService.startMachine(machineName, resourceGroup, (error) => {
+      if (error) {
+        console.log(error);
+      }
+    });
+  }
 
+  stopMachine(machineName: string, resourceGroup: string): void {
+    this.machineService.stopMachine(machineName, resourceGroup, (error) => {
+      if (error) {
+        console.log(error);
+      }
+    });
+  }
 }
