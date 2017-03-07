@@ -126,6 +126,26 @@ docker_component = (function () {
         });
     };
 
+    component.delete_workers = function(_, cb) {
+        var req = client.delete("http://" + docker_host + ":4444/services/workers", (data, response) => {
+            if (response.statusCode == 200) {
+                cb(null, data);
+            } else {
+                cb("Error: " + data, null);
+            }
+        });
+    }
+
+    component.create_workers = function(_, cb) {
+        var req = client.post("http://" + docker_host + ":4444/services/workers", (data, response) => {
+            if (response.statusCode == 200) {
+                cb(null, data);
+            } else {
+                cb("Error: " + data, null);
+            }
+        });
+    }
+
     return component;
 }());
 
@@ -137,3 +157,5 @@ exports.get_remote_services = docker_component.get_remote_services;
 exports.get_nodes = docker_component.get_nodes;
 exports.get_workers = docker_component.get_workers;
 exports.set_node_availability = docker_component.set_node_availability;
+exports.create_workers = docker_component.create_workers;
+exports.delete_workers = docker_component.delete_workers;

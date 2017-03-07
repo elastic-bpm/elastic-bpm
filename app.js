@@ -103,7 +103,10 @@ setup_routes = function() {
    app.get('/api/docker/info/remote', (req, res) => return_json(docker.get_remote_info, req, res));
    app.get('/api/docker/containers/remote', (req, res) => return_json(docker.get_remote_containers, req, res));
    app.get('/api/docker/services/remote', (req, res) => return_json(docker.get_remote_services, req, res));
-
+   
+   app.post('/api/docker/services/workers', (req, res) => return_json_post(docker.create_workers, req, res));
+   app.delete('/api/docker/services/workers', (req, res) => return_json_post(docker.delete_workers, req, res));
+   
    app.get('/api/docker/nodes', (req, res) => return_json(docker.get_nodes, req, res));
    app.post('/api/docker/nodes/:hostname/:availability', set_node_availability);
 
