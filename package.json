@@ -4,12 +4,12 @@
   "description": "",
   "main": "app.js",
   "dependencies": {
-    "azure-arm-compute": "^0.20.0",
+    "azure-arm-compute": "0.20.0",
     "body-parser": "^1.15.2",
     "events": "^1.1.1",
     "express": "^4.14.0",
     "log4js": "^1.1.0",
-    "ms-rest-azure": "^1.15.2",
+    "ms-rest-azure": "1.15.6",
     "nodemon": "1.11.0"
   },
   "devDependencies": {},
