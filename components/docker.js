@@ -124,6 +124,10 @@ docker_component = (function () {
                 cb("Error: " + data, null);
             }
         });
+        
+        req.on('error', (error) => {
+            cb("error: " + error, null);
+        });
     };
 
     component.delete_workers = function(_, cb) {
@@ -134,6 +138,10 @@ docker_component = (function () {
                 cb("Error: " + data, null);
             }
         });
+
+        req.on('error', (error) => {
+            cb("error: " + error, null);
+        });
     }
 
     component.create_workers = function(_, cb) {
@@ -143,6 +151,10 @@ docker_component = (function () {
             } else {
                 cb("Error: " + data, null);
             }
+        });
+
+        req.on('error', (error) => {
+            cb("error: " + error, null);
         });
     }
 

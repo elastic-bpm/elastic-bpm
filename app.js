@@ -143,12 +143,13 @@ setup_routes = function() {
    app.post('/api/scaling/virtualmachines/:resourcegroup/:machine_id/stop', stop_virtualmachine);
 
    app.get('/api/scheduler/status', (req, res) => return_status(scheduler.check_status, req, res));
+   app.get('/api/scheduler/info', (req, res) => return_json(scheduler.get_info, req, res));
 };
 
 start_check_status = function() {
     redis.update_status(2000);
-    scheduler.update_status(2000);
     
+    scheduler.start_updates(2000);
     workflows.start_updates(2000);
     docker.start_updates(2000);
     human.start_updates(2000);

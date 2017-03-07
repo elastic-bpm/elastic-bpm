@@ -5,33 +5,59 @@ scheduler_component = (function () {
     var client = new Client();
     var scheduler_host = process.env.SCHEDULER_HOST || 'localhost';
     var component = {};
-    component.status = {
+    var status = {
         message: "not updated yet",
         statusCode: 500
     };
+    var info = {};
 
-    component.update_status = function(interval) {
+    component.start_updates = function(interval) {
+        update_status(interval);
+        update_info(interval);
+    }
+
+    var update_status = function(interval) {
         var req = client.get("http://" + scheduler_host + ":3210/status", (data, response) => {
-            component.status.statusCode = response.statusCode;
-            component.status.message = response.statusMessage;
+            status.statusCode = response.statusCode;
+            status.message = response.statusMessage;
             
-            setTimeout(() => component.update_status(interval), interval);
+            setTimeout(() => update_status(interval), interval);
         });
 
         req.on('error', (error) => {
-            component.status.statusCode = 500;
-            component.status.message = error.code;
+            status.statusCode = 500;
+            status.message = error.code;
             
-            setTimeout(() => component.update_status(interval), interval);
+            setTimeout(() => update_status(interval), interval);
+        });
+    }
+
+    var update_info = function(interval) {
+        var req = client.get("http://" + scheduler_host + ":3210/info", (data, response) => {
+            if (response.statusCode == 200) {
+                info = data;
+                setTimeout(() => update_info(interval), interval);
+            } else {
+                setTimeout(() => update_info(interval), interval);
+            }
+        });
+
+        req.on('error', (error) => {
+            setTimeout(() => update_info(interval), interval);
         });
     }
 
     component.check_status = function() {
-        return component.status;
+        return status;
     };
+
+    component.get_info = function() {
+        return info;
+    }
 
     return component;
 }());
 
 exports.check_status = scheduler_component.check_status;
-exports.update_status = scheduler_component.update_status;
+exports.get_info = scheduler_component.get_info;
+exports.start_updates = scheduler_component.start_updates;

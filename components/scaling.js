@@ -63,6 +63,10 @@ scaling_component = (function () {
                 cb("error: " + data, null);
             }
         });
+
+        req.on('error', (error) => {
+            cb("error: " + error, null);
+        });
     };
 
     component.stop_virtualmachine = function(resourcegroup, machine_id, cb) {
@@ -72,6 +76,10 @@ scaling_component = (function () {
             } else {
                 cb("error: " + data, null);
             }
+        });
+
+        req.on('error', (error) => {
+            cb("error: " + error, null);
         });
     };
 
