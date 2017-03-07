@@ -26,4 +26,18 @@ export class SchedulerService {
                 }
             );
     };
+
+    setPolicy = function(policy, cb) {
+        this.http
+            .post('/api/scheduler/policy', {policy: policy})
+            .map(res => res.json())
+            .subscribe(
+                res => {
+                    cb();
+                },
+                error => {
+                    cb(error);
+                }
+            );
+    }
 }

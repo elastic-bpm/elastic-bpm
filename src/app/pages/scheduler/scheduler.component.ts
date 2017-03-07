@@ -16,8 +16,12 @@ export class SchedulerComponent implements OnInit {
     this.schedulerService.info.subscribe(info => this.info = info);
   }
 
-  setPolicy(event) {
-    console.log(event);
+  setPolicy(policy) {
+    this.schedulerService.setPolicy(policy, (error) => {
+      if (error) {
+        console.log(error);
+      }
+    });
   }
 
 }
