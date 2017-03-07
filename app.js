@@ -144,6 +144,7 @@ setup_routes = function() {
 
    app.get('/api/scheduler/status', (req, res) => return_status(scheduler.check_status, req, res));
    app.get('/api/scheduler/info', (req, res) => return_json(scheduler.get_info, req, res));
+   app.post('/api/scheduler/policy', (req, res) => return_json_post(scheduler.set_policy, req, res));
 };
 
 start_check_status = function() {
@@ -151,7 +152,7 @@ start_check_status = function() {
     
     scheduler.start_updates(2000);
     workflows.start_updates(2000);
-    docker.start_updates(2000);
+    docker.start_updates(10000); // 10sec for docker
     human.start_updates(2000);
     scaling.start_updates(2000);
 };
