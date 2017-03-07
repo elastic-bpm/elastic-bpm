@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { SchedulerService } from 'app/services/scheduler.service';
 
 @Component({
   selector: 'app-scheduler',
@@ -7,10 +8,16 @@ import { Component, OnInit } from '@angular/core';
 })
 export class SchedulerComponent implements OnInit {
   title = 'Scheduler';
+  info = {};
 
-  constructor() { }
+  constructor(private schedulerService: SchedulerService) { }
 
   ngOnInit() {
+    this.schedulerService.info.subscribe(info => this.info = info);
+  }
+
+  setPolicy(event) {
+    console.log(event);
   }
 
 }

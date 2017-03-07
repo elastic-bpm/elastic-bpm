@@ -3,7 +3,7 @@
       
       <div class="col-md-2">
         <label>Set Policy</label>
-        <select style="width: 10em" id="scheduler-policy" class="form-control">
+        <select (change)="setPolicy($event.target.value)" style="width: 10em" id="scheduler-policy" class="form-control">
             <option>- pick -</option>
             <option>Off</option>
             <option>AtStart</option>
@@ -31,32 +31,33 @@
 </app-bs-panel>
 
 <app-bs-panel title="Scheduler Running Info">
+<!-- <pre>{{ info | json }}</pre> -->
   <div class="row" style="padding: 5px">
       <div class="col-md-2">
           <div class="form-group">
               <label>Current Policy</label>
-              <input class="form-control" id="scheduler-get-policy" type="text" placeholder="Policy" disabled="">
+              <input class="form-control" id="scheduler-get-policy" type="text" value="{{info.policy}}" disabled="">
           </div>
       </div>
 
       <div class="col-md-2">
           <div class="form-group">
               <label>At start amount</label>
-              <input class="form-control" id="scheduler-get-amount-at-start" type="text" placeholder="-1" disabled="">
+              <input class="form-control" id="scheduler-get-amount-at-start" type="text" value="{{info.at_start}}" disabled="">
           </div>
       </div>
 
       <div class="col-md-2">
           <div class="form-group">
               <label>On demand amount</label>
-              <input class="form-control" id="scheduler-get-amount-on-demand" type="text" placeholder="-1" disabled="">
+              <input class="form-control" id="scheduler-get-amount-on-demand" type="text" value="{{info.on_demand}}" disabled="">
           </div>
       </div>
 
       <div class="col-md-2">
           <div class="form-group">
               <label>Learning amount</label>
-              <input class="form-control" id="scheduler-get-amount-learning" type="text" placeholder="-1" disabled="">
+              <input class="form-control" id="scheduler-get-amount-learning" type="text" value="{{info.learning}}" disabled="">
           </div>
       </div>
   </div>
@@ -65,25 +66,25 @@
       <div class="col-md-2">
           <div class="form-group">
               <label>Running Machines</label>
-              <input class="form-control" id="scheduler-get-machines" type="text" placeholder="-1" disabled="">
+              <input class="form-control" id="scheduler-get-machines" type="text" value="{{info.active}}" disabled="">
           </div>
       </div>
       <div class="col-md-2">
           <div class="form-group">
               <label>Ready swarm nodes <i class="fa fa-check" aria-hidden="true"></i></label>
-              <input class="form-control" id="scheduler-get-ready-nodes" type="text" placeholder="-1" disabled="">
+              <input class="form-control" id="scheduler-get-ready-nodes" type="text" placeholder="??" disabled="">
           </div>
       </div>
       <div class="col-md-2">
           <div class="form-group">
               <label>Machines spinning up <i class="fa fa-arrow-up" aria-hidden="true"></i></label>
-              <input class="form-control" id="scheduler-get-machines-up" type="text" placeholder="-1" disabled="">
+              <input class="form-control" id="scheduler-get-machines-up" type="text" value="{{info.up}}" disabled="">
           </div>
       </div>
       <div class="col-md-2">
           <div class="form-group">
               <label>Machines shutting down <i class="fa fa-arrow-down" aria-hidden="true"></i></label>
-              <input class="form-control" id="scheduler-get-machines-down" type="text" placeholder="-1" disabled="">
+              <input class="form-control" id="scheduler-get-machines-down" type="text" value="{{info.down}}" disabled="">
           </div>
       </div>
   </div>

@@ -33,6 +33,7 @@ import { DockerService } from './services/docker.service';
 import { MachineService } from './services/machine.service';
 import { HumanService } from './services/human.service';
 import { WorkflowService } from './services/workflow.service';
+import { SchedulerService } from './services/scheduler.service';
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -70,7 +71,8 @@ import { AppRoutingModule } from './app-routing.module';
     DockerService,
     MachineService,
     HumanService,
-    WorkflowService
+    WorkflowService,
+    SchedulerService
   ],
   bootstrap: [AppComponent]
 })
