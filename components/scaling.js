@@ -53,7 +53,27 @@ scaling_component = (function () {
 
     component.get_virtualmachines = function() {
         return virtualmachines;
-    }
+    };
+
+    component.start_virtualmachine = function(resourcegroup, machine_id, cb) {
+        var req = client.post("http://" + scaling_host + ":8888/virtualmachines/"+resourcegroup+"/"+machine_id, (data, response) => {
+            if (response.statusCode == 200) {
+                cb(null, data);
+            } else {
+                cb("error: " + data, null);
+            }
+        });
+    };
+
+    component.stop_virtualmachine = function(resourcegroup, machine_id, cb) {
+        var req = client.delete("http://" + scaling_host + ":8888/virtualmachines/"+resourcegroup+"/"+machine_id, (data, response) => {
+            if (response.statusCode == 200) {
+                cb(null, data);
+            } else {
+                cb("error: " + data, null);
+            }
+        });
+    };
 
     return component;
 }());
@@ -61,3 +81,5 @@ scaling_component = (function () {
 exports.check_status = scaling_component.check_status;
 exports.start_updates = scaling_component.start_updates;
 exports.get_virtualmachines = scaling_component.get_virtualmachines;
+exports.start_virtualmachine = scaling_component.start_virtualmachine;
+exports.stop_virtualmachine = scaling_component.stop_virtualmachine;

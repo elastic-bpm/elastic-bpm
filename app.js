@@ -88,6 +88,26 @@ var set_node_availability = function(req, res) {
     });
 };
 
+var start_virtualmachine = function (req, res) {
+    scaling.start_virtualmachine(req.params['resourcegroup'], req.params['machine_id'], (error, data) => {
+        if (error) {
+            res.status(500).send(error);
+        } else {
+            res.send(JSON.stringify(data, null, 2));
+        };
+    });
+}
+
+var stop_virtualmachine = function (req, res) {
+    scaling.stop_virtualmachine(req.params['resourcegroup'], req.params['machine_id'], (error, data) => {
+        if (error) {
+            res.status(500).send(error);
+        } else {
+            res.send(JSON.stringify(data, null, 2));
+        };
+    });
+}
+
 // ROUTING
 setup_routes = function() {
    app.get('/api/redis/status', (req, res) => return_status(redis.check_status, req, res));
@@ -119,6 +139,8 @@ setup_routes = function() {
    
    app.get('/api/scaling/status', (req, res) => return_status(scaling.check_status, req, res));
    app.get('/api/scaling/virtualmachines', (req, res) => return_json(scaling.get_virtualmachines, req, res));
+   app.post('/api/scaling/virtualmachines/:resourcegroup/:machine_id/start', start_virtualmachine);
+   app.post('/api/scaling/virtualmachines/:resourcegroup/:machine_id/stop', stop_virtualmachine);
 
    app.get('/api/scheduler/status', (req, res) => return_status(scheduler.check_status, req, res));
 };
