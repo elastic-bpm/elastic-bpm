@@ -17,6 +17,21 @@ var resources_module = (function () {
     my.on_demand_amount = 2;
     my.learning_amount = 3;
     
+    my.get_info = function(callback) {
+        active = getActiveMachineCount();
+        up = getScalingUpCount();
+        down = getScalingDownCount();
+        callback(null, {
+            at_start: my.at_start_amount, 
+            on_demand: my.on_demand_amount, 
+            learning: my.learning_amount,
+            policy: my.policy,
+            active: active, 
+            up: up, 
+            down: down
+        })
+    };
+
     my.set_amount = function(policy, amount, callback) {
         if (policy === "atstart") {
             my.at_start_amount = amount;
@@ -38,6 +53,26 @@ var resources_module = (function () {
 
     my.get_amount = function(callback) {
         callback(null, {at_start: my.at_start_amount, on_demand: my.on_demand_amount, learning: my.learning_amount});
+    };
+
+    my.set_policy = function(policy, callback) {
+        // Add check for valid options?
+        my.policy = policy;
+        console.log("Policy set to: " + policy);
+        callback(null, my.policy);
+
+        my.check_resources();
+    };
+
+    my.get_policy = function(callback) {
+        callback(null, my.policy);
+    };
+
+    my.get_machine_count = function(callback) {
+        active = getActiveMachineCount();
+        up = getScalingUpCount();
+        down = getScalingDownCount();
+        callback(null, {active: active, up: up, down: down});
     };
 
     my.check_resources = function() {
@@ -228,9 +263,9 @@ var resources_module = (function () {
         }
 
         console.log("Scaling up VM: " + key);
-        setMachineAvailability(key, "active", function(error) {
+        startMachine(machines[key].resourceGroup, key, function(error) {
             if (!error) {
-                 startMachine(machines[key].resourceGroup, key, function(error) {
+                setMachineAvailability(key, "active", function(error) {
                     if (!error) {
                         machines[key].activated = true;
                         scaleUp(amount - 1);
@@ -267,10 +302,10 @@ var resources_module = (function () {
         }
 
         console.log("Scaling down VM: " + key);
-        setMachineAvailability(key, "drain", function(error) {
-            if (!error) {                
-                shutdownMachine(machines[key].resourceGroup, key, function(error) {
-                    if (!error) {
+        shutdownMachine(machines[key].resourceGroup, key, function(error) {
+            if (!error) {
+                setMachineAvailability(key, "drain", function(error) {
+                    if (!error) {                
                         machines[key].deactivated = true;
                         scaleDown(amount - 1);
                     } else {
@@ -415,25 +450,6 @@ var resources_module = (function () {
         });
     };
 
-    my.set_policy = function(policy, callback) {
-        // Add check for valid options?
-        my.policy = policy;
-        console.log("Policy set to: " + policy);
-        callback(null, my.policy);
-
-        my.check_resources();
-    };
-
-    my.get_policy = function(callback) {
-        callback(null, my.policy);
-    };
-
-    my.get_machine_count = function(callback) {
-        active = getActiveMachineCount();
-        up = getScalingUpCount();
-        down = getScalingDownCount();
-        callback(null, {active: active, up: up, down: down});
-    };
 
     return my;
 })();
@@ -444,3 +460,4 @@ exports.get_policy = resources_module.get_policy;
 exports.get_machine_count = resources_module.get_machine_count;
 exports.get_amount = resources_module.get_amount;
 exports.set_amount = resources_module.set_amount;
+exports.get_info = resources_module.get_info;

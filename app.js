@@ -187,6 +187,18 @@ get_amount = function(req, res) {
     });
 };
 
+get_info = function(req, res) {
+    resources.get_info((error, info) => {
+        if (error) {
+            console.log(error);
+            res.status(500).send("Error: " + error);
+        } else {
+            res.setHeader('Content-Type', 'application/json');
+            res.send(JSON.stringify(info, null, 3));
+        }
+    });
+};
+
 // ROUTING
 setup_routes = function() {
     app.get('/task/count', get_task_count);
@@ -206,6 +218,8 @@ setup_routes = function() {
 
     app.get('/amount', get_amount);
     app.post('/amount/:policy/:amount', post_amount);
+
+    app.get('/info', get_info);
 };
 
 // Server startup
