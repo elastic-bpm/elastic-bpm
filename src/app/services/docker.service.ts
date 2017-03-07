@@ -33,16 +33,16 @@ export class DockerService {
             .get('/api/docker/workers')
             .map(res => res.json())
             .subscribe(
-                res => {
-                    this.workers.next(res.sort(sortWorkers));
-                    if (interval > 0) {
-                        setTimeout(() => this.updateWorkers(interval), interval);
-                    }
-                },
-                error => {
-                    console.log(error);
+            res => {
+                this.workers.next(res.sort(sortWorkers));
+                if (interval > 0) {
                     setTimeout(() => this.updateWorkers(interval), interval);
                 }
+            },
+            error => {
+                console.log(error);
+                setTimeout(() => this.updateWorkers(interval), interval);
+            }
             );
     }
 
@@ -69,16 +69,16 @@ export class DockerService {
             .get('/api/docker/nodes')
             .map(res => res.json())
             .subscribe(
-                res => {
-                    this.nodes.next(res.sort(sortNodes));
-                    if (interval > 0) {
-                        setTimeout(() => this.updateNodes(interval), interval);
-                    }
-                },
-                error => {
-                    console.log(error);
+            res => {
+                this.nodes.next(res.sort(sortNodes));
+                if (interval > 0) {
                     setTimeout(() => this.updateNodes(interval), interval);
                 }
+            },
+            error => {
+                console.log(error);
+                setTimeout(() => this.updateNodes(interval), interval);
+            }
             );
     }
 
@@ -87,14 +87,14 @@ export class DockerService {
             .get('/api/docker/info/remote')
             .map(res => res.json())
             .subscribe(
-                res => {
-                    this.remoteInfo.next(res);
-                    setTimeout(() => this.updateRemoteInfo(interval), interval);
-                },
-                error => {
-                    console.log(error);
-                    setTimeout(() => this.updateRemoteInfo(interval), interval);
-                }
+            res => {
+                this.remoteInfo.next(res);
+                setTimeout(() => this.updateRemoteInfo(interval), interval);
+            },
+            error => {
+                console.log(error);
+                setTimeout(() => this.updateRemoteInfo(interval), interval);
+            }
             );
     }
 
@@ -103,14 +103,14 @@ export class DockerService {
             .get('/api/docker/containers/remote')
             .map(res => res.json())
             .subscribe(
-                res => {
-                    this.remoteContainers.next(res);
-                    setTimeout(() => this.updateRemoteContainers(interval), interval);
-                },
-                error => {
-                    console.log(error);
-                    setTimeout(() => this.updateRemoteContainers(interval), interval);
-                }
+            res => {
+                this.remoteContainers.next(res);
+                setTimeout(() => this.updateRemoteContainers(interval), interval);
+            },
+            error => {
+                console.log(error);
+                setTimeout(() => this.updateRemoteContainers(interval), interval);
+            }
             );
     }
 
@@ -127,13 +127,42 @@ export class DockerService {
             .get('/api/docker/services/remote')
             .map(res => res.json())
             .subscribe(
-                res => {
-                    this.remoteServices.next(res.sort(sortServices));
-                    setTimeout(() => this.updateRemoteServices(interval), interval);
-                },
-                error => {
-                    console.log(error);
-                    setTimeout(() => this.updateRemoteServices(interval), interval);
-                }
+            res => {
+                this.remoteServices.next(res.sort(sortServices));
+                setTimeout(() => this.updateRemoteServices(interval), interval);
+            },
+            error => {
+                console.log(error);
+                setTimeout(() => this.updateRemoteServices(interval), interval);
+            }
             );
-    }}
+    }
+
+    deleteWorkers = function (callback) {
+        this.http
+            .delete('/api/docker/services/workers')
+            .map(res => res.json())
+            .subscribe(
+            res => {
+                callback();
+            },
+            error => {
+                callback(error);
+            }
+            );
+    };
+
+    createWorkers = function (callback) {
+        this.http
+            .post('/api/docker/services/workers')
+            .map(res => res.json())
+            .subscribe(
+            res => {
+                callback();
+            },
+            error => {
+                callback(error);
+            }
+            );
+    };
+}

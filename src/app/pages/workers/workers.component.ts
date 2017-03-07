@@ -23,9 +23,23 @@ export class WorkersComponent implements OnInit {
   getDockerStatus(): void {
     this.statusService.getStatusList().subscribe(status => {
       this.dockerStatus = status['docker'] !== undefined
-        ?  status['docker']
-        : {name: 'Docker', statusCode: 500, message: 'no status'};
+        ? status['docker']
+        : { name: 'Docker', statusCode: 500, message: 'no status' };
     });
   }
+
+  resetWorkers = function () {
+    this.dockerService.deleteWorkers((error) => {
+      if (error) {
+        console.log(error);
+      }
+
+      this.dockerService.createWorkers((createError) => {
+        if (createError) {
+          console.log(createError);
+        }
+      });
+    });
+  };
 
 }
