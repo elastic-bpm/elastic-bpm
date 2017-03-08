@@ -6,7 +6,7 @@ api:
   ports:
     - '3000:3000'
 dashboard:
-  image: 'djbnjack/elastic-dashboard:latest'
+  image: 'djbnjack/elastic-dashboard:old'
   autoredeploy: true
   links:
     - api
