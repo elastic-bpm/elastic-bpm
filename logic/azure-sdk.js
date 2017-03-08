@@ -2,7 +2,7 @@
 
 var azure_sdk = (function () {
     var msRestAzure = require('../node_modules/azure/runtime/ms-rest-azure');
-    var ComputeClient = require('azure-arm-compute');
+    var ComputeClient = require('../node_modules/azure/lib/services/computeManagement2/lib/computeManagementClient');
     var clientId = process.env.CLIENT_ID;
     var domain = process.env.DOMAIN;
     var secret = process.env.APPLICATION_SECRET;
