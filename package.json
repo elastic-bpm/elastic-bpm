@@ -23,6 +23,8 @@
     "bootstrap": "^3.3.7",
     "core-js": "^2.4.1",
     "cytoscape": "^2.7.15",
+    "cytoscape-dagre": "^1.4.0",
+    "dagre": "^0.7.4",
     "datatables.net": "^1.10.13",
     "datatables.net-bs": "^1.10.13",
     "datatables.net-dt": "^1.10.13",
@@ -36,7 +38,6 @@
   "devDependencies": {
     "@angular/cli": "1.0.0-beta.32.3",
     "@angular/compiler-cli": "^2.4.0",
-    "@types/cytoscape": "github:phreed/ts-typings#cytoscape",
     "@types/jasmine": "2.5.38",
     "@types/node": "~6.0.60",
     "codelyzer": "~2.0.0-beta.4",
