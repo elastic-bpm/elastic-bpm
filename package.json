@@ -5,7 +5,7 @@
   "main": "app.js",
   "dependencies": {
     "ms-rest":"1.15.4",
-    "ms-rest-azure": "1.15.4",
+    "ms-rest-azure": "1.15.7",
     "azure-arm-compute": "0.20.0",
     "body-parser": "^1.15.2",
     "events": "^1.1.1",
