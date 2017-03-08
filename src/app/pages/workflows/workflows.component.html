@@ -6,7 +6,7 @@
       <div class="col-md-5">
           <div class="form-group">
               <label>Upload workflow script</label>
-              <input (change)="fileChanged($event)" type="file">
+              <input (change)="fileChanged($event)" type="file" class="form-control">
           </div>    
       </div>
       <div class="pull-right" style="margin-right: 10px;">
@@ -37,12 +37,12 @@
                 <td>{{workflow.id}}</td>
                 <td>{{workflow.name}}</td>
                 <td>{{workflow.owner}}</td>
-                <td>Graph</td>
+                <td><button class="btn btn-xs btn-info">Show Graph</button></td>
                 <td>{{workflow.status}}</td>
                 <td>{{workflow.todo_nodes.length}}</td>
                 <td>{{workflow.busy_nodes.length}}</td>
                 <td>{{workflow.done_nodes.length}}</td>
-                <td><button (click)="deleteWorkflow(workflow.id)" class="btn btn-danger">Delete</button></td>
+                <td><button (click)="deleteWorkflow(workflow.id)" class="btn btn-danger btn-xs">Delete</button></td>
             </tr>
         </tbody>
     </table>

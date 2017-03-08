@@ -3,7 +3,7 @@
       
       <div class="col-md-2">
         <label>Set Policy</label>
-        <select (change)="setPolicy($event.target.value)" style="width: 10em" id="scheduler-policy" class="form-control">
+        <select (change)="setPolicy($event.target.value)" style="width: 10em" class="form-control">
             <option>- pick -</option>
             <option>Off</option>
             <option>AtStart</option>
@@ -14,17 +14,17 @@
 
       <div class="col-md-2">
           <label>Set at start amount:</label>
-          <input (change)="changeAmount('atstart', $event.target.value)" style="width: 10em" id="set-at-start-amount" type="number" value="10" class="form-control"/>
+          <input (change)="changeAmount('atstart', $event.target.value)" style="width: 10em" type="number" value="10" class="form-control"/>
       </div>
 
       <div class="col-md-2">
           <label>Set on demand amount:</label>
-          <input (change)="changeAmount('ondemand', $event.target.value)" style="width: 10em" id="set-on-demand-amount" type="number" value="15" class="form-control"/>
+          <input (change)="changeAmount('ondemand', $event.target.value)" style="width: 10em" type="number" value="15" class="form-control"/>
       </div>
 
       <div class="col-md-2">
           <label>Set learning amount:</label>
-          <input (change)="changeAmount('learning', $event.target.value)" style="width: 10em" id="set-learning-amount" type="number" value="15" class="form-control"/>
+          <input (change)="changeAmount('learning', $event.target.value)" style="width: 10em" type="number" value="15" class="form-control"/>
       </div>
 
   </div>
@@ -36,28 +36,28 @@
       <div class="col-md-2">
           <div class="form-group">
               <label>Current Policy</label>
-              <input class="form-control" id="scheduler-get-policy" type="text" value="{{info.policy}}" disabled="">
+              <input class="form-control" type="text" value="{{info.policy}}" disabled="">
           </div>
       </div>
 
       <div class="col-md-2">
           <div class="form-group">
               <label>At start amount</label>
-              <input class="form-control" id="scheduler-get-amount-at-start" type="text" value="{{info.at_start}}" disabled="">
+              <input class="form-control" type="text" value="{{info.at_start}}" disabled="">
           </div>
       </div>
 
       <div class="col-md-2">
           <div class="form-group">
               <label>On demand amount</label>
-              <input class="form-control" id="scheduler-get-amount-on-demand" type="text" value="{{info.on_demand}}" disabled="">
+              <input class="form-control" type="text" value="{{info.on_demand}}" disabled="">
           </div>
       </div>
 
       <div class="col-md-2">
           <div class="form-group">
               <label>Learning amount</label>
-              <input class="form-control" id="scheduler-get-amount-learning" type="text" value="{{info.learning}}" disabled="">
+              <input class="form-control" type="text" value="{{info.learning}}" disabled="">
           </div>
       </div>
   </div>
@@ -66,56 +66,56 @@
       <div class="col-md-2">
           <div class="form-group">
               <label>Running Machines</label>
-              <input class="form-control" id="scheduler-get-machines" type="text" value="{{info.active}}" disabled="">
+              <input class="form-control" type="text" value="{{info.active}}" disabled="">
           </div>
       </div>
       <div class="col-md-2">
           <div class="form-group">
               <label>Ready swarm nodes <i class="fa fa-check" aria-hidden="true"></i></label>
-              <input class="form-control" id="scheduler-get-ready-nodes" type="text" value="{{activeNodeCount}}" disabled="">
+              <input class="form-control" type="text" value="{{activeNodeCount}}" disabled="">
           </div>
       </div>
       <div class="col-md-2">
           <div class="form-group">
               <label>Machines spinning up <i class="fa fa-arrow-up" aria-hidden="true"></i></label>
-              <input class="form-control" id="scheduler-get-machines-up" type="text" value="{{info.up}}" disabled="">
+              <input class="form-control" type="text" value="{{info.up}}" disabled="">
           </div>
       </div>
       <div class="col-md-2">
           <div class="form-group">
               <label>Machines shutting down <i class="fa fa-arrow-down" aria-hidden="true"></i></label>
-              <input class="form-control" id="scheduler-get-machines-down" type="text" value="{{info.down}}" disabled="">
+              <input class="form-control" type="text" value="{{info.down}}" disabled="">
           </div>
       </div>
   </div>
   <div class="row" style="padding: 5px">
       <div class="col-md-4">
-          <button id="scheduler-atstart-execution" type="button" class="btn btn-primary">Execute AtStart</button>
-          <button id="scheduler-ondemand-execution" type="button" class="btn btn-primary">Execute OnDemand</button>
-          <button id="scheduler-learning-execution" type="button" class="btn btn-primary">Execute Learning</button>
-          <button id="scheduler-reset-execution" type="button" class="btn btn-warning">Reset</button>
+          <button type="button" class="btn btn-primary">Execute AtStart</button>
+          <button type="button" class="btn btn-primary">Execute OnDemand</button>
+          <button type="button" class="btn btn-primary">Execute Learning</button>
+          <button type="button" class="btn btn-warning">Reset</button>
       </div>
       <div class="col-md-2">
           <div class="form-group">
               <label>Upload workflow script</label>
-              <input id="scheduler-workflow-script-file" type="file">
+              <input type="file" class="form-control">
           </div>    
       </div>
   </div>
   <div class="row" style="padding: 5px">
       <div class="col-md-12">
           <ul class="fa-ul">
-              <li><i id="scheduler-set-policy" class="fa-li fa fa-circle-o"></i> Set policy</li>
-              <li><i id="scheduler-wait-machines" class="fa-li fa fa-circle-o"></i> Wait for machines to scale</li>
-              <li><i id="scheduler-wait-nodes" class="fa-li fa fa-circle-o"></i> Wait for nodes to be ready</li>
-              <li><i id="scheduler-reset-workers-1" class="fa-li fa fa-circle-o"></i> Reset workers</li>
-              <li><i id="scheduler-scale-workers" class="fa-li fa fa-circle-o"></i> Scale workers</li>
-              <li><i id="scheduler-start-humans" class="fa-li fa fa-circle-o"></i> Start humans</li>
-              <li><i id="scheduler-upload-workflow" class="fa-li fa fa-circle-o"></i> Upload workflow</li>
-              <li><i id="scheduler-wait-for-finished" class="fa-li fa fa-circle-o"></i> Wait for humans finished</li>
-              <li><i id="scheduler-reset-workers-2" class="fa-li fa fa-circle-o"></i> Reset workers</li>
-              <li><i id="scheduler-delete-workflows" class="fa-li fa fa-circle-o"></i> Delete all workflows</li>
-              <li><i id="scheduler-set-policy-off" class="fa-li fa fa-circle-o"></i> Set policy to off</li>
+              <li><i class="fa-li fa fa-circle-o"></i> Set policy</li>
+              <li><i class="fa-li fa fa-circle-o"></i> Wait for machines to scale</li>
+              <li><i class="fa-li fa fa-circle-o"></i> Wait for nodes to be ready</li>
+              <li><i class="fa-li fa fa-circle-o"></i> Reset workers</li>
+              <li><i class="fa-li fa fa-circle-o"></i> Scale workers</li>
+              <li><i class="fa-li fa fa-circle-o"></i> Start humans</li>
+              <li><i class="fa-li fa fa-circle-o"></i> Upload workflow</li>
+              <li><i class="fa-li fa fa-circle-o"></i> Wait for humans finished</li>
+              <li><i class="fa-li fa fa-circle-o"></i> Reset workers</li>
+              <li><i class="fa-li fa fa-circle-o"></i> Delete all workflows</li>
+              <li><i class="fa-li fa fa-circle-o"></i> Set policy to off</li>
           </ul>
       </div>
   </div>
