@@ -62,6 +62,21 @@ scheduler_component = (function () {
         });
     }
 
+    component.set_amount = function(body, cb) {
+        console.log(body);
+        var req = client.post("http://" + scheduler_host + ":3210/amount/" + body.policy + "/" + body.amount, (data, response) => {
+            if (response.statusCode == 200) {
+                cb(null, data);
+            } else {
+                cb("Error: " + data, null);
+            }
+        });
+
+        req.on('error', (error) => {
+            cb("Error: " + error, null);
+        });
+    }
+
     component.check_status = function() {
         return status;
     };
@@ -77,3 +92,4 @@ exports.check_status = scheduler_component.check_status;
 exports.get_info = scheduler_component.get_info;
 exports.start_updates = scheduler_component.start_updates;
 exports.set_policy = scheduler_component.set_policy;
+exports.set_amount = scheduler_component.set_amount;
