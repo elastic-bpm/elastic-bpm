@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 
 import { WorkflowService } from '../../services/workflow.service';
 
+import * as cytoscape from 'cytoscape';
+
 const testFlow = {
   name: 'Test-Workflow',
   owner: 'test',
@@ -17,6 +19,7 @@ const testFlow = {
 export class WorkflowsComponent implements OnInit {
   title = 'Workflows';
   workflows = [];
+  selectedWorkflow = {};
   constructor(private workflowService: WorkflowService) { }
 
   ngOnInit() {
@@ -63,5 +66,32 @@ export class WorkflowsComponent implements OnInit {
         console.log(error);
       }
     });
+  }
+
+  fillModal(id) {
+    this.selectedWorkflow = this.workflows.find((wf) => wf.id === id);
+  }
+
+  showGraph() {
+    const container = document.getElementById('cy');
+    if (container === null) {
+      setTimeout(() => this.showGraph(), 100);
+    } else {
+      const options: Cy.CytoscapeOptions = {
+        container: container,
+        elements: [ // list of graph elements to start with
+          { // node a
+            data: { id: 'a' }
+          },
+          { // node b
+            data: { id: 'b' }
+          },
+          { // edge ab
+            data: { id: 'ab', source: 'a', target: 'b' }
+          }
+        ],
+      };
+      const cy = cytoscape(options);
+    }
   }
 }

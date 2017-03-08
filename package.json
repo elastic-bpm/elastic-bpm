@@ -22,11 +22,13 @@
     "@angular/router": "^3.4.0",
     "bootstrap": "^3.3.7",
     "core-js": "^2.4.1",
+    "cytoscape": "^2.7.15",
     "datatables.net": "^1.10.13",
     "datatables.net-bs": "^1.10.13",
     "datatables.net-dt": "^1.10.13",
     "jquery": "^3.1.1",
     "ng2-bootstrap": "^1.3.3",
+    "ngx-modal": "0.0.29",
     "redis": "^2.6.5",
     "rxjs": "^5.1.0",
     "zone.js": "^0.7.6"
@@ -34,6 +36,7 @@
   "devDependencies": {
     "@angular/cli": "1.0.0-beta.32.3",
     "@angular/compiler-cli": "^2.4.0",
+    "@types/cytoscape": "github:phreed/ts-typings#cytoscape",
     "@types/jasmine": "2.5.38",
     "@types/node": "~6.0.60",
     "codelyzer": "~2.0.0-beta.4",

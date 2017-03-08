@@ -54,33 +54,3 @@ import 'core-js/es7/reflect';
  * Zone JS is required by Angular itself.
  */
 import 'zone.js/dist/zone';  // Included with Angular CLI.
-
-
-
-/***************************************************************************************************
- * APPLICATION IMPORTS
- */
-
-/**
- * Date, currency, decimal and percent pipes.
- * Needed for: All but Chrome, Firefox, Edge, IE11 and Safari 10
- */
-// import 'intl';  // Run `npm install --save intl`.
-/*
-import 'assets/js/vendor/jquery.min';
-import 'assets/js/vendor/jquery.loadTemplate';
-
-import 'assets/js/vendor/dataTables/jquery.dataTables.min';
-import 'assets/js/vendor/dataTables/dataTables.bootstrap.min';
-
-import 'assets/js/vendor/clipboard.min';
-import 'assets/js/vendor/bootstrap.min';
-import 'assets/js/vendor/bootstrap-slider.min';
-import 'assets/js/vendor/metisMenu.min';
-import 'assets/js/vendor/startmin';
-import 'assets/js/vendor/moment-with-locales';
-
-import 'assets/js/vendor/dagre';
-import 'assets/js/vendor/cytoscape';
-import 'assets/js/vendor/cytoscape-dagre';
-*/

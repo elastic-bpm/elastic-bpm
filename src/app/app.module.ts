@@ -37,6 +37,8 @@ import { SchedulerService } from './services/scheduler.service';
 
 import { AppRoutingModule } from './app-routing.module';
 
+import {ModalModule} from 'ngx-modal';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -64,7 +66,8 @@ import { AppRoutingModule } from './app-routing.module';
     BrowserModule,
     FormsModule,
     HttpModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ModalModule
   ],
   providers: [
     StatusService,

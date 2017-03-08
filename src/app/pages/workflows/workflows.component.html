@@ -37,7 +37,7 @@
                 <td>{{workflow.id}}</td>
                 <td>{{workflow.name}}</td>
                 <td>{{workflow.owner}}</td>
-                <td><button class="btn btn-xs btn-info">Show Graph</button></td>
+                <td><button class="btn btn-xs btn-info" (click)="graphModal.open()">Show Graph</button></td>
                 <td>{{workflow.status}}</td>
                 <td>{{workflow.todo_nodes.length}}</td>
                 <td>{{workflow.busy_nodes.length}}</td>
@@ -48,3 +48,11 @@
     </table>
     <!-- <pre>{{workflows | json}}</pre> -->
 </app-bs-panel>
+
+
+<modal #graphModal title="{{selectedWorkflow.name}}" cancelButtonLabel="Close" modalClass="modal-lg" (onOpen)="showGraph($event)">
+    <modal-content>
+        <div id="cy"style="width: 500px; height: 450px;"></div>
+        <pre>{{selectedWorkflow | json}}</pre>
+    </modal-content>
+</modal>
