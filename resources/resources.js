@@ -188,6 +188,7 @@ var resources_module = (function () {
                         }
 
                         // Seems to happen now?
+                        /*
                         if (vm.powerState === "VM stopped") {
                             console.log('VM: ' + vm.name + ' in VM stopped state!');
                             machines[vm.name] = {};
@@ -197,6 +198,7 @@ var resources_module = (function () {
                                 }
                             });
                         }
+                        */
 
                         // Update state
                         machines[vm.name].state = vm.powerState;
