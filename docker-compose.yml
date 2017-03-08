@@ -6,8 +6,8 @@
       - "4200:4200"
       - "35729:35729"
      depends_on:
-      - dashboard-api
-   dashboard-api:
+      - dashboardapi
+   dashboardapi:
      build:
        context: ..\elastic-dashboard-api\
      image: djbnjack/elastic-dashboard-api:latest
