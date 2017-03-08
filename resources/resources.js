@@ -189,8 +189,9 @@ var resources_module = (function () {
 
                         // Seems to happen now?
                         if (vm.powerState === "VM stopped") {
+                            console.log('VM: ' + vm.name + ' in VM stopped state!');
                             machines[vm.name] = {};
-                            shutdownMachine(machines[vm.name].resourceGroup, vm.name, function(error) {
+                            shutdownMachine(vm.resourceGroupName, vm.name, function(error) {
                                 if (!error) {
                                     machines[vm.name].deactivated = true;
                                 }
