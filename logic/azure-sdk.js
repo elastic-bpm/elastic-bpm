@@ -1,7 +1,7 @@
 /*jshint esversion: 6 */
 
 var azure_sdk = (function () {
-    var msRestAzure = require('ms-rest-azure');
+    var msRestAzure = require('../node_modules/azure/runtime/ms-rest-azure');
     var ComputeClient = require('azure-arm-compute');
     var clientId = process.env.CLIENT_ID;
     var domain = process.env.DOMAIN;
