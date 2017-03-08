@@ -39,5 +39,19 @@ export class SchedulerService {
                     cb(error);
                 }
             );
+    };
+
+    setAmount = function(policy, amount, cb) {
+        this.http
+            .post('/api/scheduler/amount', {policy: policy, amount: amount})
+            .map(res => res.json())
+            .subscribe(
+                res => {
+                    cb();
+                },
+                error => {
+                    cb(error);
+                }
+            );
     }
 }

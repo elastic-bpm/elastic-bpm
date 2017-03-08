@@ -14,17 +14,17 @@
 
       <div class="col-md-2">
           <label>Set at start amount:</label>
-          <input style="width: 10em" id="set-at-start-amount" type="text" value="10" class="form-control"/>
+          <input (change)="changeAmount('atstart', $event.target.value)" style="width: 10em" id="set-at-start-amount" type="number" value="10" class="form-control"/>
       </div>
 
       <div class="col-md-2">
           <label>Set on demand amount:</label>
-          <input style="width: 10em" id="set-on-demand-amount" type="text" value="15" class="form-control"/>
+          <input (change)="changeAmount('ondemand', $event.target.value)" style="width: 10em" id="set-on-demand-amount" type="number" value="15" class="form-control"/>
       </div>
 
       <div class="col-md-2">
           <label>Set learning amount:</label>
-          <input style="width: 10em" id="set-learning-amount" type="text" value="15" class="form-control"/>
+          <input (change)="changeAmount('learning', $event.target.value)" style="width: 10em" id="set-learning-amount" type="number" value="15" class="form-control"/>
       </div>
 
   </div>
@@ -72,7 +72,7 @@
       <div class="col-md-2">
           <div class="form-group">
               <label>Ready swarm nodes <i class="fa fa-check" aria-hidden="true"></i></label>
-              <input class="form-control" id="scheduler-get-ready-nodes" type="text" placeholder="??" disabled="">
+              <input class="form-control" id="scheduler-get-ready-nodes" type="text" value="{{activeNodeCount}}" disabled="">
           </div>
       </div>
       <div class="col-md-2">
