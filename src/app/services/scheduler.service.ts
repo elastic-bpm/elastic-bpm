@@ -53,5 +53,5 @@ export class SchedulerService {
                     cb(error);
                 }
             );
-    }
+    };
 }
