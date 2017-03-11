@@ -9,7 +9,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "reload:compose": "update-git && docker-compose build && docker-compose up -d"
+    "update-git": "./update-git || update-git",
+    "reload:compose": "npm run update-git && docker-compose build && docker-compose up -d"
   },
   "private": true,
   "dependencies": {
