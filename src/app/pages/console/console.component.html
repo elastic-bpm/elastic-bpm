@@ -1,1 +1,18 @@
-<pre>{{ logMessages | json }}</pre>
+<div class="table-responsive">
+  <table class="table table-striped table-bordered table-hover">
+    <thead>
+      <tr>
+        <th>Time</th>
+        <th>Message</th>
+        <th>Host</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let log of logMessages">
+        <td>{{ log['@timestamp'] | date:'HH:mm:ss' }}</td>
+        <td>{{ log.message }}</td>
+        <td>{{ log.host }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
