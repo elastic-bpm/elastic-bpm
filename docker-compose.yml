@@ -9,7 +9,7 @@
       - dashboardapi
    dashboardapi:
      build:
-       context: ..\elastic-dashboard-api\
+       context: ../elastic-dashboard-api/
      image: djbnjack/elastic-dashboard-api:latest
      ports:
       - "8080:8080"
@@ -22,7 +22,7 @@
       - human
    api:
      build:
-       context:  ..\elastic-api\
+       context:  ../elastic-api/
      image: djbnjack/elastic-api:latest
      ports:
       - "3000:3000"
@@ -34,10 +34,10 @@
      image: redis
    scaling:
      build:
-       context:  ..\elastic-scaling\
+       context:  ../elastic-scaling/
      image: djbnjack/elastic-scaling:latest
      env_file:
-      - ..\scaling-variables.env     
+      - ../scaling-variables.env     
      ports:
       - "8888:8888"
      depends_on:
@@ -45,7 +45,7 @@
       - api
    scheduler:
      build:
-       context:  ..\elastic-scheduler\
+       context:  ../elastic-scheduler/
      image: djbnjack/elastic-scheduler:latest
      depends_on:
       - api
@@ -55,7 +55,7 @@
       - "3210:3210"
    docker:
      build:
-       context: ..\elastic-docker\
+       context: ../elastic-docker/
      image: djbnjack/elastic-docker:latest
      ports:
       - "4444:4444"
@@ -63,7 +63,7 @@
       - /var/run/docker.sock:/var/run/docker.sock
    human:
      build:
-       context: ..\elastic-human\
+       context: ../elastic-human/
      image: 'djbnjack/elastic-human:latest'
      depends_on:
       - scheduler
