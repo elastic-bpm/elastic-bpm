@@ -163,7 +163,7 @@ set_node = function(req, res) {
 
             node.update(update, (err, data) => {
                 if (err) {
-                    send_error(res, err);
+                    setTimeout(() => set_node(req, res), 500);
                     return;
                 } else {
                     update_nodes(function () {
@@ -346,7 +346,7 @@ create_workers = function(req, res) {
         var n_opts = JSON.parse(JSON.stringify(opts));
         n_opts.Name = service_name;
         n_opts.TaskTemplate.Placement.Constraints.push('node.hostname == ' + services[service_name]);
-        console.log(n_opts);
+        console.log(JSON.stringify(n_opts));
         docker_remote.createService(n_opts, (err, data) => {if (err) error += err;});
     });
 
