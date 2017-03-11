@@ -53,7 +53,7 @@ elastic_component = (function () {
             {
                 "range": {
                     "@timestamp": {
-                        "gte": from,
+                        "gt": from,
                         "format": "epoch_millis"
                     }
                 }
@@ -88,6 +88,9 @@ elastic_component = (function () {
 
                     // New messages first, then the old ones
                     messages = newMessages.concat(messages);
+
+                    // Truncate
+                    messages = messages.slice(0, 100);
 
                     setTimeout(() => { update_messages(interval) }, interval);
                 }
