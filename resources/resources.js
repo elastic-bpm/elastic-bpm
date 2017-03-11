@@ -416,7 +416,6 @@ var resources_module = (function () {
                         if (diff === 0) {
                             console.log("Nothing to scale.");
                             my.scaling = false;
-                            callback(null, diff);
                         } else {
 
                             // Already scaling stuff!
