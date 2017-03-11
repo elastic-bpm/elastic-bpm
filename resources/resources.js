@@ -48,7 +48,6 @@ var resources_module = (function () {
         }
 
         callback(null, my.amount);
-        my.check_resources();
     };
 
     my.get_amount = function(callback) {
@@ -60,8 +59,6 @@ var resources_module = (function () {
         my.policy = policy;
         console.log("Policy set to: " + policy);
         callback(null, my.policy);
-
-        my.check_resources();
     };
 
     my.get_policy = function(callback) {

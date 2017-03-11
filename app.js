@@ -222,19 +222,19 @@ setup_routes = function() {
     app.get('/info', get_info);
 };
 
-// Server startup
-start_server = function() {
-    stats.check_timeouts();
+setup_timers = function() {
     setInterval(() => {stats.check_timeouts();}, stats_interval);
-    
-    resources.check_resources();
     setInterval(() => {resources.check_resources();}, resource_interval);
-    
+}
+
+// Server startup
+start_server = function() {    
     app.listen(3210, () => console.log('Elastic Scheduler listening on port 3210!'));
 };
 
 // When run directly, serve the API
 if (require.main === module) {
     setup_routes();
+    setup_timers();
     start_server();
 }
