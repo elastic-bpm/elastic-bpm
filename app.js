@@ -298,13 +298,14 @@ delete_workers = function(req, res) {
 };
 
 create_workers = function(req, res) {
+    var scheduler_host = process.env.SCHEDULER_ENV_DOCKERCLOUD_CONTAINER_FQDN || "localhost";
     opts = {
       "Name": "elastic-workers-01",
       "TaskTemplate": {
         "ContainerSpec": {
           "Image": "djbnjack/elastic-worker",
           "Env": [
-            "SCHEDULER=" + process.env.SCHEDULER_ENV_DOCKERCLOUD_CONTAINER_FQDN || "localhost"
+            "SCHEDULER=" + scheduler_host
           ]
         },
         "Resources": {
