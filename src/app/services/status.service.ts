@@ -42,6 +42,11 @@ export class StatusService {
       this.statusDict['scheduler'] = status;
       this.updateStatusList();
     });
+
+    new StatusProxyService(this.http, 'Elastic', '/api/elastic/status').getStatus().subscribe(status => {
+      this.statusDict['elastic'] = status;
+      this.updateStatusList();
+    });
   }
 
   updateStatusList(): void {

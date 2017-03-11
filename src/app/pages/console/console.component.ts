@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ElasticService } from '../../services/elastic.service';
 
 @Component({
   selector: 'app-console',
@@ -7,10 +8,12 @@ import { Component, OnInit } from '@angular/core';
 })
 export class ConsoleComponent implements OnInit {
   title = 'Console';
+  logMessages = [];
 
-  constructor() { }
+  constructor(private elasticService: ElasticService) { }
 
   ngOnInit() {
+    this.elasticService.logMessages.subscribe(logMessages => this.logMessages = logMessages);
   }
 
 }

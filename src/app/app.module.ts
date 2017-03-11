@@ -34,6 +34,7 @@ import { MachineService } from './services/machine.service';
 import { HumanService } from './services/human.service';
 import { WorkflowService } from './services/workflow.service';
 import { SchedulerService } from './services/scheduler.service';
+import { ElasticService } from './services/elastic.service';
 
 import { AppRoutingModule } from './app-routing.module';
 
@@ -75,7 +76,8 @@ import {ModalModule} from 'ngx-modal';
     MachineService,
     HumanService,
     WorkflowService,
-    SchedulerService
+    SchedulerService,
+    ElasticService
   ],
   bootstrap: [AppComponent]
 })
