@@ -14,6 +14,7 @@ var docker = require('./components/docker');
 var human = require('./components/human');
 var scaling = require('./components/scaling');
 var scheduler = require('./components/scheduler');
+var elastic = require('./components/elastic');
 
 const os = require('os');
 var log4js = require('log4js');
@@ -146,6 +147,9 @@ setup_routes = function() {
    app.get('/api/scheduler/info', (req, res) => return_json(scheduler.get_info, req, res));
    app.post('/api/scheduler/policy', (req, res) => return_json_post(scheduler.set_policy, req, res));
    app.post('/api/scheduler/amount', (req, res) => return_json_post(scheduler.set_amount, req, res));
+
+   app.get('/api/elastic/status', (req, res) => return_status(elastic.check_status, req, res));
+   app.get('/api/elastic/logs', (req, res) => return_json(elastic.get_messages, req, res));
 };
 
 start_check_status = function() {
@@ -156,6 +160,7 @@ start_check_status = function() {
     docker.start_updates(10000); // 10sec for docker
     human.start_updates(2000);
     scaling.start_updates(2000);
+    elastic.start_updates(2000);
 };
 
 // Server startup
