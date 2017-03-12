@@ -15,7 +15,14 @@
                 <td><abbr title="Resource group: {{machine.resourceGroupName}}">{{machine.name}}</abbr></td>
                 <td>{{machine.hardwareProfile.vmSize}}</td>
                 <td>{{machine.powerState}}</td>
-                <td>{{machine.load?.load1 | json}}{{machine.load?.load5 | json}}{{machine.load?.load15 | json}}</td>
+                <td>
+                    <popover-content #machinePopover title="Load of {{machine.name}}" [closeOnClickOutside]="true" placement="auto">
+                        <pre>{{machine.load | json}}</pre>
+                    </popover-content>
+
+                    <canvas [popover]="machinePopover" [popoverOnHover]="true" class="chartlet" data-type="line" data-range="0 3" [attr.data-sets]="loadAsString(machine.name)"
+                        width="200" height="20" data-opts="stroke:2 shape:step theme:spring axis:1"></canvas>
+                </td>
                 <td>
                     <button (click)="startMachine(machine.name, machine.resourceGroupName)" [disabled]="machine.powerState === 'VM running'"
                         class="btn btn-success btn-xs">Start</button>
@@ -24,5 +31,6 @@
             </tr>
         </tbody>
     </table>
+
     <!-- <pre>{{machines | json}}</pre> -->
 </app-bs-panel>

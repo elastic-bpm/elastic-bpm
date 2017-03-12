@@ -40,6 +40,7 @@ import { AppRoutingModule } from './app-routing.module';
 
 import { ModalModule } from 'ngx-modal';
 import { ChartsModule } from 'ng2-charts/ng2-charts';
+import { PopoverModule } from 'ngx-popover';
 
 @NgModule({
   declarations: [
@@ -70,7 +71,8 @@ import { ChartsModule } from 'ng2-charts/ng2-charts';
     HttpModule,
     AppRoutingModule,
     ModalModule,
-    ChartsModule
+    ChartsModule,
+    PopoverModule
   ],
   providers: [
     StatusService,

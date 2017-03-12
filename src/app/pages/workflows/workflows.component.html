@@ -39,9 +39,24 @@
                 <td>{{workflow.owner}}</td>
                 <td><button class="btn btn-xs btn-info" (click)="fillModal(workflow.id);graphModal.open()">Show Graph</button></td>
                 <td>{{workflow.status}}</td>
-                <td>{{workflow.todo_nodes.length}}</td>
-                <td>{{workflow.busy_nodes.length}}</td>
-                <td>{{workflow.done_nodes.length}}</td>
+                <td [popover]="workflowTodoPopover" [popoverOnHover]="true">
+                    <popover-content #workflowTodoPopover placement="auto">
+                        <pre>{{workflow.todo_nodes | json}}</pre>
+                    </popover-content>
+                    {{workflow.todo_nodes.length}}
+                </td>
+                <td [popover]="workflowBusyPopover" [popoverOnHover]="true">
+                    <popover-content #workflowBusyPopover placement="auto">
+                        <pre>{{workflow.busy_nodes | json}}</pre>
+                    </popover-content>
+                    {{workflow.busy_nodes.length}}
+                </td>
+                <td [popover]="workflowDonePopover" [popoverOnHover]="true">
+                    <popover-content #workflowDonePopover placement="auto">
+                        <pre>{{workflow.done_nodes | json}}</pre>
+                    </popover-content>
+                    {{workflow.done_nodes.length}}
+                </td>
                 <td><button (click)="deleteWorkflow(workflow.id)" class="btn btn-danger btn-xs">Delete</button></td>
             </tr>
         </tbody>

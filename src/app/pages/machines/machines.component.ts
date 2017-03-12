@@ -28,13 +28,29 @@ export class MachinesComponent implements OnInit {
     this.elasticService.machineLoad.subscribe(machineLoad => this.updateMachineLoad(machineLoad));
   }
 
+  renderChartlets() {
+    window['Chartlets'].render();
+  }
+
+  loadAsString(node) {
+    const machine = this.machines.find((m) => m.name === node);
+    if (machine === undefined || machine.load === undefined) {
+      return '';
+    } else {
+      return JSON.stringify(machine.load.load1) + JSON.stringify(machine.load.load5) + JSON.stringify(machine.load.load15);
+    }
+  }
+
   updateMachines(updatedMachines) {
     updatedMachines.forEach(element => {
-      let currentMachine = this.machines.find((a) => a.name === element.name);
+      const currentMachine = this.machines.find((a) => a.name === element.name);
       if (currentMachine) {
-        element.load = currentMachine.load; // Save the load
-        currentMachine = element; // Update the element
+        currentMachine.powerState = element.powerState;
+        if (element.powerState !== 'VM running') {
+          currentMachine.load = [];
+        }
       } else {
+        element.load = [];
         this.machines.push(element); // New machine
       }
 
@@ -44,10 +60,12 @@ export class MachinesComponent implements OnInit {
 
   updateMachineLoad(machineLoad) {
     this.machines.forEach((machine) => {
-      if (Object.keys(machineLoad).indexOf(machine.name) !== -1) {
+      if (machine.powerState === 'VM running' && Object.keys(machineLoad).indexOf(machine.name) !== -1) {
         machine.load = machineLoad[machine.name];
       }
     });
+
+    this.renderChartlets();
   }
 
   getDockerStatus(): void {
