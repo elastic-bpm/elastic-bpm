@@ -30,13 +30,18 @@ export class ElasticService {
     };
 
     updateMachineLoad = function(interval) {
-        this.machineLoad.next({
-            'node-01': {
-                load1: [0.7, 0.8, 1],
-                load5: [0.7, 0.8, 1],
-                load15: [0.7, 0.8, 1]
-            }
-        });
-        setTimeout(() => this.updateMachineLoad(interval), interval);
+        this.http
+            .get('/api/elastic/load')
+            .map(res => res.json())
+            .subscribe(
+                res => {
+                    this.machineLoad.next(res);
+                    setTimeout(() => this.updateMachineLoad(interval), interval);
+                },
+                error => {
+                    console.log(error);
+                    setTimeout(() => this.updateMachineLoad(interval), interval);
+                }
+            );
     };
 }
