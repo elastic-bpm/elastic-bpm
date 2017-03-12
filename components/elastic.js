@@ -11,7 +11,7 @@ elastic_component = (function () {
     var component = {};
     var messages = [];
     var rawLoad = [];
-    var maxLoadLength = 5;
+    var maxLoadLength = 10;
 
     var status = {
         message: "not updated yet",
