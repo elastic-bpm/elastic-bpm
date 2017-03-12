@@ -10,10 +10,29 @@ scheduler_component = (function () {
         statusCode: 500
     };
     var info = {};
+    var humanTasks = [];
 
     component.start_updates = function(interval) {
         update_status(interval);
         update_info(interval);
+        update_human_tasks(interval);
+    }
+
+    var update_human_tasks = function(interval) {
+        var req = client.get("http://" + scheduler_host + ":3210/tasks/human", (data, response) => {
+            if (response.statusCode == 200) {
+                humanTasks = data;
+            }                
+            if (interval > 0) {
+                setTimeout(() => update_human_tasks(interval), interval);
+            }
+        });
+
+        req.on('error', (error) => {
+            if (interval > 0) {
+                setTimeout(() => update_human_tasks(interval), interval);
+            }
+        });
     }
 
     var update_status = function(interval) {
@@ -66,6 +85,30 @@ scheduler_component = (function () {
         console.log(body);
         var req = client.post("http://" + scheduler_host + ":3210/amount/" + body.policy + "/" + body.amount, (data, response) => {
             if (response.statusCode == 200) {
+                this.update_human_tasks(0);
+                cb(null, data);
+            } else {
+                cb("Error: " + data, null);
+            }
+        });
+
+        req.on('error', (error) => {
+            cb("Error: " + error, null);
+        });
+    }
+
+    component.set_human_task = function(body, cb) {
+        console.log(body);
+        var url = '';
+        if (body.status === 'busy') {
+            url = "http://" + scheduler_host + ":3210/task/" + body.workflowId + "/" + body.taskId + '/busy';
+        } else {
+            url = "http://" + scheduler_host + ":3210/task/" + body.workflowId + "/" + body.taskId;
+        }
+
+        var req = client.post(url, (data, response) => {
+            if (response.statusCode == 200) {
+
                 cb(null, data);
             } else {
                 cb("Error: " + data, null);
@@ -85,6 +128,10 @@ scheduler_component = (function () {
         return info;
     }
 
+    component.get_human_tasks = function() {
+        return humanTasks;
+    }
+
     return component;
 }());
 
@@ -93,3 +140,5 @@ exports.get_info = scheduler_component.get_info;
 exports.start_updates = scheduler_component.start_updates;
 exports.set_policy = scheduler_component.set_policy;
 exports.set_amount = scheduler_component.set_amount;
+exports.get_human_tasks = scheduler_component.get_human_tasks;
+exports.set_human_task = scheduler_component.set_human_task;
