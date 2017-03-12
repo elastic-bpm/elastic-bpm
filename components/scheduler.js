@@ -85,7 +85,6 @@ scheduler_component = (function () {
         console.log(body);
         var req = client.post("http://" + scheduler_host + ":3210/amount/" + body.policy + "/" + body.amount, (data, response) => {
             if (response.statusCode == 200) {
-                this.update_human_tasks(0);
                 cb(null, data);
             } else {
                 cb("Error: " + data, null);
@@ -108,7 +107,7 @@ scheduler_component = (function () {
 
         var req = client.post(url, (data, response) => {
             if (response.statusCode == 200) {
-
+                update_human_tasks(0);
                 cb(null, data);
             } else {
                 cb("Error: " + data, null);
