@@ -6,78 +6,72 @@ elastic_component = (function () {
     var client = new elasticsearch.Client({
         host: elastic_host + ':9200'
     });
-
     var startTime = new Date().getTime(); // NOW
 
     var component = {};
+    var messages = [];
     var status = {
         message: "not updated yet",
         statusCode: 500
     };
-
-    var messages = [];
-    var query = {
-        index: 'logstash-*',
-        scroll: '30s',
-        body: {
-            query: {
-                bool: {
-                    must: []
-                }
-            }
+    var machineLoad = {
+        'node-01': {
+            load1: [0.7, 0.8, 2],
+            load5: [0.7, 0.8, 1],
+            load15: [0.7, 0.8, 1]
         }
     };
 
     component.start_updates = function (interval) {
         update_status(interval);
-        update_messages(interval); // 20 secs??
+        update_messages(interval);
     }
 
     var update_messages = function (interval) {
-        var from = startTime;
-
         var newMessages = [];
+
+        var from = startTime;
         if (messages.length > 0) {
-            //console.log(messages[0]['@timestamp']);
             from = new Date(messages[0]['@timestamp']).getTime();
         }
 
-
-        query.body.query.bool.must = [
-            {
-                "query_string": {
-                    "query": "*",
-                    "analyze_wildcard": true
-                }
-            },
-            {
-                "range": {
-                    "@timestamp": {
-                        "gt": from,
-                        "format": "epoch_millis"
+        var query = {
+            index: 'logstash-*',
+            scroll: '30s',
+            body: {
+                query: {
+                    bool: {
+                        must: [{
+                            query_string: {
+                                query: "*",
+                                analyze_wildcard: true
+                            }
+                        }, {
+                            range: {
+                                "@timestamp": {
+                                    gt: from,
+                                    format: "epoch_millis"
+                                }
+                            }
+                        }]
                     }
                 }
             }
-        ]
+        };
 
         client.search(query, function getMoreUntilDone(error, response) {
             if (error) {
                 console.log(error);
             } else {
-
-                // collect the title from each response
                 response.hits.hits.forEach(function (hit) {
                     newMessages.push(hit._source);
                 });
-
                 if (response.hits.total > newMessages.length) {
-                    // ask elasticsearch for the next set of hits from this search
                     client.scroll({
                         scrollId: response._scroll_id,
                         scroll: '30s'
                     }, getMoreUntilDone);
                 } else {
-                    //console.log('Amount of new messages:', newMessages.length);
                     newMessages.sort(function (a, b) {
                         if (a["@timestamp"] < b["@timestamp"]) {
                             return 1;
@@ -86,10 +80,7 @@ elastic_component = (function () {
                         }
                     })
 
-                    // New messages first, then the old ones
                     messages = newMessages.concat(messages);
-
-                    // Truncate
                     messages = messages.slice(0, 100);
 
                     setTimeout(() => { update_messages(interval) }, interval);
@@ -123,8 +114,12 @@ elastic_component = (function () {
         return status;
     }
 
-    component.get_messages = function() {
+    component.get_messages = function () {
         return messages;
+    }
+
+    component.get_load = function() {
+        return machineLoad;
     }
 
     return component;
@@ -133,3 +128,4 @@ elastic_component = (function () {
 exports.start_updates = elastic_component.start_updates;
 exports.check_status = elastic_component.check_status;
 exports.get_messages = elastic_component.get_messages;
+exports.get_load = elastic_component.get_load;

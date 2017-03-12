@@ -150,6 +150,7 @@ setup_routes = function() {
 
    app.get('/api/elastic/status', (req, res) => return_status(elastic.check_status, req, res));
    app.get('/api/elastic/logs', (req, res) => return_json(elastic.get_messages, req, res));
+   app.get('/api/elastic/load', (req, res) => return_json(elastic.get_load, req, res));
 };
 
 start_check_status = function() {
