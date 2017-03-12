@@ -4,27 +4,22 @@
         <thead>
             <tr>
                 <th>name</th>
-                <th>resource group</th>
                 <th>size</th>
                 <th>state</th>
+                <th>load</th>
                 <th>actions</th>
             </tr>
         </thead>
         <tbody>
             <tr *ngFor='let machine of machines'>
-                <td>{{machine.name}}</td>
-                <td>{{machine.resourceGroupName}}</td>
+                <td><abbr title="Resource group: {{machine.resourceGroupName}}">{{machine.name}}</abbr></td>
                 <td>{{machine.hardwareProfile.vmSize}}</td>
                 <td>{{machine.powerState}}</td>
+                <td>{{machine.load?.load1 | json}}{{machine.load?.load5 | json}}{{machine.load?.load15 | json}}</td>
                 <td>
-                    <button 
-                        (click)="startMachine(machine.name, machine.resourceGroupName)" 
-                        [disabled]="machine.powerState === 'VM running'" 
+                    <button (click)="startMachine(machine.name, machine.resourceGroupName)" [disabled]="machine.powerState === 'VM running'"
                         class="btn btn-success btn-xs">Start</button>
-                    <button 
-                        (click)="stopMachine(machine.name, machine.resourceGroupName)" 
-                        [disabled]="machine.powerState !== 'VM running'" 
-                        class="btn btn-warning btn-xs">Deactivate</button>
+                    <button (click)="stopMachine(machine.name, machine.resourceGroupName)" [disabled]="machine.powerState !== 'VM running'" class="btn btn-warning btn-xs">Deactivate</button>
                 </td>
             </tr>
         </tbody>

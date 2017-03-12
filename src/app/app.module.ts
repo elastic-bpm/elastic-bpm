@@ -38,7 +38,8 @@ import { ElasticService } from './services/elastic.service';
 
 import { AppRoutingModule } from './app-routing.module';
 
-import {ModalModule} from 'ngx-modal';
+import { ModalModule } from 'ngx-modal';
+import { ChartsModule } from 'ng2-charts/ng2-charts';
 
 @NgModule({
   declarations: [
@@ -68,7 +69,8 @@ import {ModalModule} from 'ngx-modal';
     FormsModule,
     HttpModule,
     AppRoutingModule,
-    ModalModule
+    ModalModule,
+    ChartsModule
   ],
   providers: [
     StatusService,

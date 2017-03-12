@@ -30,7 +30,8 @@
         "../node_modules/datatables.net-bs/js/dataTables.bootstrap.js",
         "../node_modules/dagre/dist/dagre.min.js",
         "../node_modules/cytoscape/dist/cytoscape.js",
-        "../node_modules/cytoscape-dagre/cytoscape-dagre.js"
+        "../node_modules/cytoscape-dagre/cytoscape-dagre.js",
+        "../node_modules/chart.js/dist/Chart.bundle.js"
       ],
       "environmentSource": "environments/environment.ts",
       "environments": {
