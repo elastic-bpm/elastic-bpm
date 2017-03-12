@@ -57,6 +57,8 @@
      build:
        context: ../elastic-docker/
      image: djbnjack/elastic-docker:latest
+     env_file:
+      - ../docker-variables.env
      ports:
       - "4444:4444"
      volumes:
