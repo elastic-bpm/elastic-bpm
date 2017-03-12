@@ -11,7 +11,7 @@
       <tr *ngFor="let log of logMessages">
         <td>{{ log['@timestamp'] | date:'HH:mm:ss' }}</td>
         <td>{{ log.message }}</td>
-        <td>{{ log.host }}</td>
+        <td style="min-width:300px">{{ log.host }}</td>
       </tr>
     </tbody>
   </table>
