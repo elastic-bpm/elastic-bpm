@@ -6,10 +6,32 @@ import { Observable, BehaviorSubject } from 'rxjs/Rx';
 @Injectable()
 export class SchedulerService {
     info: BehaviorSubject<{}> = new BehaviorSubject({});
+    humanTasks: BehaviorSubject<any[]> = new BehaviorSubject([]);
 
     constructor(private http: Http) {
         this.updateInfo(2000);
+        this.updateHumanTasks(2000);
     }
+
+    updateHumanTasks = function(interval) {
+        this.http
+            .get('/api/scheduler/tasks/human')
+            .map(res => res.json())
+            .subscribe(
+                res => {
+                    this.humanTasks.next(res);
+                    if (interval > 0) {
+                        setTimeout(() => this.updateHumanTasks(interval), interval);
+                    }
+                },
+                error => {
+                    console.log(error);
+                    if (interval > 0) {
+                        setTimeout(() => this.updateHumanTasks(interval), interval);
+                    }
+                }
+            );
+    };
 
     updateInfo = function(interval) {
         this.http
@@ -23,6 +45,36 @@ export class SchedulerService {
                 error => {
                     console.log(error);
                     setTimeout(() => this.updateInfo(interval), interval);
+                }
+            );
+    };
+
+    startTask = function(workflowId, taskId, cb) {
+        this.http
+            .post('/api/scheduler/task/' , {workflowId: workflowId, taskId: taskId, status: 'busy'})
+            .map(res => res.json())
+            .subscribe(
+                res => {
+                    this.updateHumanTasks(0);
+                    cb();
+                },
+                error => {
+                    cb(error);
+                }
+            );
+    };
+
+    finishTask = function(workflowId, taskId, cb) {
+        this.http
+            .post('/api/scheduler/task/', {workflowId: workflowId, taskId: taskId})
+            .map(res => res.json())
+            .subscribe(
+                res => {
+                    this.updateHumanTasks(0);
+                    cb();
+                },
+                error => {
+                    cb(error);
                 }
             );
     };

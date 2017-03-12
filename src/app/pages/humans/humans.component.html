@@ -1,73 +1,81 @@
-
 <app-bs-panel title="Automated Human">
-  <div class="row">
-    <div class="col-md-2">
-        <p>
-            Humans on time:
-            <input type="number" [(ngModel)]="humanParams.on" class="form-control"/><br />
-            Humans init time:
-            <input type="number" [(ngModel)]="humanParams.init" class="form-control"/><br />
-        </p>
-    </div>
-    <div class="col-md-2">
-        <p>
-            Humans off time:
-            <input type="number" [(ngModel)]="humanParams.off" class="form-control"/><br />
-            Amount of humans:
-            <input type="number" [(ngModel)]="humanParams.amount" class="form-control"/><br />
-        </p>
-    </div>
-    <div class="col-md-2">
-        <p>
-            Humans total time:
-            <input type="number" [(ngModel)]="humanParams.total" class="form-control"/><br />
-        </p>
-        <p>
-            <button (click)="startHumans()" type="button" class="btn btn-primary">Start</button>
-            <button (click)="stopHumans()" type="button" class="btn btn-danger">Stop</button>
-        </p>
-    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <p>
+                Humans on time:
+                <input type="number" [(ngModel)]="humanParams.on" class="form-control" /><br /> Humans init time:
+                <input type="number" [(ngModel)]="humanParams.init" class="form-control" /><br />
+            </p>
+        </div>
+        <div class="col-md-2">
+            <p>
+                Humans off time:
+                <input type="number" [(ngModel)]="humanParams.off" class="form-control" /><br /> Amount of humans:
+                <input type="number" [(ngModel)]="humanParams.amount" class="form-control" /><br />
+            </p>
+        </div>
+        <div class="col-md-2">
+            <p>
+                Humans total time:
+                <input type="number" [(ngModel)]="humanParams.total" class="form-control" /><br />
+            </p>
+            <p>
+                <button (click)="startHumans()" type="button" class="btn btn-primary">Start</button>
+                <button (click)="stopHumans()" type="button" class="btn btn-danger">Stop</button>
+            </p>
+        </div>
 
-    <div class="col-md-3 pull-right">
-        <table class="table table-striped table-condensed">
-            <tbody>
-                <tr>
-                    <td>Humans started: </td>
-                    <td>{{info.startTime | date:'H:mm:ss'}}</td>
-                </tr>
-                <tr>
-                    <td>Time finished: </td>
-                    <td>{{info.startTime + info.totalTime | date:'H:mm:ss'}}</td>
-                </tr>
-                <tr>
-                    <td>Amount of humans: </td>
-                    <td>{{info.humans}}</td>
-                </tr>
-                <tr>
-                    <td>Currently humans are</td>
-                    <td>{{info.active ? (info.paused ? 'Paused' : 'Active' ) : 'Inactive'}}</td>
-                </tr>
-            </tbody>
-        </table>
-        <!-- <pre>{{info | json}}</pre> -->
-    </div>
+        <div class="col-md-3 pull-right">
+            <table class="table table-striped table-condensed">
+                <tbody>
+                    <tr>
+                        <td>Humans started: </td>
+                        <td>{{info.startTime | date:'H:mm:ss'}}</td>
+                    </tr>
+                    <tr>
+                        <td>Time finished: </td>
+                        <td>{{info.startTime + info.totalTime | date:'H:mm:ss'}}</td>
+                    </tr>
+                    <tr>
+                        <td>Amount of humans: </td>
+                        <td>{{info.humans}}</td>
+                    </tr>
+                    <tr>
+                        <td>Currently humans are</td>
+                        <td>{{info.active ? (info.paused ? 'Paused' : 'Active' ) : 'Inactive'}}</td>
+                    </tr>
+                </tbody>
+            </table>
+            <!-- <pre>{{info | json}}</pre> -->
+        </div>
 
-  </div>
+    </div>
 </app-bs-panel>
 
 <app-bs-panel title="Available Tasks">
-  <div class="dataTable_wrapper">
-      <table class="table table-bordered table-hover" id="human-tasks-table">
-          <thead>
-              <tr>
-                  <th>workflow</th>
-                  <th>id</th>
-                  <th>status</th>
-                  <th>actions</th>
-              </tr>
-          </thead>
-          <tbody></tbody>
-      </table>
-  </div>
-  <!-- /.table-responsive -->
+    <div class="table-responsive">
+        <table class="table table-bordered table-hover" id="human-tasks-table">
+            <thead>
+                <tr>
+                    <th>workflow</th>
+                    <th>id</th>
+                    <th>status</th>
+                    <th>actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let task of tasks">
+                    <td>{{task.workflow_id}}</td>
+                    <td>{{task.task_id}}</td>
+                    <td>{{task.task_status}}</td>
+                    <td>
+                        <button (click)="startTask(task.workflow_id, task.task_id)" [disabled]="task.task_status === 'busy'"
+                            class="btn btn-success btn-xs">Start</button>
+                        <button (click)="finishTask(task.workflow_id, task.task_id)" [disabled]="task.task_status === 'todo'" class="btn btn-warning btn-xs">Finish</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    <!-- <pre>{{tasks | json }}</pre> -->
 </app-bs-panel>
