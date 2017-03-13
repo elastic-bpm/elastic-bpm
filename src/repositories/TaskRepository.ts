@@ -76,15 +76,26 @@ export class TaskRepository {
         });
     }
 
-    private async getAllTasks(): Promise<Task[]> {
+    getAllFreeWorkerTasks(): Promise<Task[]> {
+        return new Promise<Task[]>((resolve, reject) => {
+            this.getAllTasks(filterTaskIsFree)
+                .then(tasks => tasks.filter(filterTaskIsWorker))
+                .then(humanTasks => resolve(humanTasks))
+                .catch(error => reject(error));
+        });
+    }
+
+    private async getAllTasks(filter?: (t: Task, w: Workflow) => boolean): Promise<Task[]> {
         try {
             const tasks: Task[] = [];
             const workflows: Workflow[] = await this.getAllWorkflows();
 
             workflows.forEach((workflow) => {
                 workflow.todo_nodes.forEach((node) => {
-                    // TODO: Add filter
-                    tasks.push(new Task(node, 'todo', workflow.id));
+                    const newTask = new Task(node, 'todo', workflow.id);
+                    if (filter === undefined || filter(newTask, workflow)) {
+                        tasks.push(newTask);
+                    }
                 });
             });
 

@@ -41,6 +41,7 @@ class App {
     this.express.get('/task/count', (req, res) => this.getJsonResult(this.taskRepository.getTaskCount(), req, res));
 
     this.express.get('/tasks/worker', (req, res) => this.getJsonResult(this.taskRepository.getAllWorkerTasks(), req, res));
+    this.express.get('/tasks/worker/free', (req, res) => this.getJsonResult(this.taskRepository.getAllFreeWorkerTasks(), req, res));
   }
 
 }
