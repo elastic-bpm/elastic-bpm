@@ -1,4 +1,5 @@
 Became part of the elastic-bpm project!
+[![Build Status](https://travis-ci.org/elastic-bpm/elastic-dashboard.svg?branch=master)](https://travis-ci.org/elastic-bpm/elastic-dashboard)
 
 # elastic-dashboard
 Dashboard for the Elastic BPM implementation
