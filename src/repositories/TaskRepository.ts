@@ -1,9 +1,57 @@
 import fetch from 'node-fetch';
 
-class Lorem {
-    type: string;
-    amount: number;
-    text_out: string;
+class Workflow {
+    nodes: string;
+    edges: string;
+    owner: string;
+    name: string;
+    id: string;
+    created: string;
+    status: string;
+    todo_nodes: string[];
+    busy_nodes: string[];
+    done_nodes: string[];
+}
+
+class Task {
+    constructor(public task_id: string, public task_status: string, public workflow_id: string) { }
+}
+
+function filterTaskIsHuman(task: Task) {
+    const taskInfo = task.task_id.split(':');
+    console.log(taskInfo);
+    return (taskInfo.length === 3 && (taskInfo[1] === 'HE' || taskInfo[1] === 'HH'));
+}
+
+function filterTaskIsWorker(task: Task) {
+    return !filterTaskIsHuman(task);
+}
+
+function getPreviousTaskIds(task: Task, edges_string: string) {
+    const previous_tasks: string[] = [];
+
+    const edge_words = edges_string.split(',').map(w => w.trim());
+    edge_words.forEach((word) => {
+        const elements = word.split('->').map(w => w.trim());
+        if (task.task_id === elements[1]) {
+            previous_tasks.push(elements[0]);
+        }
+    });
+
+    return previous_tasks;
+};
+
+function filterTaskIsFree(task: Task, workflow: Workflow) {
+    const previous_tasks: string[] = getPreviousTaskIds(task, workflow.edges);
+    let taskIsFree = true;
+
+    previous_tasks.forEach((t) => {
+        if (workflow.done_nodes.indexOf(t) === -1) {
+            taskIsFree = false;
+        }
+    });
+
+    return taskIsFree;
 }
 
 export class TaskRepository {
@@ -11,10 +59,45 @@ export class TaskRepository {
 
     constructor() { }
 
-    getAllWorkflows(): Promise<any[]> {
-        return new Promise<any[]>((resolve, reject) => {
+    getTaskCount(): Promise<number> {
+        return new Promise<number>((resolve, reject) => {
+            this.getAllTasks()
+                .then(tasks => resolve(tasks.length))
+                .catch(error => reject(error));
+        });
+    }
+
+    getAllWorkerTasks(): Promise<Task[]> {
+        return new Promise<Task[]>((resolve, reject) => {
+            this.getAllTasks()
+                .then(tasks => tasks.filter(filterTaskIsWorker))
+                .then(humanTasks => resolve(humanTasks))
+                .catch(error => reject(error));
+        });
+    }
+
+    private async getAllTasks(): Promise<Task[]> {
+        try {
+            const tasks: Task[] = [];
+            const workflows: Workflow[] = await this.getAllWorkflows();
+
+            workflows.forEach((workflow) => {
+                workflow.todo_nodes.forEach((node) => {
+                    // TODO: Add filter
+                    tasks.push(new Task(node, 'todo', workflow.id));
+                });
+            });
+
+            return new Promise<Task[]>(resolve => resolve(tasks));
+        } catch (error) {
+            return new Promise<Task[]>((resolve, reject) => reject(error));
+        }
+    }
+
+    private getAllWorkflows(): Promise<Workflow[]> {
+        return new Promise<Workflow[]>((resolve, reject) => {
             fetch('http://' + this.host + ':3000/workflows')
-                .then(res => res.json<any[]>())
+                .then(res => res.json<Workflow[]>())
                 .then(json => resolve(json))
                 .catch(err => reject(err));
         });

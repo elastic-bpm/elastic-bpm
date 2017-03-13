@@ -38,7 +38,9 @@ class App {
   private routes(): void {
     this.express.get('/status', (req, res) => res.send('ok'));
 
-    this.express.get('/workflows', (req, res) => this.getJsonResult(this.taskRepository.getAllWorkflows(), req, res));
+    this.express.get('/task/count', (req, res) => this.getJsonResult(this.taskRepository.getTaskCount(), req, res));
+
+    this.express.get('/tasks/worker', (req, res) => this.getJsonResult(this.taskRepository.getAllWorkerTasks(), req, res));
   }
 
 }
