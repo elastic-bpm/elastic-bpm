@@ -19,7 +19,6 @@ class Task {
 
 function filterTaskIsHuman(task: Task) {
     const taskInfo = task.task_id.split(':');
-    console.log(taskInfo);
     return (taskInfo.length === 3 && (taskInfo[1] === 'HE' || taskInfo[1] === 'HH'));
 }
 
