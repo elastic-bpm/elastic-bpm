@@ -28,20 +28,27 @@
     "@types/mocha": "^2.2.40",
     "@types/morgan": "^1.7.32",
     "@types/node": "^7.0.8",
+    "@types/node-fetch": "^1.6.7",
     "chai": "^3.5.0",
     "chai-http": "^3.0.0",
     "gulp": "^3.9.1",
+    "gulp-sourcemaps": "^2.4.1",
+    "gulp-tslint": "^7.1.0",
     "gulp-typescript": "^3.1.5",
     "mocha": "^3.2.0",
     "nodemon": "^1.11.0",
     "ts-mocha": "^1.0.3",
     "ts-node": "^2.1.0",
+    "tslint": "^4.5.1",
     "typescript": "^2.2.1"
   },
   "dependencies": {
     "body-parser": "^1.17.1",
     "debug": "^2.6.2",
     "express": "^4.15.2",
-    "morgan": "^1.8.1"
+    "fetch": "^1.1.0",
+    "morgan": "^1.8.1",
+    "node-fetch": "^1.6.3",
+    "source-map-support": "^0.4.12"
   }
 }
