@@ -17,16 +17,16 @@ class Task {
     constructor(public task_id: string, public task_status: string, public workflow_id: string) { }
 }
 
-function filterTaskIsHuman(task: Task) {
+function filterTaskIsHuman(task: Task): boolean {
     const taskInfo = task.task_id.split(':');
     return (taskInfo.length === 3 && (taskInfo[1] === 'HE' || taskInfo[1] === 'HH'));
 }
 
-function filterTaskIsWorker(task: Task) {
+function filterTaskIsWorker(task: Task): boolean {
     return !filterTaskIsHuman(task);
 }
 
-function getPreviousTaskIds(task: Task, edges_string: string) {
+function getPreviousTaskIds(task: Task, edges_string: string): string[] {
     const previous_tasks: string[] = [];
 
     const edge_words = edges_string.split(',').map(w => w.trim());
@@ -40,7 +40,7 @@ function getPreviousTaskIds(task: Task, edges_string: string) {
     return previous_tasks;
 };
 
-function filterTaskIsFree(task: Task, workflow: Workflow) {
+function filterTaskIsFree(task: Task, workflow: Workflow): boolean {
     const previous_tasks: string[] = getPreviousTaskIds(task, workflow.edges);
     let taskIsFree = true;
 
