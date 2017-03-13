@@ -25,21 +25,20 @@ class App {
     this.express.use(bodyParser.urlencoded({ extended: false }));
   }
 
+  private async getJsonResult(getResult: Promise<any>, req: express.Request, res: express.Response) {
+    try {
+      const result = await getResult;
+      res.json(result);
+    } catch (error) {
+      res.status(500).send(error);
+    }
+  }
+
   // Configure API endpoints.
   private routes(): void {
-    /* This is just to get up and running, and to make sure what we've got is
-     * working so far. This function will change when we start to add more
-     * API endpoints */
-    const router = express.Router();
-    // placeholder route handler
-    router.get('/', (req, res, next) => {
-      this.taskRepository.getTasks().then(text => {
-        res.json({
-          message: 'Hello World!' + text
-        });
-      });
-    });
-    this.express.use('/', router);
+    this.express.get('/status', (req, res) => res.send('ok'));
+
+    this.express.get('/workflows', (req, res) => this.getJsonResult(this.taskRepository.getAllWorkflows(), req, res));
   }
 
 }

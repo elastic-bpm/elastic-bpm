@@ -7,23 +7,16 @@ class Lorem {
 }
 
 export class TaskRepository {
+    host = process.env.API || 'localhost';
+
     constructor() { }
 
-    asyncFetch(url: string): Promise<string> {
-        return new Promise<string>((resolve, reject) => {
-            fetch(url)
-                .then(res => res.json<Lorem>())
-                .then(json => resolve(json.text_out))
+    getAllWorkflows(): Promise<any[]> {
+        return new Promise<any[]>((resolve, reject) => {
+            fetch('http://' + this.host + ':3000/workflows')
+                .then(res => res.json<any[]>())
+                .then(json => resolve(json))
                 .catch(err => reject(err));
         });
-    }
-
-    async getTasks() {
-        try {
-            const result = await this.asyncFetch('http://www.randomtext.me/api/lorem/ul-5/5-15');
-            return result;
-        } catch (e) {
-            return e;
-        }
     }
 }
