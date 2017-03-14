@@ -64,6 +64,26 @@ export class ResourceManager {
         }
     }
 
+    private startMachine(resourceGroup: string, hostname: string): Promise<boolean> {
+        return new Promise<boolean>((resolve, reject) => {
+            fetch('http://' + this.scaling_host + ':8888/virtualmachines/' + resourceGroup + '/' + hostname, {method: 'post'})
+                .then(res => res.text())
+                .then(res => res === '"ok"') // YES, need the quotes
+                .then(res => resolve(res))
+                .catch(err => reject(err));
+        });
+    };
+
+    private shutdownMachine(resourceGroup: string, hostname: string): Promise<boolean> {
+        return new Promise<boolean>((resolve, reject) => {
+            fetch('http://' + this.scaling_host + ':8888/virtualmachines/' + resourceGroup + '/' + hostname, {method: 'delete'})
+                .then(res => res.text())
+                .then(res => res === '"ok"') // YES, need the quotes
+                .then(res => resolve(res))
+                .catch(err => reject(err));
+        });
+    };
+
     private getMachines(): Promise<VirtualMachine[]> {
         return new Promise<VirtualMachine[]>((resolve, reject) => {
             fetch('http://' + this.scaling_host + ':8888/virtualmachines')
