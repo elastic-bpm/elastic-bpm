@@ -30,7 +30,9 @@ class App {
       const result = await getResult;
       res.json(result);
     } catch (error) {
-      res.status(500).send(error);
+      console.log('Error!');
+      console.log(error);
+      res.status(500).send('Error: ' + error);
     }
   }
 
@@ -40,8 +42,13 @@ class App {
 
     this.express.get('/task/count', (req, res) => this.getJsonResult(this.taskRepository.getTaskCount(), req, res));
 
+    this.express.get('/task', (req, res) => this.getJsonResult(this.taskRepository.getAndFlagFreeWorkerTask(), req, res));
+    this.express.get('/task/human', (req, res) => this.getJsonResult(this.taskRepository.getAndFlagFreeHumanTask(), req, res));
+
     this.express.get('/tasks/worker', (req, res) => this.getJsonResult(this.taskRepository.getAllWorkerTasks(), req, res));
     this.express.get('/tasks/worker/free', (req, res) => this.getJsonResult(this.taskRepository.getAllFreeWorkerTasks(), req, res));
+    this.express.get('/tasks/human', (req, res) => this.getJsonResult(this.taskRepository.getAllHumanTasks(), req, res));
+    this.express.get('/tasks/human/free', (req, res) => this.getJsonResult(this.taskRepository.getAllFreeHumanTasks(), req, res));
   }
 
 }
