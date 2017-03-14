@@ -3,19 +3,24 @@ import * as express from 'express';
 import * as logger from 'morgan';
 import * as bodyParser from 'body-parser';
 import { TaskRepository } from './repositories/TaskRepository';
+import { ResourceManager } from './resources/ResourceManager';
 
 // Creates and configures an ExpressJS web server.
 class App {
 
   // ref to Express instance
   public express: express.Application;
+
+  // No DI yet for repository & resource manager - exercise left for the reader
   private taskRepository: TaskRepository = new TaskRepository();
+  private resourceManager: ResourceManager;
 
   // Run configuration methods on the Express instance.
   constructor() {
     this.express = express();
     this.middleware();
     this.routes();
+    this.resourceManager = new ResourceManager('Off', 1, 2, 3, 5000);
   }
 
   // Configure Express middleware.
