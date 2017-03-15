@@ -12,6 +12,7 @@ var azure_sdk = (function () {
 
     var my = {}; // public module
     my.vms = {};
+    my.desired = {};
     my.status = "start";
 
     var updateVMs = function() {
@@ -38,6 +39,12 @@ var azure_sdk = (function () {
 
                         result.resourceGroupName = result.id.split('/')[4];
                         my.vms[result.name] = result;
+
+                        if (result.powerState === 'VM running' && my.desired[result.name] === 'stop') {
+                            stop_vm(result.resourceGroupName, result.name);
+                        } else if (result.powerState === 'VM deallocated' && my.desired[result.name] === 'start') {
+                            start_vm(result.resourceGroupName, result.name);
+                        }
                       }
                   });
                 });
@@ -72,27 +79,29 @@ var azure_sdk = (function () {
         return my.status;
     };
 
-    my.stop_vm = function(resourcegrp, virtualmachine, callback) {
+    var stop_vm = function(resourcegrp, virtualmachine) {
         console.log("Now stopping ", resourcegrp, virtualmachine);
         computeClient.virtualMachines.deallocate(resourcegrp, virtualmachine, function(error){
             if (error) {
                 console.log(error);
             }
         });
-
-        callback();
     };
 
-    my.start_vm = function(resourcegrp, virtualmachine, callback) {
+    var start_vm = function(resourcegrp, virtualmachine) {
         console.log("Now starting ", resourcegrp, virtualmachine);
         computeClient.virtualMachines.start(resourcegrp, virtualmachine, function(error){
             if (error) {
                 console.log(error);
             }
         });
-
-        callback();
     };
+
+    my.set_desired = function(resourcegrp, virtualmachine, state, callback) {
+        // console.log("Set desired state for " + virtualmachine + " to " + state);
+        my.desired[virtualmachine] = state;
+        callback();
+    }
 
     return my;
 })();
@@ -100,5 +109,4 @@ var azure_sdk = (function () {
 exports.start_events = azure_sdk.start_events;
 exports.get_vms = azure_sdk.get_vms;
 exports.get_status = azure_sdk.get_status;
-exports.stop_vm = azure_sdk.stop_vm;
-exports.start_vm = azure_sdk.start_vm;
+exports.set_desired = azure_sdk.set_desired;

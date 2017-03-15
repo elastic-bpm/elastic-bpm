@@ -45,7 +45,7 @@ get_status = function(req, res) {
 };
 
 stop_virtualmachine = function(req, res) {
-    azure.stop_vm(req.params.resourcegroup, req.params.vm, (error) => {
+    azure.set_desired(req.params.resourcegroup, req.params.vm, 'stop', (error) => {
         if (error) {
             res.status(500).send(error);
         } else {
@@ -56,7 +56,7 @@ stop_virtualmachine = function(req, res) {
 };
 
 start_virtualmachine = function(req, res) {
-    azure.start_vm(req.params.resourcegroup, req.params.vm, (error) => {
+    azure.set_desired(req.params.resourcegroup, req.params.vm, 'start', (error) => {
         if (error) {
             res.status(500).send(error);
         } else {
