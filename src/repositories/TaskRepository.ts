@@ -1,5 +1,7 @@
 import fetch from 'node-fetch';
 
+import { Task } from '../classes/Task';
+
 class Workflow {
     nodes: string;
     edges: string;
@@ -13,9 +15,7 @@ class Workflow {
     done_nodes: string[];
 }
 
-class Task {
-    constructor(public task_id: string, public task_status: string, public workflow_id: string) { }
-}
+
 
 function filterTaskIsHuman(task: Task): boolean {
     const taskInfo = task.task_id.split(':');
@@ -53,6 +53,10 @@ function getPreviousTaskIds(task: Task, edges_string: string): string[] {
 };
 
 function filterTaskIsFree(task: Task, workflow: Workflow): boolean {
+    if (task.task_status !== 'todo') {
+        return false;
+    }
+
     const previous_tasks: string[] = getPreviousTaskIds(task, workflow.edges);
     let taskIsFree = true;
 
@@ -74,6 +78,14 @@ export class TaskRepository {
         return new Promise<number>((resolve, reject) => {
             this.getAllTasks()
                 .then(tasks => resolve(tasks.length))
+                .catch(error => reject(error));
+        });
+    }
+
+    getAllFreeTasks(): Promise<Task[]> {
+        return new Promise<Task[]>((resolve, reject) => {
+            this.getAllTasks(filterTaskIsFree)
+                .then(tasks => resolve(tasks))
                 .catch(error => reject(error));
         });
     }
@@ -135,6 +147,31 @@ export class TaskRepository {
         }
     }
 
+    async flagTaskDone(task: Task): Promise<Task> {
+        try {
+            return new Promise<Task>((resolve, reject) => {
+                fetch('http://' + this.host + ':3000/workflows/' + task.workflow_id)
+                    .then(res => res.json<Workflow>())
+                    .then(workflow => {
+                        workflow.busy_nodes = this.removeFromArray(workflow.busy_nodes, task.task_id);
+                        workflow.done_nodes.push(task.task_id);
+                        task.task_status = 'done';
+                        console.log(JSON.stringify(workflow));
+                        fetch('http://' + this.host + ':3000/workflows/' + task.workflow_id, {
+                            method: 'patch',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(workflow)
+                        })
+                            .then(res => resolve(task))
+                            .catch(err => reject(err));
+                    })
+                    .catch(err => reject(err));
+            });
+        } catch (err) {
+            return new Promise<Task>((resolve, reject) => reject(err));
+        }
+    }
+
     getAndFlagFreeHumanTask(): Promise<Task> {
         return new Promise<Task>((resolve, reject) => {
             this.getAllTasks(filterTaskIsFree)
@@ -179,7 +216,7 @@ export class TaskRepository {
         return array;
     };
 
-    private async getAllTasks(filter?: (t: Task, w: Workflow) => boolean): Promise<Task[]> {
+    async getAllTasks(filter?: (t: Task, w: Workflow) => boolean): Promise<Task[]> {
         try {
             const tasks: Task[] = [];
             const workflows: Workflow[] = await this.getAllWorkflows();
