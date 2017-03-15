@@ -5,8 +5,6 @@ export class ResourceManager {
     private scaling_host: number = process.env.SCALING || 'localhost';
     private docker_host: number = process.env.DOCKER || 'localhost';
     private amount: any = {};
-    private shuttingDown: VirtualMachine[] = [];
-    private startingUp: VirtualMachine[] = [];
 
     constructor(
         private policy: string,
@@ -45,33 +43,15 @@ export class ResourceManager {
 
     async getInfo(): Promise<any> {
         const active = await this.getActiveMachineCount();
-        const up = this.startingUp.length;
-        const down = this.shuttingDown.length;
         return new Promise<any>(resolve => resolve({
             static: this.amount['Static'],
             on_demand: this.amount['OnDemand'],
             learning: this.amount['Learning'],
             policy: this.policy,
             active: active,
-            up: up,
-            down: down
+            up: 0,
+            down: 0
         }));
-    }
-
-    private async checkMachine(machine: VirtualMachine) {
-        console.log(`Checking machine: ${machine.name} `);
-        const allMachines = await this.getMachines();
-        const updatedMachine = allMachines.find(m => m.id === machine.id);
-        if (updatedMachine === undefined) {
-            console.log(`Error checking machine: ${machine}, not found.`);
-        } else if (updatedMachine.powerState === 'VM running') {
-            this.startingUp = this.startingUp.filter(m => m.id !== updatedMachine.id);
-        } else if (updatedMachine.powerState === 'VM deallocated') {
-            this.shuttingDown = this.shuttingDown.filter(m => m.id !== updatedMachine.id);
-        } else {
-            console.log(`Powerstate of machine ${updatedMachine.name}: ${updatedMachine.powerState}`);
-            setTimeout(() => this.checkMachine(updatedMachine), this.intervalAmount * 10);
-        }
     }
 
     private async scaleTo(desiredAmount: number) {
@@ -82,7 +62,6 @@ export class ResourceManager {
             console.log('Shutting down all running machines.');
             const machinesToShutdown = allMachines
                 .filter(machine => machine.powerState !== 'VM deallocated')
-                .filter(machine => this.shuttingDown.indexOf(machine) === -1);
             machinesToShutdown.forEach(machine => {
                 // console.log(`Shutting down machine ${machine.name}.`);
                 this.shutdownMachine(machine);
@@ -105,7 +84,7 @@ export class ResourceManager {
                     this.startMachine(machine);
                 });
 
-            } else {
+            } else if (diff < 0) {
 
                 // Scale down diff machines
                 const machinesToShutdown = allMachines
@@ -127,7 +106,8 @@ export class ResourceManager {
             const activeMachineCount = await this.getActiveMachineCount();
             const desiredAmount = this.amount[this.policy];
             console.log(`Policy set to ${this.policy}. (${activeMachineCount} of ${desiredAmount} machines active)`);
-            if (activeMachineCount !== desiredAmount) {
+            const diff = desiredAmount - activeMachineCount;
+            if (diff !== 0) {
                 this.scaleTo(desiredAmount);
             } else {
 
@@ -163,46 +143,25 @@ export class ResourceManager {
     }
 
     private startMachine(machine: VirtualMachine): Promise<boolean> {
-        if (this.startingUp.map(m => m.id).indexOf(machine.id) !== -1) {
-            // Working on it
-            // console.log(`Already starting up machine: ${machine.name}`);
-            return new Promise<boolean>(resolve => resolve(true));
-        } else {
-
-            this.startingUp.push(machine);
-            setTimeout(() => this.checkMachine(machine), this.intervalAmount * 10);
-
-            return new Promise<boolean>((resolve, reject) => {
-                fetch('http://' + this.scaling_host + ':8888/virtualmachines/' + machine.resourceGroupName + '/' + machine.name,
-                    { method: 'post' })
-                    .then(res => res.text())
-                    .then(res => res === '"ok"') // YES, need the quotes
-                    .then(res => resolve(res))
-                    .catch(err => reject(err));
-            });
-        }
+        return new Promise<boolean>((resolve, reject) => {
+            fetch('http://' + this.scaling_host + ':8888/virtualmachines/' + machine.resourceGroupName + '/' + machine.name,
+                { method: 'post' })
+                .then(res => res.text())
+                .then(res => res === '"ok"') // YES, need the quotes
+                .then(res => resolve(res))
+                .catch(err => reject(err));
+        });
     };
 
     private shutdownMachine(machine: VirtualMachine): Promise<boolean> {
-        if (this.shuttingDown.map(m => m.id).indexOf(machine.id) !== -1) {
-            // Working on it
-            // console.log(`Already shutting down machine: ${machine.name}`);
-            return new Promise<boolean>(resolve => resolve(true));
-        } else {
-
-            this.shuttingDown.push(machine);
-            setTimeout(() => this.checkMachine(machine), this.intervalAmount * 10);
-
-            return new Promise<boolean>((resolve, reject) => {
-                fetch('http://' + this.scaling_host + ':8888/virtualmachines/' + machine.resourceGroupName + '/' + machine.name,
-                    { method: 'delete' })
-                    .then(res => res.text())
-                    .then(res => res === '"ok"') // YES, need the quotes
-                    .then(res => resolve(res))
-                    .catch(err => reject(err));
-            });
-
-        }
+        return new Promise<boolean>((resolve, reject) => {
+            fetch('http://' + this.scaling_host + ':8888/virtualmachines/' + machine.resourceGroupName + '/' + machine.name,
+                { method: 'delete' })
+                .then(res => res.text())
+                .then(res => res === '"ok"') // YES, need the quotes
+                .then(res => resolve(res))
+                .catch(err => reject(err));
+        });
     };
 
     private getMachines(): Promise<VirtualMachine[]> {
