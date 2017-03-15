@@ -60,9 +60,7 @@ export class ResourceManager {
 
             // Shut down all running machines
             console.log('Shutting down all running machines.');
-            const machinesToShutdown = allMachines
-                .filter(machine => machine.powerState !== 'VM deallocated')
-            machinesToShutdown.forEach(machine => {
+            allMachines.forEach(machine => {
                 // console.log(`Shutting down machine ${machine.name}.`);
                 this.shutdownMachine(machine);
             });
@@ -70,32 +68,17 @@ export class ResourceManager {
         } else {
 
             // Scale to correct amount
-            const activeMachineCount = await this.getActiveMachineCount();
-            const diff = desiredAmount - activeMachineCount;
+            const machinesToActivate = allMachines.slice(0, desiredAmount);
+            machinesToActivate.forEach(machine => {
+                // console.log(`Starting machine: ${machine.name}.`);
+                this.startMachine(machine);
+            });
 
-            if (diff > 0) {
-
-                // Scale up diff machines
-                const machinesToActivate = allMachines
-                    .filter(machine => machine.powerState !== 'VM running')
-                    .slice(0, diff);
-                machinesToActivate.forEach(machine => {
-                    // console.log(`Starting machine: ${machine.name}.`);
-                    this.startMachine(machine);
-                });
-
-            } else if (diff < 0) {
-
-                // Scale down diff machines
-                const machinesToShutdown = allMachines
-                    .filter(machine => machine.powerState !== 'VM deallocated')
-                    .slice(diff);
-                machinesToShutdown.forEach(machine => {
-                    // console.log(`Shutting down machine: ${machine.name}.`);
-                    this.shutdownMachine(machine);
-                });
-
-            }
+            const machinesToShutdown = allMachines.slice(desiredAmount);
+            machinesToShutdown.forEach(machine => {
+                // console.log(`Shutting down machine: ${machine.name}.`);
+                this.shutdownMachine(machine);
+            });
 
         }
     }
