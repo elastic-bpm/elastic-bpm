@@ -32,27 +32,23 @@ export class ResourceManager {
 
     getAmount(): Promise<any> {
         return new Promise<any>(resolve => resolve({
-            at_start: this.amount['Static'],
+            static: this.amount['Static'],
             on_demand: this.amount['OnDemand'],
             learning: this.amount['Learning']
         }));
     }
 
     setAmount(policy: string, amount: number): Promise<any> {
-        if (policy === 'AtStart') {
-            policy = 'Static';
-        }
         this.amount[policy] = amount;
-
         return this.getAmount();
     }
 
-    getInfo(): Promise<any> {
-        const active = this.getActiveMachineCount();
+    async getInfo(): Promise<any> {
+        const active = await this.getActiveMachineCount();
         const up = this.startingUp.length;
         const down = this.shuttingDown.length;
         return new Promise<any>(resolve => resolve({
-            at_start: this.amount['Static'],
+            static: this.amount['Static'],
             on_demand: this.amount['OnDemand'],
             learning: this.amount['Learning'],
             policy: this.policy,
