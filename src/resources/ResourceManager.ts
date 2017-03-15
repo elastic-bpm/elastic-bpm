@@ -1,12 +1,5 @@
 import fetch from 'node-fetch';
-
-class VirtualMachine {
-    id: string;
-    name: string;
-    powerState: string;
-    resourceGroupName: string;
-    hardwareProfile: { vmSize: string };
-}
+import { VirtualMachine } from '../classes/VirtualMachine';
 
 export class ResourceManager {
     private scaling_host: number = process.env.SCALING || 'localhost';

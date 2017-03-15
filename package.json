@@ -6,7 +6,8 @@
   "scripts": {
     "start": "gulp",
     "prod": "gulp scripts && gulp assets && node dist/index.js",
-    "test": "ts-mocha --reporter spec -p . test/**/*.test.ts"
+    "test": "ts-mocha --reporter spec -p . test/**/*.test.ts",
+    "lint": "tslint -c ./tslint.json ./src/**/*"
   },
   "repository": {
     "type": "git",
