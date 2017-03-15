@@ -21,6 +21,47 @@ export class ResourceManager {
         this.checkResources(intervalAmount);
     }
 
+    getPolicy(): Promise<string> {
+        return new Promise<string>(resolve => resolve(this.policy));
+    }
+
+    setPolicy(newPolicy: string): Promise<string> {
+        this.policy = newPolicy;
+        return this.getPolicy();
+    }
+
+    getAmount(): Promise<any> {
+        return new Promise<any>(resolve => resolve({
+            at_start: this.amount['Static'],
+            on_demand: this.amount['OnDemand'],
+            learning: this.amount['Learning']
+        }));
+    }
+
+    setAmount(policy: string, amount: number): Promise<any> {
+        if (policy === 'AtStart') {
+            policy = 'Static';
+        }
+        this.amount[policy] = amount;
+
+        return this.getAmount();
+    }
+
+    getInfo(): Promise<any> {
+        const active = this.getActiveMachineCount();
+        const up = this.startingUp.length;
+        const down = this.shuttingDown.length;
+        return new Promise<any>(resolve => resolve({
+            at_start: this.amount['Static'],
+            on_demand: this.amount['OnDemand'],
+            learning: this.amount['Learning'],
+            policy: this.policy,
+            active: active,
+            up: up,
+            down: down
+        }));
+    }
+
     private async checkMachine(machine: VirtualMachine) {
         console.log(`Checking machine: ${machine.name} `);
         const allMachines = await this.getMachines();
@@ -89,23 +130,20 @@ export class ResourceManager {
         try {
             const activeMachineCount = await this.getActiveMachineCount();
             const desiredAmount = this.amount[this.policy];
+            console.log(`Policy set to ${this.policy}. (${activeMachineCount} of ${desiredAmount} machines active)`);
             if (activeMachineCount !== desiredAmount) {
                 this.scaleTo(desiredAmount);
             } else {
 
                 switch (this.policy) {
                     case 'Static':
-                        console.log(`Policy set to static. (${activeMachineCount} machines active)`);
                         break;
                     case 'OnDemand':
-                        console.log(`Policy set to on demand. (${activeMachineCount} machines active)`);
                         break;
                     case 'Learning':
-                        console.log(`Policy set to learning. (${activeMachineCount} machines active)`);
                         break;
                     default:
                     case 'Off':
-                        console.log(`Policy set to off, no action. (${activeMachineCount} machines active)`);
                         break;
                 }
             }
@@ -117,7 +155,7 @@ export class ResourceManager {
         }
     }
 
-    private async getActiveMachineCount(): Promise<number> {
+    async getActiveMachineCount(): Promise<number> {
         try {
             const virtualMachines = await this.getMachines();
             const activeMachines = virtualMachines.filter(machine => machine.powerState === 'VM running');

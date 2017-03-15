@@ -68,6 +68,18 @@ class App {
     this.express.get('/tasks/worker/free', (req, res) => this.getJsonResult(this.taskRepository.getAllFreeWorkerTasks(), req, res));
     this.express.get('/tasks/human', (req, res) => this.getJsonResult(this.taskRepository.getAllHumanTasks(), req, res));
     this.express.get('/tasks/human/free', (req, res) => this.getJsonResult(this.taskRepository.getAllFreeHumanTasks(), req, res));
+
+    // Policy settings
+    this.express.get('/policy', (req, res) => this.getJsonResult(this.resourceManager.getPolicy(), req, res));
+    this.express.post('/policy/:policy', (req, res) => this.getJsonResult(this.resourceManager.setPolicy(req.params.policy), req, res));
+
+    this.express.get('/amount', (req, res) => this.getJsonResult(this.resourceManager.getAmount(), req, res));
+    this.express.post('/amount/:policy/:amount', (req, res) => {
+       this.getJsonResult(this.resourceManager.setAmount(req.params.policy, req.params.amount), req, res);
+    });
+
+    this.express.get('/machinecount', (req, res) => this.getJsonResult(this.resourceManager.getActiveMachineCount(), req, res));
+    this.express.get('/info', (req, res) => this.getJsonResult(this.resourceManager.getInfo(), req, res));
   }
 
 }
