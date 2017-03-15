@@ -24,9 +24,20 @@
                         width="200" height="20" data-opts="stroke:2 shape:step theme:spring axis:1"></canvas>
                 </td>
                 <td>
-                    <button (click)="startMachine(machine.name, machine.resourceGroupName)" [disabled]="machine.powerState === 'VM running'"
-                        class="btn btn-success btn-xs">Start</button>
-                    <button (click)="stopMachine(machine.name, machine.resourceGroupName)" [disabled]="machine.powerState !== 'VM running'" class="btn btn-warning btn-xs">Deactivate</button>
+                    <button 
+                        *ngIf="machine.name !== 'master-01'"
+                        (click)="startMachine(machine.name, machine.resourceGroupName)" 
+                        [disabled]="machine.powerState !== 'VM deallocated'"
+                        class="btn btn-success btn-xs">
+                        Start
+                    </button>
+                    <button 
+                        *ngIf="machine.name !== 'master-01'"
+                        (click)="stopMachine(machine.name, machine.resourceGroupName)" 
+                        [disabled]="machine.powerState !== 'VM running'" 
+                        class="btn btn-warning btn-xs">
+                        Deactivate
+                    </button>
                 </td>
             </tr>
         </tbody>
