@@ -69,7 +69,7 @@ export class ResourceManager {
         } else if (updatedMachine.powerState === 'VM deallocated') {
             this.shuttingDown = this.shuttingDown.filter(m => m.id !== updatedMachine.id);
         } else {
-            console.log(`Powerstate of machine ${machine.name}: ${machine.powerState}`);
+            console.log(`Powerstate of machine ${updatedMachine.name}: ${updatedMachine.powerState}`);
             setTimeout(() => this.checkMachine(updatedMachine), this.intervalAmount * 10);
         }
     }
@@ -110,7 +110,7 @@ export class ResourceManager {
                 // Scale down diff machines
                 const machinesToShutdown = allMachines
                     .filter(machine => machine.powerState !== 'VM deallocated')
-                    .slice(0, 0 - diff);
+                    .slice(diff);
                 machinesToShutdown.forEach(machine => {
                     // console.log(`Shutting down machine: ${machine.name}.`);
                     this.shutdownMachine(machine);
