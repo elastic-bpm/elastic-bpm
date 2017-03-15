@@ -25,7 +25,7 @@ export class HumansComponent implements OnInit {
 
   ngOnInit() {
     this.humanService.info.subscribe(info => this.info = info);
-    this.schedulerService.humanTasks.subscribe(tasks => this.tasks = tasks);
+    this.schedulerService.humanTasks.subscribe(tasks => this.tasks = tasks.filter(task => task.task_status !== 'done'));
   }
 
   startTask(workflowId, taskId) {
