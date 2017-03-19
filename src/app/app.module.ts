@@ -39,9 +39,9 @@ import { ElasticService } from './services/elastic.service';
 import { AppRoutingModule } from './app-routing.module';
 
 import { ModalModule } from 'ngx-modal';
-import { ChartsModule } from 'ng2-charts/ng2-charts';
 import { PopoverModule } from 'ngx-popover';
 import { Ng2BootstrapModule } from 'ng2-bootstrap';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
 
 @NgModule({
   declarations: [
@@ -72,9 +72,9 @@ import { Ng2BootstrapModule } from 'ng2-bootstrap';
     HttpModule,
     AppRoutingModule,
     ModalModule,
-    ChartsModule,
     PopoverModule,
-    Ng2BootstrapModule.forRoot()
+    Ng2BootstrapModule.forRoot(),
+    NgxChartsModule
   ],
   providers: [
     StatusService,
