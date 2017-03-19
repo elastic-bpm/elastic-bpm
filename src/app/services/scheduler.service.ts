@@ -7,8 +7,6 @@ import { Observable, BehaviorSubject } from 'rxjs/Rx';
 export class SchedulerService {
     info: BehaviorSubject<{}> = new BehaviorSubject({});
     humanTasks: BehaviorSubject<any[]> = new BehaviorSubject([]);
-    history: BehaviorSubject<any[]> = new BehaviorSubject([]);
-    private historyArray = [];
 
     constructor(private http: Http) {
         this.updateInfo(2000);
@@ -35,26 +33,6 @@ export class SchedulerService {
             );
     };
 
-    addToHistory = function (target, amount) {
-        let newItem = false;
-        if (this.historyArray.length === 0) {
-            this.historyArray.unshift({ time: new Date(), target: target, amount: amount });
-            newItem = true;
-        } else {
-            const lastItem = this.historyArray[0];
-            if (lastItem.target !== target ||
-                lastItem.amount['active'] !== amount['active'] ||
-                lastItem.amount['nodes'] !== amount['nodes']) {
-                this.historyArray.unshift({ time: new Date(), target: target, amount: amount });
-                newItem = true;
-            }
-        }
-
-        if (newItem) {
-            this.history.next(this.historyArray);
-        }
-    }
-
     updateInfo = function (interval) {
         this.http
             .get('/api/scheduler/info')
@@ -62,7 +40,6 @@ export class SchedulerService {
             .subscribe(
             res => {
                 this.info.next(res);
-                this.addToHistory(res.amount[res.policy], res['machines']);
                 setTimeout(() => this.updateInfo(interval), interval);
             },
             error => {
