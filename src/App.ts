@@ -73,9 +73,8 @@ class App {
     this.express.get('/policy', (req, res) => this.getJsonResult(this.resourceManager.getPolicy(), req, res));
     this.express.post('/policy/:policy', (req, res) => this.getJsonResult(this.resourceManager.setPolicy(req.params.policy), req, res));
 
-    this.express.get('/amount', (req, res) => this.getJsonResult(this.resourceManager.getAmount(), req, res));
     this.express.post('/amount/:policy/:amount', (req, res) => {
-       this.getJsonResult(this.resourceManager.setAmount(req.params.policy, req.params.amount), req, res);
+       this.getJsonResult(this.resourceManager.setAmount(req.params.policy, parseInt(req.params.amount, 0)), req, res);
     });
 
     this.express.get('/machinecount', (req, res) => this.getJsonResult(this.resourceManager.getActiveMachineCount(), req, res));

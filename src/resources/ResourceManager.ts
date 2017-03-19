@@ -1,5 +1,6 @@
 import fetch from 'node-fetch';
 import { VirtualMachine } from '../classes/VirtualMachine';
+import { Node } from '../classes/Node';
 
 export class ResourceManager {
     private scaling_host: number = process.env.SCALING || 'localhost';
@@ -42,15 +43,20 @@ export class ResourceManager {
     }
 
     async getInfo(): Promise<any> {
-        const active = await this.getActiveMachineCount();
+        const activeMachines = await this.getActiveMachineCount();
+        const activeNodes = await this.getActiveNodeCount();
         return new Promise<any>(resolve => resolve({
-            static: this.amount['Static'],
-            on_demand: this.amount['OnDemand'],
-            learning: this.amount['Learning'],
-            policy: this.policy,
-            active: active,
-            up: 0,
-            down: 0
+            amount: {
+                Off: 0,
+                Static: this.amount['Static'],
+                OnDemand: this.amount['OnDemand'],
+                Learning: this.amount['Learning']
+            },
+            machines: {
+                active: activeMachines,
+                nodes: activeNodes
+            },
+            policy: this.policy
         }));
     }
 
@@ -114,6 +120,18 @@ export class ResourceManager {
         }
     }
 
+    async getActiveNodeCount(): Promise<number> {
+        try {
+            const nodes = await this.getNodes();
+            const activeNodes = nodes.filter(node => node.availability === 'active' && node.status === 'ready');
+            const length = activeNodes.length;
+            return new Promise<number>(resolve => resolve(length));
+        } catch (err) {
+            console.log(err);
+            return new Promise<number>((resolve, reject) => reject(err));
+        }
+    }
+
     async getActiveMachineCount(): Promise<number> {
         try {
             const virtualMachines = await this.getMachines();
@@ -156,6 +174,15 @@ export class ResourceManager {
                 //     return machines;
                 // })
                 .then(machines => resolve(machines.filter(machine => machine.name !== 'master-01')))
+                .catch(err => reject(err));
+        });
+    }
+
+    private getNodes(): Promise<Node[]> {
+        return new Promise<Node[]>((resolve, reject) => {
+            fetch('http://' + this.docker_host + ':4444/nodes')
+                .then(res => res.json<Node[]>())
+                .then(nodes => resolve(nodes))
                 .catch(err => reject(err));
         });
     }
