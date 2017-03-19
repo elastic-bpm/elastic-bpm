@@ -11,6 +11,7 @@ import { DropdownModule } from 'ng2-bootstrap/dropdown';
 export class SchedulerComponent implements OnInit {
   title = 'Scheduler';
   info = {};
+  history = [];
   model = {
     staticAmount: 10,
     onDemandAmount: 15,
@@ -22,6 +23,7 @@ export class SchedulerComponent implements OnInit {
 
   ngOnInit() {
     this.schedulerService.info.subscribe(info => this.info = info);
+    this.schedulerService.history.subscribe(history => this.history = history);
   }
 
   setPolicy(policy) {
