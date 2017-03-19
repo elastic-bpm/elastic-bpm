@@ -2,6 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { SchedulerService } from 'app/services/scheduler.service';
 import { DockerService } from 'app/services/docker.service';
 import { DropdownModule } from 'ng2-bootstrap/dropdown';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { curveStepAfter } from '../../../../node_modules/d3/build/d3';
 
 @Component({
   selector: 'app-scheduler',
@@ -18,7 +20,16 @@ export class SchedulerComponent implements OnInit {
     policy: "Off"
   };
 
-  constructor(private schedulerService: SchedulerService) { }
+
+  // For the chart
+  curveStepAfter;
+  colorScheme = {
+    domain: ['#5AA454', '#A10A28', '#C7B42C', '#AAAAAA']
+  };
+
+  constructor(private schedulerService: SchedulerService) {
+    Object.assign(this, { curveStepAfter })
+  }
 
   ngOnInit() {
     this.schedulerService.info.subscribe(info => this.info = info);
@@ -39,5 +50,4 @@ export class SchedulerComponent implements OnInit {
       }
     });
   }
-
 }

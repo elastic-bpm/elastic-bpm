@@ -1,6 +1,5 @@
 <app-bs-panel title="Scheduler Settings">
-    <div class="row" style="padding: 5px;">
-
+    <div class="row">
         <div class="col-md-2">
             <div class="input-group">
                 <div class="input-group-btn" dropdown>
@@ -47,7 +46,14 @@
             </div>
         </div>
     </div>
-    <pre>{{ info?.history | json }}</pre>
+    <div class="row" *ngIf="info.history !== undefine && info.history[0].series.length > 1">
+        <ngx-charts-line-chart [scheme]="colorScheme" [results]="info.history" [gradient]="false" [xAxis]="true" [yAxis]="true" [curve]="curveStepAfter"
+            [legend]="true" [showXAxisLabel]="false" [showYAxisLabel]="false" [autoScale]="true" [timeline]="true">
+        </ngx-charts-line-chart>
+    </div>
+    <!--<div class="row">
+        <pre>{{ info?.history | json }}</pre>
+    </div>-->
 </app-bs-panel>
 
 <app-bs-panel title="Execute Workload">
