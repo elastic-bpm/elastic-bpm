@@ -1,122 +1,118 @@
 <app-bs-panel title="Scheduler Settings">
-  <div class="row" style="padding: 5px">
-      
-      <div class="col-md-2">
-        <label>Set Policy</label>
-        <select (change)="setPolicy($event.target.value)" style="width: 10em" class="form-control">
-            <option>- pick -</option>
-            <option>Off</option>
-            <option>Static</option>
-            <option>OnDemand</option>
-            <option>Learning</option>
-        </select>
-      </div>
+    <div class="row" style="padding: 5px;">
 
-      <div class="col-md-2">
-          <label>Set static amount:</label>
-          <input (change)="changeAmount('Static', $event.target.value)" style="width: 10em" type="number" value="10" class="form-control"/>
-      </div>
+        <div class="col-md-2">
+            <div class="input-group">
+                <div class="input-group-btn" dropdown>
+                    <button type="button" class="btn btn-default" dropdownToggle>Set policy <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <li><a (click)="setPolicy('Off')">Off</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a (click)="setPolicy('Static')">Static</a></li>
+                        <li><a (click)="setPolicy('OnDemand')">OnDemand</a></li>
+                        <li><a (click)="setPolicy('Learning')">Learning</a></li>
+                    </ul>
+                </div>
+                <input type="text" value="{{info.policy}}" class="form-control" disabled="">
+            </div>
+        </div>
 
-      <div class="col-md-2">
-          <label>Set on demand amount:</label>
-          <input (change)="changeAmount('OnDemand', $event.target.value)" style="width: 10em" type="number" value="15" class="form-control"/>
-      </div>
+        <div class="col-md-3">
+            <div class="input-group">
+                <input type="number" [(ngModel)]="model.staticAmount" class="form-control" id="staticAmount" name="staticAmount">
+                <div class="input-group-btn">
+                    <button type="button" (click)="setAmount('Static', model.staticAmount)" class="form-control btn btn-default">Set Static amount</button>
+                </div>
+                <input type="text" value="{{info.amount === undefined ? 0 : info.amount['Static']}}" class="form-control" disabled="">
+            </div>
+        </div>
 
-      <div class="col-md-2">
-          <label>Set learning amount:</label>
-          <input (change)="changeAmount('Learning', $event.target.value)" style="width: 10em" type="number" value="15" class="form-control"/>
-      </div>
+        <div class="col-md-3">
+            <div class="input-group">
+                <input type="number" [(ngModel)]="model.onDemandAmount" class="form-control" id="onDemandAmount" name="onDemandAmount">
+                <div class="input-group-btn">
+                    <button type="button" (click)="setAmount('OnDemand', model.onDemandAmount)" class="form-control btn btn-default">Set OnDemand amount</button>
+                </div>
+                <input type="text" value="{{info.amount === undefined ? 0 : info.amount['OnDemand']}}" class="form-control" disabled="">
+            </div>
+        </div>
 
-  </div>
+        <div class="col-md-3">
+            <div class="input-group">
+                <input type="number" [(ngModel)]="model.learningAmount" class="form-control" id="learningAmount" name="learningAmount">
+                <div class="input-group-btn">
+                    <button type="button" (click)="setAmount('Learning', model.learningAmount)" class="form-control btn btn-default">Set Learning amount</button>
+                </div>
+                <input type="text" value="{{info.amount === undefined ? 0 : info.amount['Learning']}}" class="form-control" disabled="">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-2">
+            <div class="form-group">
+                <label>Target Machines</label>
+                <input class="form-control" type="text" value="{{info.policy === undefined ? 0 : info.amount[info.policy]}}" disabled="">
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label>Running Machines</label>
+                <input class="form-control" type="text" value="{{info.machines === undefined ? 0 : info.machines['active']}}" disabled="">
+            </div>
+        </div>
+        <div class="col-md-2">
+            <div class="form-group">
+                <label>Ready swarm nodes <i class="fa fa-check" aria-hidden="true"></i></label>
+                <input class="form-control" type="text" value="{{info.machines === undefined ? 0 : info.machines['nodes']}}" disabled="">
+            </div>
+        </div>
+    </div>
+    <pre>{{ info | json }}</pre>
 </app-bs-panel>
 
-<app-bs-panel title="Scheduler Running Info">
-<!-- <pre>{{ info | json }}</pre> -->
-  <div class="row" style="padding: 5px">
-      <div class="col-md-2">
-          <div class="form-group">
-              <label>Current Policy</label>
-              <input class="form-control" type="text" value="{{info.policy}}" disabled="">
-          </div>
-      </div>
+<app-bs-panel title="Execute Workload">
+    <div class="row">
+        <div class="col-md-4">
+            <div class="input-group">
+                <span class="input-group-addon" id="sizing-addon3">Upload workload script</span>
+                <input name="upload" type="file" class="form-control">
+            </div>
+        </div>
 
-      <div class="col-md-2">
-          <div class="form-group">
-              <label>Static amount</label>
-              <input class="form-control" type="text" value="{{info.static}}" disabled="">
-          </div>
-      </div>
+        <div class="col-md-4">
+            <div class="input-group">
+                <span class="input-group-addon">Execute policy:</span>
+                <span class="input-group-btn">
+                    <button type="button" class="form-control btn btn-primary">Static</button>
+                </span>
+                <span class="input-group-btn">        
+                    <button type="button" class="form-control btn btn-primary">OnDemand</button>
+                </span>
+                <span class="input-group-btn">
+                    <button type="button" class="form-control btn btn-primary">Learning</button>
+                </span>
+                <span class="input-group-btn">
+                    <button type="button" class="btn btn-danger">Reset Scheduler</button>
+                </span>
+            </div>
+        </div>
+    </div>
 
-      <div class="col-md-2">
-          <div class="form-group">
-              <label>On demand amount</label>
-              <input class="form-control" type="text" value="{{info.on_demand}}" disabled="">
-          </div>
-      </div>
-
-      <div class="col-md-2">
-          <div class="form-group">
-              <label>Learning amount</label>
-              <input class="form-control" type="text" value="{{info.learning}}" disabled="">
-          </div>
-      </div>
-  </div>
-  <div class="row" style="padding: 5px">
-
-      <div class="col-md-2">
-          <div class="form-group">
-              <label>Running Machines</label>
-              <input class="form-control" type="text" value="{{info.active}}" disabled="">
-          </div>
-      </div>
-      <div class="col-md-2">
-          <div class="form-group">
-              <label>Ready swarm nodes <i class="fa fa-check" aria-hidden="true"></i></label>
-              <input class="form-control" type="text" value="{{activeNodeCount}}" disabled="">
-          </div>
-      </div>
-      <div class="col-md-2">
-          <div class="form-group">
-              <label>Machines spinning up <i class="fa fa-arrow-up" aria-hidden="true"></i></label>
-              <input class="form-control" type="text" value="{{info.up}}" disabled="">
-          </div>
-      </div>
-      <div class="col-md-2">
-          <div class="form-group">
-              <label>Machines shutting down <i class="fa fa-arrow-down" aria-hidden="true"></i></label>
-              <input class="form-control" type="text" value="{{info.down}}" disabled="">
-          </div>
-      </div>
-  </div>
-  <div class="row" style="padding: 5px">
-      <div class="col-md-4">
-          <button type="button" class="btn btn-primary">Execute Static</button>
-          <button type="button" class="btn btn-primary">Execute OnDemand</button>
-          <button type="button" class="btn btn-primary">Execute Learning</button>
-          <button type="button" class="btn btn-warning">Reset</button>
-      </div>
-      <div class="col-md-2">
-          <div class="form-group">
-              <label>Upload workflow script</label>
-              <input type="file" class="form-control">
-          </div>    
-      </div>
-  </div>
-  <div class="row" style="padding: 5px">
-      <div class="col-md-12">
-          <ul class="fa-ul">
-              <li><i class="fa-li fa fa-circle-o"></i> Set policy</li>
-              <li><i class="fa-li fa fa-circle-o"></i> Wait for machines to scale</li>
-              <li><i class="fa-li fa fa-circle-o"></i> Wait for nodes to be ready</li>
-              <li><i class="fa-li fa fa-circle-o"></i> Reset workers</li>
-              <li><i class="fa-li fa fa-circle-o"></i> Scale workers</li>
-              <li><i class="fa-li fa fa-circle-o"></i> Start humans</li>
-              <li><i class="fa-li fa fa-circle-o"></i> Upload workflow</li>
-              <li><i class="fa-li fa fa-circle-o"></i> Wait for humans finished</li>
-              <li><i class="fa-li fa fa-circle-o"></i> Reset workers</li>
-              <li><i class="fa-li fa fa-circle-o"></i> Delete all workflows</li>
-              <li><i class="fa-li fa fa-circle-o"></i> Set policy to off</li>
-          </ul>
-      </div>
-  </div>
+    <div class="row">
+        <div class="col-md-12">
+            <ul class="fa-ul">
+                <li><i class="fa-li fa fa-circle-o"></i> Set policy</li>
+                <li><i class="fa-li fa fa-circle-o"></i> Wait for machines to scale</li>
+                <li><i class="fa-li fa fa-circle-o"></i> Wait for nodes to be ready</li>
+                <li><i class="fa-li fa fa-circle-o"></i> Reset workers</li>
+                <li><i class="fa-li fa fa-circle-o"></i> Scale workers</li>
+                <li><i class="fa-li fa fa-circle-o"></i> Start humans</li>
+                <li><i class="fa-li fa fa-circle-o"></i> Upload workflow</li>
+                <li><i class="fa-li fa fa-circle-o"></i> Wait for humans finished</li>
+                <li><i class="fa-li fa fa-circle-o"></i> Reset workers</li>
+                <li><i class="fa-li fa fa-circle-o"></i> Delete all workflows</li>
+                <li><i class="fa-li fa fa-circle-o"></i> Set policy to off</li>
+            </ul>
+        </div>
+    </div>
 </app-bs-panel>

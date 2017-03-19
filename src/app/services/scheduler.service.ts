@@ -79,7 +79,7 @@ export class SchedulerService {
             );
     };
 
-    setPolicy = function(policy, cb) {
+    setPolicy = function(policy: string, cb) {
         this.http
             .post('/api/scheduler/policy', {policy: policy})
             .map(res => res.json())
@@ -93,7 +93,7 @@ export class SchedulerService {
             );
     };
 
-    setAmount = function(policy, amount, cb) {
+    setAmount = function(policy: string, amount: number, cb) {
         this.http
             .post('/api/scheduler/amount', {policy: policy, amount: amount})
             .map(res => res.json())

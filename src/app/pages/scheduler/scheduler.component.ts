@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SchedulerService } from 'app/services/scheduler.service';
 import { DockerService } from 'app/services/docker.service';
+import { DropdownModule } from 'ng2-bootstrap/dropdown';
 
 @Component({
   selector: 'app-scheduler',
@@ -10,15 +11,17 @@ import { DockerService } from 'app/services/docker.service';
 export class SchedulerComponent implements OnInit {
   title = 'Scheduler';
   info = {};
-  activeNodeCount = 0;
+  model = {
+    staticAmount: 10,
+    onDemandAmount: 15,
+    learningAmount: 15,
+    policy: "Off"
+  };
 
-  constructor(private schedulerService: SchedulerService, private dockerService: DockerService) { }
+  constructor(private schedulerService: SchedulerService) { }
 
   ngOnInit() {
     this.schedulerService.info.subscribe(info => this.info = info);
-    this.dockerService.nodes.subscribe(nodes => this.activeNodeCount = nodes.filter(
-      (node) => { return node.availability === 'active' && node.status === 'ready'; }).length
-    );
   }
 
   setPolicy(policy) {
@@ -29,7 +32,7 @@ export class SchedulerComponent implements OnInit {
     });
   }
 
-  changeAmount(policy: string, amount: number) {
+  setAmount(policy: string, amount: number) {
     this.schedulerService.setAmount(policy, amount, (error) => {
       if (error) {
         console.log(error);
