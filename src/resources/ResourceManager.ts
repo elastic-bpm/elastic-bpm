@@ -1,11 +1,13 @@
 import fetch from 'node-fetch';
 import { VirtualMachine } from '../classes/VirtualMachine';
 import { Node } from '../classes/Node';
+import { MachineInfo } from '../classes/MachineInfo';
 
 export class ResourceManager {
     private scaling_host: number = process.env.SCALING || 'localhost';
     private docker_host: number = process.env.DOCKER || 'localhost';
     private amount: any = {};
+    private history: MachineInfo[] = [];
 
     constructor(
         private policy: string,
@@ -56,7 +58,8 @@ export class ResourceManager {
                 active: activeMachines,
                 nodes: activeNodes
             },
-            policy: this.policy
+            policy: this.policy,
+            history: this.history
         }));
     }
 
@@ -89,11 +92,28 @@ export class ResourceManager {
         }
     }
 
+    private addToHistory(target: number, amount: any) {
+        if (this.history.length === 0) {
+            this.history.unshift({ time: new Date(), target: target, amount: amount });
+        } else {
+            const lastItem = this.history[0];
+            if (lastItem.target !== target ||
+                lastItem.amount['active'] !== amount['active'] ||
+                lastItem.amount['nodes'] !== amount['nodes']) {
+                this.history.unshift({ time: new Date(), target: target, amount: amount });
+            }
+        }
+    }
+
     private async checkResources(interval: number) {
         // Lets check amount of running machines
         try {
             const activeMachineCount = await this.getActiveMachineCount();
+            const activeNodes = await this.getActiveNodeCount();
             const desiredAmount = this.amount[this.policy];
+            this.addToHistory(desiredAmount, {active: activeMachineCount, nodes: activeNodes});
+
+
             console.log(`Policy set to ${this.policy}. (${activeMachineCount} of ${desiredAmount} machines active)`);
             const diff = desiredAmount - activeMachineCount;
             if (diff !== 0) {
