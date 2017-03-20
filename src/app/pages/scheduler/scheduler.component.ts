@@ -4,6 +4,7 @@ import { DockerService } from 'app/services/docker.service';
 import { DropdownModule } from 'ng2-bootstrap/dropdown';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { curveStepAfter } from '../../../../node_modules/d3/build/d3';
+import { Info } from '../../classes/info.class';
 
 @Component({
   selector: 'app-scheduler',
@@ -12,14 +13,13 @@ import { curveStepAfter } from '../../../../node_modules/d3/build/d3';
 })
 export class SchedulerComponent implements OnInit {
   title = 'Scheduler';
-  info = {};
+  info: Info = new Info();
   model = {
     staticAmount: 10,
     onDemandAmount: 15,
     learningAmount: 15,
     policy: "Off"
   };
-
 
   // For the chart
   curveStepAfter;
