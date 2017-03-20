@@ -120,7 +120,7 @@ export class ResourceManager {
         }
 
         if (newItem) {
-            const theDate = new Date().toTimeString();
+            const theDate = new Date();
             this.history.Target.push({ name: theDate, value: target });
             this.history.Active.push({ name: theDate, value: amount['active'] });
             this.history.Nodes.push({ name: theDate, value: amount['nodes'] });
