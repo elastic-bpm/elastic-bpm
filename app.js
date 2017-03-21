@@ -149,6 +149,7 @@ setup_routes = function() {
    app.post('/api/scheduler/task', (req, res) => return_json_post(scheduler.set_human_task, req, res));
    app.post('/api/scheduler/policy', (req, res) => return_json_post(scheduler.set_policy, req, res));
    app.post('/api/scheduler/amount', (req, res) => return_json_post(scheduler.set_amount, req, res));
+   app.post('/api/scheduler/execute', (req, res) => return_json_post(scheduler.execute, req, res));
 
    app.get('/api/elastic/status', (req, res) => return_status(elastic.check_status, req, res));
    app.get('/api/elastic/logs', (req, res) => return_json(elastic.get_messages, req, res));
