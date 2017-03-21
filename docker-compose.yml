@@ -40,18 +40,10 @@
       - ../scaling-variables.env     
      ports:
       - "8888:8888"
-     depends_on:
-      - docker
-      - api
    scheduler:
      build:
        context:  ../elastic-scheduler/
      image: djbnjack/elastic-scheduler:latest
-     depends_on:
-      - api
-      - scaling
-      - docker
-      - human
      ports:
       - "3210:3210"
    docker:
@@ -68,7 +60,5 @@
      build:
        context: ../elastic-human/
      image: 'djbnjack/elastic-human:latest'
-     links:
-      - scheduler
      ports:
       - '5555:5555'
