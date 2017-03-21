@@ -42,6 +42,7 @@ import { ModalModule } from 'ngx-modal';
 import { PopoverModule } from 'ngx-popover';
 import { Ng2BootstrapModule } from 'ng2-bootstrap';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { HistoryChartComponent } from './pages/scheduler/history-chart/history-chart.component';
 
 @NgModule({
   declarations: [
@@ -64,7 +65,8 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
     DockerRunningContainersComponent,
     DockerInfoComponent,
     BsPanelComponent,
-    WarningPanelComponent
+    WarningPanelComponent,
+    HistoryChartComponent
   ],
   imports: [
     BrowserModule,

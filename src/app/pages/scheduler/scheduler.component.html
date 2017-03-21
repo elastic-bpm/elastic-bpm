@@ -46,11 +46,7 @@
             </div>
         </div>
     </div>
-    <div class="row" *ngIf="info.history !== undefine && info.history[0].series.length > 1" style="height: 400px;">
-        <ngx-charts-line-chart [scheme]="colorScheme" [results]="info.history" [gradient]="false" [xAxis]="true" [yAxis]="true" [curve]="curveStepAfter"
-            [legend]="true" [showXAxisLabel]="false" [showYAxisLabel]="false" [autoScale]="true" [timeline]="true">
-        </ngx-charts-line-chart>
-    </div>
+    <app-history-chart [history]="info.history"></app-history-chart>
     <!--<div class="row">
         <pre>{{ info | json }}</pre>
     </div>-->
