@@ -17,7 +17,7 @@ export class SchedulerComponent implements OnInit {
     staticAmount: 10,
     onDemandAmount: 15,
     learningAmount: 15,
-    policy: "Off"
+    policy: 'Off'
   };
 
   constructor(private schedulerService: SchedulerService) { }
@@ -40,5 +40,13 @@ export class SchedulerComponent implements OnInit {
         console.log(error);
       }
     });
+  }
+
+  executePolicy(policy: string) {
+    this.schedulerService.executePolicy(policy, (res) => console.log(res));
+  }
+
+  stopExecution() {
+    console.log('HELP HELP');
   }
 }

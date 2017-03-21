@@ -44,7 +44,7 @@ export class SchedulerService {
                 res.history.forEach((historyElement, x) => {
                     historyElement.series.forEach((kvPair, y) => {
                         res.history[x].series[y].name = new Date(res.history[x].series[y].name);
-                    })
+                    });
                 });
 
                 this.info.next(res);
@@ -106,12 +106,19 @@ export class SchedulerService {
             .post('/api/scheduler/amount', { policy: policy, amount: amount })
             .map(res => res.json())
             .subscribe(
-            res => {
-                cb();
-            },
-            error => {
-                cb(error);
-            }
+                res => cb(res),
+                error => cb(error)
             );
     };
+
+    executePolicy(policy: string, cb) {
+        this.http
+            .post('/api/scheduler/execute', { policy: policy })
+            .map(res => res.json())
+            .subscribe(
+                res => cb(res),
+                error => cb(error)
+            );
+
+    }
 }

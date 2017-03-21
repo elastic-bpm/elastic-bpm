@@ -15,7 +15,7 @@ export class HistoryChartComponent implements OnInit {
   };
 
   constructor() {
-    Object.assign(this, { curveStepAfter })
+    Object.assign(this, { curveStepAfter });
   }
 
   ngOnInit() {
