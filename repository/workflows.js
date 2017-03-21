@@ -1,7 +1,8 @@
 /*jshint esversion: 6 */
 
+const redis_host = process.env.REDIS_HOST || 'localhost';
 var redis = require("redis"),
-    client = redis.createClient(6379, process.env.REDIS_HOST);
+    client = redis.createClient(6379, redis_host);
 var uuid = require('node-uuid');
 
 wf_to_list = function(element_string) {
