@@ -45,11 +45,13 @@
     "typescript": "^2.2.1"
   },
   "dependencies": {
+    "@types/moment": "^2.13.0",
     "body-parser": "^1.17.1",
     "debug": "^2.6.2",
     "express": "^4.15.2",
     "fetch": "^1.1.0",
     "log4js": "^1.1.1",
+    "moment": "^2.18.0",
     "morgan": "^1.8.1",
     "node-fetch": "^1.6.3",
     "source-map-support": "^0.4.12"

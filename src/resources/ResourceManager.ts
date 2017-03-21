@@ -1,4 +1,5 @@
 import fetch from 'node-fetch';
+import * as moment from 'moment';
 import { VirtualMachine } from '../classes/VirtualMachine';
 import { Node } from '../classes/Node';
 import { Todo } from '../classes/Todo';
@@ -190,7 +191,8 @@ export class ResourceManager {
             const lastNodes = this.history.Nodes[this.history['Nodes'].length - 1];
             if (lastTarget.value !== target ||
                 lastActive.value !== amount['active'] ||
-                lastNodes.value !== amount['nodes']) {
+                lastNodes.value !== amount['nodes'] ||
+                moment(lastTarget.name).isBefore(moment().subtract(1, 'minute'))) {
                 newItem = true;
             }
         }
