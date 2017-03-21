@@ -51,6 +51,7 @@
       - api
       - scaling
       - docker
+      - human
      ports:
       - "3210:3210"
    docker:
@@ -67,7 +68,7 @@
      build:
        context: ../elastic-human/
      image: 'djbnjack/elastic-human:latest'
-     depends_on:
+     links:
       - scheduler
      ports:
       - '5555:5555'
