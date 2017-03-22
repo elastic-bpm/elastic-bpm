@@ -12,7 +12,7 @@ import {
 } from './filters/FilterFunctions';
 
 export class TaskRepository {
-    host = process.env.API || 'localhost';
+    host = process.env.WORKFLOWS || 'localhost';
 
     constructor() { }
 

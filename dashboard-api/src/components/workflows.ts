@@ -3,7 +3,7 @@ export class Workflow {
     multiparty = require('multiparty');
     fs = require('fs');
     client = new this.Client();
-    workflow_host = process.env.API_HOST || 'localhost';
+    workflow_host = process.env.WORKFLOWS_HOST || 'localhost';
     status = {
         message: 'not updated yet',
         statusCode: 500

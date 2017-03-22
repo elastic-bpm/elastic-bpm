@@ -1,7 +1,7 @@
  version: '3'
  services:
    dashboard:
-     build: .
+     build: dashboard/
      ports:
       - "4200:4200"
       - "35729:35729"
@@ -9,21 +9,19 @@
       - dashboardapi
    dashboardapi:
      build:
-       context: ../elastic-dashboard-api/
-     image: djbnjack/elastic-dashboard-api:latest
+       context: dashboard-api/
      ports:
       - "8080:8080"
      depends_on:
       - redis
-      - api
+      - workflows
       - scaling
       - docker
       - scheduler
       - human
-   api:
+   workflows:
      build:
-       context:  ../elastic-api/
-     image: djbnjack/elastic-api:latest
+       context:  workflows/
      ports:
       - "3000:3000"
      depends_on:
@@ -34,22 +32,19 @@
      image: redis
    scaling:
      build:
-       context:  ../elastic-scaling/
-     image: djbnjack/elastic-scaling:latest
+       context:  scaling/
      env_file:
       - ../scaling-variables.env     
      ports:
       - "8888:8888"
    scheduler:
      build:
-       context:  ../elastic-scheduler/
-     image: djbnjack/elastic-scheduler:latest
+       context:  scheduler/
      ports:
       - "3210:3210"
    docker:
      build:
-       context: ../elastic-docker/
-     image: djbnjack/elastic-docker:latest
+       context: docker/
      env_file:
       - ../docker-variables.env
      ports:
@@ -58,7 +53,6 @@
       - /var/run/docker.sock:/var/run/docker.sock
    human:
      build:
-       context: ../elastic-human/
-     image: 'djbnjack/elastic-human:latest'
+       context: human/
      ports:
       - '5555:5555'
