@@ -11,7 +11,11 @@ export class Human {
     };
     info: any = {};
 
-    start_updates(interval: any) {
+    constructor(interval: number) {
+        this.start_updates(interval);
+    }
+
+    private start_updates(interval: any) {
         this.update_status(interval);
         this.update_info(interval);
     };
@@ -49,37 +53,37 @@ export class Human {
         });
     };
 
-    check_status() {
-        return this.status;
+    check_status(): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
+            if (this.status.statusCode === 200) {
+                resolve(this.status.message);
+            } else {
+                reject(this.status.message);
+            }
+        });
     };
 
     get_info() {
-        return this.info;
+        return new Promise<any>(resolve => resolve(this.info));
     };
 
-    start_humans(body: any, cb: any) {
-        const args = {
-            data: body,
-            headers: { 'Content-Type': 'application/json' }
-        };
-        const req = this.client.post('http://' + this.human_host + ':5555/start', args,
-            (data: any, response: any) => {
-                cb(null, data);
-            });
-
-        req.on('error', (error: any) => {
-            cb(error, null);
+    start_humans(body: any) {
+        return new Promise<any>((resolve, reject) => {
+            const args = {
+                data: body,
+                headers: { 'Content-Type': 'application/json' }
+            };
+            const req = this.client.post('http://' + this.human_host + ':5555/start', args,
+                (data: any, response: any) => resolve(data));
+            req.on('error', (error: any) => reject(error));
         });
     }
 
-    stop_humans(body: any, cb: any) {
-        const req = this.client.post('http://' + this.human_host + ':5555/stop',
-            (data: any, response: any) => {
-                cb(null, data);
-            });
-
-        req.on('error', (error: any) => {
-            cb(error, null);
+    stop_humans() {
+        return new Promise<any>((resolve, reject) => {
+            const req = this.client.post('http://' + this.human_host + ':5555/stop',
+                (data: any, response: any) => resolve(data));
+            req.on('error', (error: any) => reject(error));
         });
     }
 }

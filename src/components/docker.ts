@@ -11,7 +11,11 @@ export class Docker {
     nodes: any[] = [];
     workers: any[] = ['abc'];
 
-    start_updates(interval: number) {
+    constructor(interval: number) {
+        this.start_updates(interval);
+    }
+
+    private start_updates(interval: number) {
         this.update_status(interval);
         this.update_info(interval);
         this.update_containers(interval);
@@ -91,72 +95,84 @@ export class Docker {
         });
     };
 
-    check_status() {
-        return this.status;
+    check_status(): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
+            if (this.status.statusCode === 200) {
+                resolve(this.status.message);
+            } else {
+                reject(this.status.message);
+            }
+        });
     };
 
     get_remote_info() {
-        return this.info;
+        return new Promise<any>(resolve => resolve(this.info));
     };
 
     get_remote_containers() {
-        return this.containers;
+        return new Promise<any>(resolve => resolve(this.containers));
     };
 
     get_remote_services() {
-        return this.services;
+        return new Promise<any>(resolve => resolve(this.services));
     };
 
     get_nodes = function () {
-        return this.nodes;
+        return new Promise<any>(resolve => resolve(this.nodes));
     };
 
     get_workers = function () {
-        return this.workers;
+        return new Promise<any>(resolve => resolve(this.workers));
     };
 
-    set_node_availability = function (hostname: any, availability: any, cb: any) {
-        const req = this.client.post('http://' + this.docker_host + ':4444/node/' + hostname + '/' + availability,
-            (data: any, response: any) => {
-                if (response.statusCode === 200) {
-                    cb(null, data);
-                } else {
-                    cb('Error: ' + data, null);
-                }
-            });
+    set_node_availability = function (hostname: any, availability: any) {
+        return new Promise<any>((resolve, reject) => {
+            const req = this.client.post('http://' + this.docker_host + ':4444/node/' + hostname + '/' + availability,
+                (data: any, response: any) => {
+                    if (response.statusCode === 200) {
+                        resolve(data);
+                    } else {
+                        reject('Error: ' + data);
+                    }
+                });
 
-        req.on('error', (error: any) => {
-            cb('error: ' + error, null);
+            req.on('error', (error: any) => {
+                reject('error: ' + error);
+            });
         });
     };
 
-    delete_workers = function (_: any, cb: any) {
-        const req = this.client.delete('http://' + this.docker_host + ':4444/services/workers',
-            (data: any, response: any) => {
-                if (response.statusCode === 200) {
-                    cb(null, data);
-                } else {
-                    cb('Error: ' + data, null);
-                }
-            });
+    delete_workers = function () {
+        return new Promise<any>((resolve, reject) => {
+            const req = this.client.delete('http://' + this.docker_host + ':4444/services/workers',
+                (data: any, response: any) => {
+                    if (response.statusCode === 200) {
+                        resolve(data);
+                    } else {
+                        reject('Error: ' + data);
+                    }
+                });
 
-        req.on('error', (error: any) => {
-            cb('error: ' + error, null);
+            req.on('error', (error: any) => {
+                reject('error: ' + error);
+            });
         });
     };
 
-    create_workers = function (_: any, cb: any) {
-        const req = this.client.post('http://' + this.docker_host + ':4444/services/workers',
-            (data: any, response: any) => {
-                if (response.statusCode === 200) {
-                    cb(null, data);
-                } else {
-                    cb('Error: ' + data, null);
-                }
-            });
+    create_workers = function () {
+        return new Promise<any>((resolve, reject) => {
+            const req = this.client.post('http://' + this.docker_host + ':4444/services/workers',
+                (data: any, response: any) => {
+                    if (response.statusCode === 200) {
+                        resolve(data);
+                    } else {
+                        reject('Error:' + data);
+                    }
+                });
 
-        req.on('error', (error: any) => {
-            cb('error: ' + error, null);
+            req.on('error', (error: any) => {
+                reject('Error: ' + error);
+            });
         });
     };
 }

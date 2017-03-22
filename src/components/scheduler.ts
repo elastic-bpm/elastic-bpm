@@ -1,5 +1,3 @@
-/*jshint esversion: 6 */
-
 export class Scheduler {
     Client = require('node-rest-client').Client;
     client = new this.Client();
@@ -11,7 +9,11 @@ export class Scheduler {
     info: any = {};
     humanTasks: any[] = [];
 
-    start_updates(interval: number) {
+    constructor(interval: number) {
+        this.start_updates(interval);
+    }
+
+    private start_updates(interval: number) {
         this.update_status(interval);
         this.update_info(interval);
         this.update_human_tasks(interval);
@@ -37,11 +39,11 @@ export class Scheduler {
     update_status(interval: number) {
         const req = this.client.get('http://' + this.scheduler_host + ':3210/status',
             (data: any, response: any) => {
-            this.status.statusCode = response.statusCode;
-            this.status.message = response.statusMessage;
+                this.status.statusCode = response.statusCode;
+                this.status.message = response.statusMessage;
 
-            setTimeout(() => this.update_status(interval), interval);
-        });
+                setTimeout(() => this.update_status(interval), interval);
+            });
 
         req.on('error', (error: any) => {
             this.status.statusCode = 500;
@@ -66,90 +68,96 @@ export class Scheduler {
         });
     }
 
-    set_policy(body: any, cb: any) {
-        console.log(body);
-        const req = this.client.post('http://' + this.scheduler_host + ':3210/policy/' + body.policy,
-            (data: any, response: any) => {
-            if (response.statusCode === 200) {
-                cb(null, data);
-            } else {
-                cb('Error: ' + data, null);
-            }
-        });
+    set_policy(body: any) {
+        return new Promise<any>((resolve, reject) => {
+            console.log(body);
+            const req = this.client.post('http://' + this.scheduler_host + ':3210/policy/' + body.policy,
+                (data: any, response: any) => {
+                    if (response.statusCode === 200) {
+                        resolve(data);
+                    } else {
+                        reject('Error: ' + data);
+                    }
+                });
 
-        req.on('error', (error: any) => {
-            cb('error: ' + error, null);
-        });
-    }
-
-    set_amount(body: any, cb: any) {
-        console.log(body);
-        const req = this.client.post('http://' + this.scheduler_host + ':3210/amount/' + body.policy + '/' + body.amount,
-            (data: any, response: any) => {
-            if (response.statusCode === 200) {
-                cb(null, data);
-            } else {
-                cb('Error: ' + data, null);
-            }
-        });
-
-        req.on('error', (error: any) => {
-            cb('error: ' + error, null);
+            req.on('error', (error: any) => reject('error: ' + error));
         });
     }
 
-    execute(body: any, cb: any) {
-        console.log(body);
-        const args = {
-            data: body,
-            headers: { 'Content-Type': 'application/json' }
-        };
-        const req = this.client.post('http://' + this.scheduler_host + ':3210/execute/', args,
-        (data: any, response: any) => {
-            if (response.statusCode === 200) {
-                cb(null, data);
-            } else {
-                cb('Error: ' + data, null);
-            }
-        });
+    set_amount(body: any) {
+        return new Promise<any>((resolve, reject) => {
+            console.log(body);
+            const req = this.client.post('http://' + this.scheduler_host + ':3210/amount/' + body.policy + '/' + body.amount,
+                (data: any, response: any) => {
+                    if (response.statusCode === 200) {
+                        resolve(data);
+                    } else {
+                        reject('Error: ' + data);
+                    }
+                });
 
-        req.on('error', (error: any) => {
-            cb('error: ' + error, null);
+            req.on('error', (error: any) => reject('error: ' + error));
         });
     }
 
-    set_human_task(body: any, cb: any) {
-        console.log(body);
-        let url = '';
-        if (body.status === 'busy') {
-            url = 'http://' + this.scheduler_host + ':3210/task/' + body.workflowId + '/' + body.taskId + '/busy';
-        } else {
-            url = 'http://' + this.scheduler_host + ':3210/task/' + body.workflowId + '/' + body.taskId;
-        }
+    execute(body: any) {
+        return new Promise<any>((resolve, reject) => {
+            console.log(body);
+            const args = {
+                data: body,
+                headers: { 'Content-Type': 'application/json' }
+            };
+            const req = this.client.post('http://' + this.scheduler_host + ':3210/execute/', args,
+                (data: any, response: any) => {
+                    if (response.statusCode === 200) {
+                        resolve(data);
+                    } else {
+                        reject('Error: ' + data);
+                    }
+                });
 
-        const req = this.client.post(url, (data: any, response: any) => {
-            if (response.statusCode === 200) {
-                this.update_human_tasks(0);
-                cb(null, data);
-            } else {
-                cb('Error: ' + data, null);
-            }
-        });
-
-        req.on('error', (error: any) => {
-            cb('error: ' + error, null);
+            req.on('error', (error: any) => reject('error: ' + error));
         });
     }
 
-    check_status() {
-        return this.status;
+    set_human_task(body: any) {
+        return new Promise<any>((resolve, reject) => {
+            console.log(body);
+            let url = '';
+            if (body.status === 'busy') {
+                url = 'http://' + this.scheduler_host + ':3210/task/' + body.workflowId + '/' + body.taskId + '/busy';
+            } else {
+                url = 'http://' + this.scheduler_host + ':3210/task/' + body.workflowId + '/' + body.taskId;
+            }
+
+            const req = this.client.post(url, (data: any, response: any) => {
+                if (response.statusCode === 200) {
+                    this.update_human_tasks(0);
+                    resolve(data);
+                } else {
+                    reject('Error: ' + data);
+                }
+            });
+
+            req.on('error', (error: any) => reject('error: ' + error));
+        });
+    }
+
+    check_status(): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
+            if (this.status.statusCode === 200) {
+                resolve(this.status.message);
+            } else {
+                reject(this.status.message);
+            }
+        });
     };
 
     get_info() {
-        return this.info;
+        return new Promise<any>(resolve => resolve(this.info));
     }
 
     get_human_tasks() {
-        return this.humanTasks;
+        return new Promise<any>(resolve => resolve(this.humanTasks));
     }
 }

@@ -22,7 +22,11 @@ export class Elastic {
     };
     machineLoad: any = {};
 
-    start_updates(interval: number) {
+    constructor(interval: number) {
+        this.start_updates(interval);
+    }
+
+    private start_updates(interval: number) {
         this.update_status(interval);
         this.update_messages(interval);
         this.update_load(interval);
@@ -201,15 +205,21 @@ export class Elastic {
         });
     }
 
-    check_status() {
-        return this.status;
-    }
+    check_status(): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
+            if (this.status.statusCode === 200) {
+                resolve(this.status.message);
+            } else {
+                reject(this.status.message);
+            }
+        });
+    };
 
-    get_messages() {
-        return this.messages;
+    get_messages(): Promise<any[]> {
+        return new Promise<any[]>(resolve => resolve(this.messages));
     }
 
     get_load() {
-        return this.machineLoad;
+        return new Promise<any>(resolve => resolve(this.machineLoad));
     }
 }

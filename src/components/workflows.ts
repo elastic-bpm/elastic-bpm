@@ -1,5 +1,3 @@
-/*jshint esversion: 6 */
-
 export class Workflow {
     Client = require('node-rest-client').Client;
     multiparty = require('multiparty');
@@ -12,7 +10,11 @@ export class Workflow {
     };
     workflows: any[] = [];
 
-    start_updates(interval: any) {
+    constructor(interval: number) {
+        this.start_updates(interval);
+    }
+
+    private start_updates(interval: any) {
         this.update_status(interval);
         this.update_workflows(interval);
     }
@@ -67,25 +69,21 @@ export class Workflow {
         });
     };
 
-    delete_workflow(workflowId: any, cb: any) {
-        const req = this.client.delete('http://' + this.workflow_host + ':3000/workflows/' + workflowId,
-            (data: any, response: any) => {
-                cb(null, data);
-            });
+    delete_workflow(workflowId: any) {
+        return new Promise<any>((resolve, reject) => {
+            const req = this.client.delete('http://' + this.workflow_host + ':3000/workflows/' + workflowId,
+                (data: any, response: any) => resolve(data));
 
-        req.on('error', (error: any) => {
-            cb(error, null);
+            req.on('error', (error: any) => reject(error));
         });
     }
 
-    delete_all_workflows(body: any, cb: any) {
-        const req = this.client.delete('http://' + this.workflow_host + ':3000/workflows',
-            (data: any, response: any) => {
-                cb(null, data);
-            });
+    delete_all_workflows(): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
+            const req = this.client.delete('http://' + this.workflow_host + ':3000/workflows',
+                (data: any, response: any) => resolve(data));
 
-        req.on('error', (error: any) => {
-            cb(error, null);
+            req.on('error', (error: any) => reject(error));
         });
     }
 
@@ -141,11 +139,17 @@ export class Workflow {
         });
     }
 
-    check_status() {
-        return this.status;
+    check_status(): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
+            if (this.status.statusCode === 200) {
+                resolve(this.status.message);
+            } else {
+                reject(this.status.message);
+            }
+        });
     };
 
-    get_workflows() {
-        return this.workflows;
+    get_workflows(): Promise<any[]> {
+        return new Promise<any[]>(resolve => resolve(this.workflows));
     };
 }

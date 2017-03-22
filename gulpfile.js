@@ -34,7 +34,7 @@ gulp.task('default', ['watch', 'assets'], () => {
   // configure nodemon
   nodemon({
     // the script to run the app
-    script: 'dist/app.js',
+    script: 'dist/index.js',
     // this listens to changes in any of these files/routes and restarts the application
     watch: ['dist/*', 'dist/*/**'],
     ext: 'js'

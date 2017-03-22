@@ -1,5 +1,3 @@
-/*jshint esversion: 6 */
-
 export class Scaling {
     Client = require('node-rest-client').Client;
     client = new this.Client();
@@ -11,7 +9,11 @@ export class Scaling {
     };
     virtualmachines: any[] = [];
 
-    start_updates(interval: any) {
+    constructor(interval: number) {
+        this.start_updates(interval);
+    }
+
+    private start_updates(interval: any) {
         this.update_status(interval);
         this.update_virtualmachines(10 * interval);
     }
@@ -49,41 +51,47 @@ export class Scaling {
         });
     }
 
-    check_status() {
-        return this.status;
-    };
-
-    get_virtualmachines() {
-        return this.virtualmachines;
-    };
-
-    start_virtualmachine(resourcegroup: any, machine_id: any, cb: any) {
-        const req = this.client.post('http://' + this.scaling_host + ':8888/virtualmachines/' + resourcegroup + '/' + machine_id,
-            (data: any, response: any) => {
-                if (response.statusCode === 200) {
-                    cb(null, data);
-                } else {
-                    cb('Error: ' + data, null);
-                }
-            });
-
-        req.on('error', (error: any) => {
-            cb('error: ' + error, null);
+    check_status(): Promise<any> {
+        return new Promise<any>((resolve, reject) => {
+            if (this.status.statusCode === 200) {
+                resolve(this.status.message);
+            } else {
+                reject(this.status.message);
+            }
         });
     };
 
-    stop_virtualmachine(resourcegroup: any, machine_id: any, cb: any) {
-        const req = this.client.delete('http://' + this.scaling_host + ':8888/virtualmachines/' + resourcegroup + '/' + machine_id,
-            (data: any, response: any) => {
-                if (response.statusCode === 200) {
-                    cb(null, data);
-                } else {
-                    cb('Error: ' + data, null);
-                }
-            });
+    get_virtualmachines() {
+        return new Promise<any>(resolve => resolve(this.virtualmachines));
+    };
 
-        req.on('error', (error: any) => {
-            cb('error: ' + error, null);
+    start_virtualmachine(resourcegroup: any, machine_id: any) {
+        return new Promise<any>((resolve, reject) => {
+            const req = this.client.post('http://' + this.scaling_host + ':8888/virtualmachines/' + resourcegroup + '/' + machine_id,
+                (data: any, response: any) => {
+                    if (response.statusCode === 200) {
+                        resolve(data);
+                    } else {
+                        reject('Error: ' + data);
+                    }
+                });
+
+            req.on('error', (error: any) => reject('error: ' + error));
+        });
+    };
+
+    stop_virtualmachine(resourcegroup: any, machine_id: any) {
+        return new Promise<any>((resolve, reject) => {
+            const req = this.client.delete('http://' + this.scaling_host + ':8888/virtualmachines/' + resourcegroup + '/' + machine_id,
+                (data: any, response: any) => {
+                    if (response.statusCode === 200) {
+                        resolve(data);
+                    } else {
+                        reject('Error: ' + data);
+                    }
+                });
+
+            req.on('error', (error: any) => reject('error: ' + error));
         });
     };
 }
