@@ -1,0 +1,35 @@
+{
+  "name": "elastic-scaling",
+  "version": "1.0.7",
+  "description": "",
+  "main": "app.js",
+  "dependencies": {
+    "ms-rest":"1.15.7",
+    "ms-rest-azure": "1.15.7",
+    "azure-arm-compute": "0.20.0",
+    "body-parser": "^1.15.2",
+    "events": "^1.1.1",
+    "express": "^4.14.0",
+    "log4js": "^1.1.0",
+    "nodemon": "1.11.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "start:local": "set DEBUG=express:*& nodemon app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DJBnjack/elastic-scaling.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DJBnjack/elastic-scaling/issues"
+  },
+  "homepage": "https://github.com/DJBnjack/elastic-scaling#readme",
+  "jshintConfig": {
+    "esversion": 6
+  }
+}
