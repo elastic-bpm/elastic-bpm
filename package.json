@@ -1,0 +1,43 @@
+{
+  "name": "elastic-api",
+  "version": "1.0.0",
+  "description": "- name\r - owner\r - created\r - definition",
+  "main": "app.js",
+  "scripts": {
+    "test": "mocha tests --recursive --",
+    "test:watch": "mocha tests --recursive --watch",
+    "start": "node app.js",
+    "start:local": "set DEBUG=express:* & set REDIS_HOST=localhost& nodemon app.js",
+    "redis:reload": "npm run redis:kill && npm run wait && npm run redis:start",
+    "redis:kill": "docker rm elastic-redis --force || echo 'ok'",
+    "wait": "timeout 3",
+    "redis:start": "docker run --name elastic-redis -d -p 6379:6379 redis",
+    "docker:reload": "npm run docker:kill && npm run docker:build && npm run wait && npm run docker:run",
+    "docker:kill": "docker rm elastic-api --force || echo 'ok'",
+    "docker:build": "docker build -t elastic-api .",
+    "docker:run": "docker run --name elastic-api -d -p 3000:3000 --link elastic-redis:redis elastic-api"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DJBnjack/elastic-api.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DJBnjack/elastic-api/issues"
+  },
+  "homepage": "https://github.com/DJBnjack/elastic-api#readme",
+  "devDependencies": {
+    "nodemon": "latest",
+    "mocha": "latest",
+    "chai": "latest",
+    "proxyquire": "latest"
+  },
+  "dependencies": {
+    "body-parser": "latest",
+    "express": "latest",
+    "log4js": "^1.1.0",
+    "node-uuid": "^1.4.7",
+    "redis": "latest"
+  }
+}

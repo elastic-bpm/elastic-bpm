@@ -1,0 +1,14 @@
+sudo: required
+language: node_js
+
+services:
+ - docker
+
+install:
+ - docker build -t djbnjack/elastic-api .
+
+script:
+ - if [ "$TRAVIS_BRANCH" == "master" ]; then
+   docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+   docker push djbnjack/elastic-api;
+   fi
