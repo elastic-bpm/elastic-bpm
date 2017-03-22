@@ -1,0 +1,27 @@
+<app-warning-panel [status]="dockerStatus" title="Docker" *ngIf="dockerStatus.statusCode !== 200"></app-warning-panel>
+<app-bs-panel *ngIf="dockerStatus.statusCode === 200" title="Nodes">
+    <table class="table table-striped table-bordered table-hover table-condensed">
+        <thead>
+            <tr>
+                <th>hostname</th>
+                <th>id</th>
+                <th>availability</th>
+                <th>status</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor='let node of nodes'>
+                <td>{{node.hostname}}</td>
+                <td>{{node.id}}</td>
+                <td>{{node.availability}}</td>
+                <td>{{node.status}}</td>
+                <td>
+                    <button (click)="setNodeActive(node.hostname)" [disabled]="node.availability === 'active'" class="btn btn-primary btn-xs">Active</button>
+                    <button (click)="setNodeDrain(node.hostname)" [disabled]="node.availability === 'drain'" class="btn btn-warning btn-xs">Drain</button>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+    <!-- <pre>{{nodes | json}}</pre> -->
+</app-bs-panel>

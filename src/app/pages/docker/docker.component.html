@@ -1,0 +1,13 @@
+<app-warning-panel [status]="dockerStatus" title="Docker" *ngIf="dockerStatus.statusCode !== 200"></app-warning-panel>
+
+<app-docker-running-services [services]="remoteServices" *ngIf="dockerStatus.statusCode === 200">
+    <!-- <pre>{{remoteServices | json}}</pre> -->
+</app-docker-running-services>
+
+<app-docker-running-containers [containers]="remoteContainers" *ngIf="dockerStatus.statusCode === 200">
+    <!-- <pre>{{remoteContainers | json}}</pre> -->
+</app-docker-running-containers>
+
+<app-docker-info *ngIf="dockerStatus.statusCode === 200">
+    <pre>{{remoteInfo | json}}</pre>
+</app-docker-info>

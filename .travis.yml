@@ -1,0 +1,17 @@
+sudo: required
+language: node_js
+
+services:
+ - docker
+
+install:
+ - docker build -t djbnjack/elastic-dashboard .
+
+script:
+ - docker run -it --rm djbnjack/elastic-dashboard npm run lint
+
+after_success:
+ - if [ "$TRAVIS_BRANCH" == "master" ]; then
+   docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD";
+   docker push djbnjack/elastic-dashboard;
+   fi

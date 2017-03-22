@@ -1,0 +1,5 @@
+    <div class="row" *ngIf="history !== undefined && history[0].series.length > 1" style="height: 300px;">
+        <ngx-charts-line-chart [scheme]="colorScheme" [results]="history" [gradient]="false" [xAxis]="true" [yAxis]="true" [curve]="curveStepAfter"
+            [legend]="true" [showXAxisLabel]="false" [showYAxisLabel]="false" [autoScale]="true" [timeline]="true">
+        </ngx-charts-line-chart>
+    </div>

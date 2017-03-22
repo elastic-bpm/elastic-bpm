@@ -1,0 +1,101 @@
+<app-bs-panel title="Scheduler Settings">
+    <div class="row">
+        <div class="col-md-2">
+            <div class="input-group">
+                <div class="input-group-btn" dropdown>
+                    <button type="button" class="btn btn-default" dropdownToggle>Set policy <span class="caret"></span></button>
+                    <ul class="dropdown-menu">
+                        <li><a (click)="setPolicy('Off')">Off</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a (click)="setPolicy('Static')">Static</a></li>
+                        <li><a (click)="setPolicy('OnDemand')">OnDemand</a></li>
+                        <li><a (click)="setPolicy('Learning')">Learning</a></li>
+                    </ul>
+                </div>
+                <input type="text" value="{{info.policy}}" class="form-control" disabled="">
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="input-group">
+                <input type="number" [(ngModel)]="model.staticAmount" class="form-control" id="staticAmount" name="staticAmount">
+                <div class="input-group-btn">
+                    <button type="button" (click)="setAmount('Static', model.staticAmount)" class="form-control btn btn-default">Set Static amount</button>
+                </div>
+                <input type="text" value="{{info.amount === undefined ? 0 : info.amount['Static']}}" class="form-control" disabled="">
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="input-group">
+                <input type="number" [(ngModel)]="model.onDemandAmount" class="form-control" id="onDemandAmount" name="onDemandAmount">
+                <div class="input-group-btn">
+                    <button type="button" (click)="setAmount('OnDemand', model.onDemandAmount)" class="form-control btn btn-default">Set OnDemand amount</button>
+                </div>
+                <input type="text" value="{{info.amount === undefined ? 0 : info.amount['OnDemand']}}" class="form-control" disabled="">
+            </div>
+        </div>
+
+        <div class="col-md-3">
+            <div class="input-group">
+                <input type="number" [(ngModel)]="model.learningAmount" class="form-control" id="learningAmount" name="learningAmount">
+                <div class="input-group-btn">
+                    <button type="button" (click)="setAmount('Learning', model.learningAmount)" class="form-control btn btn-default">Set Learning amount</button>
+                </div>
+                <input type="text" value="{{info.amount === undefined ? 0 : info.amount['Learning']}}" class="form-control" disabled="">
+            </div>
+        </div>
+    </div>
+    <app-history-chart [history]="info.history"></app-history-chart>
+    <!--<div class="row">
+        <pre>{{ info | json }}</pre>
+    </div>-->
+</app-bs-panel>
+
+<app-bs-panel title="Execute Workload">
+    <div class="row">
+        <div class="col-md-6">
+            <div class="row">
+                <div class="col-xs-12">
+                    <div class="input-group">
+                        <span class="input-group-addon">Upload workload script</span>
+                        <input name="upload" type="file" class="form-control">
+                    </div>
+                </div>
+
+                <div class="col-xs-12">
+                    <div class="input-group">
+                        <span class="input-group-addon">Execute policy:</span>
+                        <span class="input-group-btn">
+                            <button type="button" (click)="executePolicy('Static')" class="form-control btn btn-primary">Static</button>
+                        </span>
+                        <span class="input-group-btn">        
+                            <button type="button" (click)="executePolicy('OnDemand')" class="form-control btn btn-primary">OnDemand</button>
+                        </span>
+                        <span class="input-group-btn">
+                            <button type="button" (click)="executePolicy('Learning')" class="form-control btn btn-primary">Learning</button>
+                        </span>
+                        <span class="input-group-btn">
+                            <button type="button" (click)="stopExecution()" class="form-control btn btn-danger">Reset Scheduler</button>
+                        </span>
+                        <span class="input-group-addon">&nbsp;</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div *ngIf="info.running !== undefined" class="col-lg-4 col-md-6 col-xs-12">
+            <ul class="list-group">
+                <li *ngFor="let item of info.running" class="list-group-item" 
+                    [ngClass]="{'active': item.status === 'busy', 'list-group-item-success': item.status === 'done', 'list-group-item-danger': item.status === 'error'}">
+                    {{item.name}}
+                    <span *ngIf="item.endTime !== null" class="badge">End: {{item.endTime | date:'HH:mm:ss'}}</span>
+                    <span *ngIf="item.startTime !== null" class="badge">Start: {{item.startTime | date:'HH:mm:ss'}}</span>
+                </li>
+            </ul>
+        </div>
+        <!--<div class="col-md-12">
+            <pre>{{ info.running | json }}</pre>
+        </div>-->
+    </div>
+</app-bs-panel>
