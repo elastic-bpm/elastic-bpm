@@ -1,6 +1,4 @@
 import * as elasticsearch from 'elasticsearch';
-import RxClient from 'rx-elasticsearch';
-
 
 export class Elastic {
     elastic_host = process.env.ELASTIC_HOST || '137.116.195.67';
@@ -74,57 +72,57 @@ export class Elastic {
             }
         };
 
-        const rxClient = new RxClient(this.client);
-        rxClient
-            .scroll(query)
-            .subscribe(
-            (response: any) => {
-                const newLoad: any[] = [];
+        // const rxClient = new RxClient(this.client);
+        // rxClient
+        //     .scroll(query)
+        //     .subscribe(
+        //     (response: any) => {
+        //         const newLoad: any[] = [];
 
-                response.hits.hits.forEach((hit: any) => {
-                    newLoad.push(hit._source);
-                    newLoad.sort(function (a: any, b: any) {
-                        if (a['@timestamp'] < b['@timestamp']) {
-                            return -1;
-                        } else {
-                            return 1;
-                        }
-                    });
-                    newLoad.forEach((load: any) => {
-                        if (Object.keys(this.machineLoad).indexOf(load.beat.hostname) !== -1) {
-                            this.machineLoad[load.beat.hostname].load1.push(load.system.load['1']);
-                            if (this.machineLoad[load.beat.hostname].load1.length > this.maxLoadLength) {
-                                this.machineLoad[load.beat.hostname].load1 = this.machineLoad[load.beat.hostname].load1.slice(1);
-                            }
+        //         response.hits.hits.forEach((hit: any) => {
+        //             newLoad.push(hit._source);
+        //             newLoad.sort(function (a: any, b: any) {
+        //                 if (a['@timestamp'] < b['@timestamp']) {
+        //                     return -1;
+        //                 } else {
+        //                     return 1;
+        //                 }
+        //             });
+        //             newLoad.forEach((load: any) => {
+        //                 if (Object.keys(this.machineLoad).indexOf(load.beat.hostname) !== -1) {
+        //                     this.machineLoad[load.beat.hostname].load1.push(load.system.load['1']);
+        //                     if (this.machineLoad[load.beat.hostname].load1.length > this.maxLoadLength) {
+        //                         this.machineLoad[load.beat.hostname].load1 = this.machineLoad[load.beat.hostname].load1.slice(1);
+        //                     }
 
-                            this.machineLoad[load.beat.hostname].load5.push(load.system.load['5']);
-                            if (this.machineLoad[load.beat.hostname].load5.length > this.maxLoadLength) {
-                                this.machineLoad[load.beat.hostname].load5 = this.machineLoad[load.beat.hostname].load5.slice(1);
-                            }
+        //                     this.machineLoad[load.beat.hostname].load5.push(load.system.load['5']);
+        //                     if (this.machineLoad[load.beat.hostname].load5.length > this.maxLoadLength) {
+        //                         this.machineLoad[load.beat.hostname].load5 = this.machineLoad[load.beat.hostname].load5.slice(1);
+        //                     }
 
-                            this.machineLoad[load.beat.hostname].load15.push(load.system.load['15']);
-                            if (this.machineLoad[load.beat.hostname].load15.length > this.maxLoadLength) {
-                                this.machineLoad[load.beat.hostname].load15 = this.machineLoad[load.beat.hostname].load15.slice(1);
-                            }
-                        } else {
-                            this.machineLoad[load.beat.hostname] = {
-                                load1: [load.system.load['1']],
-                                load5: [load.system.load['5']],
-                                load15: [load.system.load['15']],
-                            };
-                        }
-                    });
+        //                     this.machineLoad[load.beat.hostname].load15.push(load.system.load['15']);
+        //                     if (this.machineLoad[load.beat.hostname].load15.length > this.maxLoadLength) {
+        //                         this.machineLoad[load.beat.hostname].load15 = this.machineLoad[load.beat.hostname].load15.slice(1);
+        //                     }
+        //                 } else {
+        //                     this.machineLoad[load.beat.hostname] = {
+        //                         load1: [load.system.load['1']],
+        //                         load5: [load.system.load['5']],
+        //                         load15: [load.system.load['15']],
+        //                     };
+        //                 }
+        //             });
 
-                    console.log(newLoad.length);
-                    if (newLoad.length > 0) {
-                        this.rawLoad = newLoad;
-                    }
+        //             console.log(newLoad.length);
+        //             if (newLoad.length > 0) {
+        //                 this.rawLoad = newLoad;
+        //             }
 
-                    setTimeout(() => { this.update_load(interval); }, interval);
-                });
-            },
-            (e: any) => console.error(e)
-            );
+        //             setTimeout(() => { this.update_load(interval); }, interval);
+        //         });
+        //     },
+        //     (e: any) => console.error(e)
+        //     );
     }
 
     update_messages(interval: number) {
@@ -157,31 +155,31 @@ export class Elastic {
             }
         };
 
-        const rxClient = new RxClient(this.client);
-        rxClient
-            .scroll(messagesQuery)
-            .subscribe(
-            (response: any) => {
-                const newMessages: any[] = [];
+        // const rxClient = new RxClient(this.client);
+        // rxClient
+        //     .scroll(messagesQuery)
+        //     .subscribe(
+        //     (response: any) => {
+        //         const newMessages: any[] = [];
 
-                response.hits.hits.forEach((hit: any) => {
-                    newMessages.push(hit._source);
-                });
-                newMessages.sort((a: any, b: any) => {
-                    if (a['@timestamp'] < b['@timestamp']) {
-                        return 1;
-                    } else {
-                        return -1;
-                    }
-                });
+        //         response.hits.hits.forEach((hit: any) => {
+        //             newMessages.push(hit._source);
+        //         });
+        //         newMessages.sort((a: any, b: any) => {
+        //             if (a['@timestamp'] < b['@timestamp']) {
+        //                 return 1;
+        //             } else {
+        //                 return -1;
+        //             }
+        //         });
 
-                this.messages = newMessages.concat(this.messages);
-                this.messages = this.messages.slice(0, 100);
+        //         this.messages = newMessages.concat(this.messages);
+        //         this.messages = this.messages.slice(0, 100);
 
-                setTimeout(() => { this.update_messages(interval); }, interval);
-            },
-            (e: any) => console.error(e)
-            );
+        //         setTimeout(() => { this.update_messages(interval); }, interval);
+        //     },
+        //     (e: any) => console.error(e)
+        //     );
     }
 
     update_status(interval: number) {
