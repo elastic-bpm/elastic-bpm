@@ -1,0 +1,32 @@
+{
+  "name": "elastic-docker",
+  "version": "1.0.0",
+  "description": "Docker service for the elastic BPM system",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node app.js",
+    "docker:build": "docker build -t elastic-docker .",
+    "docker:kill": "docker rm --force elastic-docker || echo 'ok'",
+    "docker:start": "docker run -p 4444:4444 -d -v /var/run/docker.sock:/var/run/docker.sock -e \"SCHEDULER_HOST=localhost\" --name elastic-docker elastic-docker",
+    "docker:tail": "docker logs -f elastic-docker",
+    "wait": "timeout 1",
+    "start:local": "npm run docker:build && npm run docker:kill && npm run wait && npm run docker:start &&  npm run docker:tail"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DJBnjack/elastic-docker.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/DJBnjack/elastic-docker/issues"
+  },
+  "homepage": "https://github.com/DJBnjack/elastic-docker#readme",
+  "dependencies": {
+    "body-parser": "^1.15.2",
+    "dockerode": "djbnjack/dockerode",
+    "express": "^4.14.0",
+    "log4js": "^1.1.0"
+  }
+}
