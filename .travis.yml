@@ -10,3 +10,4 @@ env:
   - PROJ_DIR=scheduler
   - PROJ_DIR=workflows
 script: cd $TEST_DIR && npm install && npm test
+
