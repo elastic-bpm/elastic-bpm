@@ -13,6 +13,7 @@ import { Info } from '../../classes/info.class';
 export class SchedulerComponent implements OnInit {
   title = 'Scheduler';
   info: Info = new Info();
+  running: any[];
   model = {
     staticAmount: 10,
     onDemandAmount: 15,
@@ -24,6 +25,7 @@ export class SchedulerComponent implements OnInit {
 
   ngOnInit() {
     this.schedulerService.info.subscribe(info => this.info = info);
+    this.schedulerService.running.subscribe(running => this.running = running);
   }
 
   setPolicy(policy) {

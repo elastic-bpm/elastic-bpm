@@ -5,6 +5,7 @@ import { Human } from './components/human';
 import { Scaling } from './components/scaling';
 import { Scheduler } from './components/scheduler';
 import { Elastic } from './components/elastic';
+import { TestRunner } from './components/TestRunner';
 
 import * as path from 'path';
 import * as express from 'express';
@@ -27,9 +28,11 @@ class App {
     private scaling = new Scaling(interval);
     private scheduler = new Scheduler(interval);
     private elastic = new Elastic(interval);
+    private testRunner: TestRunner;
 
     // Run configuration methods on the Express instance.
     constructor() {
+        this.testRunner = new TestRunner(this.scheduler);
         this.express = express();
         this.middleware();
         this.routes();
@@ -123,8 +126,11 @@ class App {
             this.getJsonResult(this.scheduler.set_policy(req.body), req, res));
         this.express.post('/api/scheduler/amount', (req: any, res: any) =>
             this.getJsonResult(this.scheduler.set_amount(req.body), req, res));
-        this.express.post('/api/scheduler/execute', (req: any, res: any) =>
-            this.getJsonResult(this.scheduler.execute(req.body), req, res));
+
+        this.express.post('/api/runTest', (req: any, res: any) =>
+            this.getJsonResult(this.testRunner.runTest(req.body), req, res));
+        this.express.get('/api/running', (req: any, res: any) =>
+            this.getJsonResult(this.testRunner.getRunning(), req, res));
 
         this.express.get('/api/elastic/status', (req: any, res: any) =>
             this.getJsonResult(this.elastic.check_status(), req, res));

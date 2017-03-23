@@ -84,9 +84,9 @@
             </div>
         </div>
 
-        <div *ngIf="info.running !== undefined" class="col-lg-4 col-md-6 col-xs-12">
+        <div *ngIf="running !== undefined" class="col-lg-4 col-md-6 col-xs-12">
             <ul class="list-group">
-                <li *ngFor="let item of info.running" class="list-group-item" 
+                <li *ngFor="let item of running" class="list-group-item" 
                     [ngClass]="{'active': item.status === 'busy', 'list-group-item-success': item.status === 'done', 'list-group-item-danger': item.status === 'error'}">
                     {{item.name}}
                     <span *ngIf="item.endTime !== null" class="badge">End: {{item.endTime | date:'HH:mm:ss'}}</span>
@@ -95,7 +95,7 @@
             </ul>
         </div>
         <!--<div class="col-md-12">
-            <pre>{{ info.running | json }}</pre>
+            <pre>{{ running | json }}</pre>
         </div>-->
     </div>
 </app-bs-panel>

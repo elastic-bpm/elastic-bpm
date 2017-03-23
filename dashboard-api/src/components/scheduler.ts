@@ -19,7 +19,7 @@ export class Scheduler {
         this.update_human_tasks(interval);
     }
 
-    update_human_tasks(interval: number) {
+    private update_human_tasks(interval: number) {
         const req = this.client.get('http://' + this.scheduler_host + ':3210/tasks/human', (data: any, response: any) => {
             if (response.statusCode === 200) {
                 this.humanTasks = data;
@@ -36,7 +36,7 @@ export class Scheduler {
         });
     }
 
-    update_status(interval: number) {
+    private update_status(interval: number) {
         const req = this.client.get('http://' + this.scheduler_host + ':3210/status',
             (data: any, response: any) => {
                 this.status.statusCode = response.statusCode;
@@ -53,7 +53,7 @@ export class Scheduler {
         });
     }
 
-    update_info(interval: number) {
+    private update_info(interval: number) {
         const req = this.client.get('http://' + this.scheduler_host + ':3210/info', (data: any, response: any) => {
             if (response.statusCode === 200) {
                 this.info = data;
@@ -88,26 +88,6 @@ export class Scheduler {
         return new Promise<any>((resolve, reject) => {
             console.log(body);
             const req = this.client.post('http://' + this.scheduler_host + ':3210/amount/' + body.policy + '/' + body.amount,
-                (data: any, response: any) => {
-                    if (response.statusCode === 200) {
-                        resolve(data);
-                    } else {
-                        reject('Error: ' + data);
-                    }
-                });
-
-            req.on('error', (error: any) => reject('error: ' + error));
-        });
-    }
-
-    execute(body: any) {
-        return new Promise<any>((resolve, reject) => {
-            console.log(body);
-            const args = {
-                data: body,
-                headers: { 'Content-Type': 'application/json' }
-            };
-            const req = this.client.post('http://' + this.scheduler_host + ':3210/execute/', args,
                 (data: any, response: any) => {
                     if (response.statusCode === 200) {
                         resolve(data);

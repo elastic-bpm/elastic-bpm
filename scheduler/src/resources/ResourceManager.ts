@@ -9,7 +9,6 @@ export class ResourceManager {
     private docker_host: number = process.env.DOCKER || 'localhost';
     private amount: any = {};
     private history: any = { Target: [], Active: [], Nodes: [] };
-    private running: Todo[];
 
     constructor(private policy: string,
         staticAmount: number,
@@ -21,85 +20,6 @@ export class ResourceManager {
         this.amount['OnDemand'] = onDemandAmount;
         this.amount['Learning'] = learningAmount;
         this.checkResources(intervalAmount);
-    }
-
-    resetRunning(policy: string) {
-        this.running = [
-            new Todo('Set policy to ' + policy, 0),
-            new Todo('Wait for machines to scale to ' + this.amount[policy], 1),
-            new Todo('Wait for ' + this.amount[policy] + ' nodes to be ready', 2),
-            new Todo('Reset workers', 3),
-            new Todo('Scale workers', 4),
-            new Todo('Start humans', 5),
-            new Todo('Upload workflow', 6),
-            new Todo('Wait for humans finished', 7),
-            new Todo('Reset workers', 8),
-            new Todo('Delete all workflows', 9),
-            new Todo('Set policy to Off', 10),
-        ];
-    }
-
-    executePolicy(specifications: any): Promise<string> {
-        this.resetRunning(specifications.policy);
-        setTimeout(() => this.startExecution(specifications.policy), 2000);
-        return new Promise<string>(resolve => resolve(specifications.policy));
-    }
-
-    private async waitForMachines(amount: number): Promise<number> {
-        const activeMachines = await this.getActiveMachineCount();
-        if (activeMachines === amount) {
-            return new Promise<number>(resolve => resolve(activeMachines));
-        } else {
-            return new Promise<number>(resolve => {
-                setTimeout(() => {
-                    resolve(this.waitForMachines(amount));
-                }, 5000);
-            });
-        }
-    }
-
-    private async waitForNodes(amount: number): Promise<number> {
-        const activeNodes = await this.getActiveNodeCount();
-        if (activeNodes === amount) {
-            return new Promise<number>(resolve => resolve(activeNodes));
-        } else {
-            return new Promise<number>(resolve => {
-                setTimeout(() => {
-                    resolve(this.waitForNodes(amount));
-                }, 5000);
-            });
-        }
-    }
-    private async startExecution(policy: string) {
-        try {
-            // Set Policy
-            this.running[0].setBusy();
-            const newPolicy = await this.setPolicy(policy);
-            if (newPolicy !== policy) {
-                this.running[0].setError();
-                throw new Error('Policy mismatch!');
-            }
-            this.running[0].setDone();
-
-            this.running[1].setBusy();
-            const amountOfMachines = await this.waitForMachines(this.amount[policy]);
-            if (amountOfMachines !== this.amount[policy]) {
-                this.running[1].setError();
-                throw new Error('Amount of machines mismatch!');
-            }
-            this.running[1].setDone();
-
-            this.running[2].setBusy();
-            const amountOfNodes = await this.waitForNodes(this.amount[policy]);
-            if (amountOfNodes !== this.amount[policy]) {
-                this.running[2].setError();
-                throw new Error('Amount of nodes mismatch!');
-            }
-            this.running[2].setDone();
-
-        } catch (error) {
-            console.log(error);
-        }
     }
 
     getPolicy(): Promise<string> {
@@ -152,8 +72,7 @@ export class ResourceManager {
                     name: 'Nodes',
                     series: this.history.Nodes
                 }
-            ],
-            running: this.running
+            ]
         }));
     }
 

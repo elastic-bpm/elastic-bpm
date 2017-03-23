@@ -8,10 +8,12 @@ import { Info } from '../classes/info.class';
 export class SchedulerService {
     info: BehaviorSubject<Info> = new BehaviorSubject(new Info());
     humanTasks: BehaviorSubject<any[]> = new BehaviorSubject([]);
+    running: BehaviorSubject<any[]> = new BehaviorSubject([]);
 
     constructor(private http: Http) {
         this.updateInfo(2000);
         this.updateHumanTasks(2000);
+        this.updateRunning(2000);
     }
 
     updateHumanTasks(interval: number) {
@@ -29,6 +31,26 @@ export class SchedulerService {
                 console.log(error);
                 if (interval > 0) {
                     setTimeout(() => this.updateHumanTasks(interval), interval);
+                }
+            }
+            );
+    };
+
+    updateRunning(interval: number) {
+        this.http
+            .get('/api/running')
+            .map(res => res.json())
+            .subscribe(
+            res => {
+                this.running.next(res);
+                if (interval > 0) {
+                    setTimeout(() => this.updateRunning(interval), interval);
+                }
+            },
+            error => {
+                console.log(error);
+                if (interval > 0) {
+                    setTimeout(() => this.updateRunning(interval), interval);
                 }
             }
             );
@@ -113,7 +135,7 @@ export class SchedulerService {
 
     executePolicy(policy: string, cb) {
         this.http
-            .post('/api/scheduler/execute', { policy: policy })
+            .post('/api/runTest', { policy: policy })
             .map(res => res.json())
             .subscribe(
                 res => cb(res),
