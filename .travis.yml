@@ -1,0 +1,12 @@
+language: node_js
+node_js:
+  - "7"
+env:
+  - PROJ_DIR=dashboard
+  - PROJ_DIR=dashboard-api
+  - PROJ_DIR=docker
+  - PROJ_DIR=human
+  - PROJ_DIR=scaling
+  - PROJ_DIR=scheduler
+  - PROJ_DIR=workflows
+script: cd $TEST_DIR && npm install && npm test
