@@ -9,11 +9,4 @@ env:
   - PROJ_DIR=scaling
   - PROJ_DIR=scheduler
   - PROJ_DIR=workflows
-  - CXX=g++-4.8
-addons:
-  apt:
-    sources:
-      - ubuntu-toolchain-r-test
-    packages:
-      - g++-4.8
 script: cd $PROJ_DIR && npm install && npm test
