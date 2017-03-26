@@ -1,4 +1,6 @@
-export class Workflow {
+import { DelayedWorkflow } from '../classes/DelayedWorkflow';
+
+export class Workflows {
     Client = require('node-rest-client').Client;
     multiparty = require('multiparty');
     fs = require('fs');
@@ -136,6 +138,26 @@ export class Workflow {
                     cb('' + err, null);
                 });
             }
+        });
+    }
+
+    post_multiple_workflows(workflows: DelayedWorkflow[]): Promise<any> {
+        const args = {
+            data: workflows,
+            headers: { 'Content-Type': 'application/json' }
+        };
+
+        return new Promise<any>((resolve, reject) => {
+            const req = this.client.post('http://' + this.workflow_host + ':3000/workflows/multiple', args,
+                (data: any, response: any) => {
+                    if (response.statusCode === 200) {
+                        resolve(data);
+                    } else {
+                        reject('Return code not 200: ' + data);
+                    }
+                });
+
+            req.on('error', (error: any) => reject(error));
         });
     }
 

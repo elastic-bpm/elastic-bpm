@@ -1,4 +1,4 @@
-import { Workflow } from './components/workflows';
+import { Workflows } from './components/workflows';
 import { Redis } from './components/redis';
 import { Docker } from './components/docker';
 import { Human } from './components/human';
@@ -21,7 +21,7 @@ class App {
     public express: express.Application;
 
     // No DI yet for repository & resource manager - exercise left for the reader
-    private workflow = new Workflow(interval);
+    private workflows = new Workflows(interval);
     private redis = new Redis(interval);
     private docker = new Docker(interval);
     private human = new Human(interval);
@@ -32,7 +32,7 @@ class App {
 
     // Run configuration methods on the Express instance.
     constructor() {
-        this.testRunner = new TestRunner(this.scheduler, this.docker);
+        this.testRunner = new TestRunner(this.scheduler, this.docker, this.human, this.workflows);
         this.express = express();
         this.middleware();
         this.routes();
@@ -62,15 +62,15 @@ class App {
             this.getJsonResult(this.redis.check_status(), req, res));
 
         this.express.get('/api/workflow/status', (req: any, res: any) =>
-            this.getJsonResult(this.workflow.check_status(), req, res));
+            this.getJsonResult(this.workflows.check_status(), req, res));
         this.express.get('/api/workflow/workflows', (req: any, res: any) =>
-            this.getJsonResult(this.workflow.get_workflows(), req, res));
+            this.getJsonResult(this.workflows.get_workflows(), req, res));
         this.express.post('/api/workflow/workflows', (req: any, res: any) =>
-            this.getJsonResult(this.workflow.create_workflow(req.body), req, res));
+            this.getJsonResult(this.workflows.create_workflow(req.body), req, res));
         this.express.delete('/api/workflow/workflows', (req: any, res: any) =>
-            this.getJsonResult(this.workflow.delete_all_workflows(), req, res));
+            this.getJsonResult(this.workflows.delete_all_workflows(), req, res));
         this.express.delete('/api/workflow/workflows/:workflow_id', (req: any, res: any) =>
-            this.getJsonResult(this.workflow.delete_workflow(req.params.workflow_id), req, res));
+            this.getJsonResult(this.workflows.delete_workflow(req.params.workflow_id), req, res));
         this.express.post('/api/workflow/workflows/file', (req: any, res: any) =>
             this.getJsonResult(null, req, res));
 

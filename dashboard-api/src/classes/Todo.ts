@@ -2,6 +2,7 @@ export class Todo {
     order: number;
     name: string;
     status: string;
+    errorCode: string;
     startTime: Date;
     endTime: Date;
 
@@ -23,8 +24,9 @@ export class Todo {
         this.endTime = new Date();
     }
 
-    setError() {
+    setError(errorCode: string) {
         this.status = 'error';
+        this.errorCode = errorCode;
         this.endTime = new Date();
     }
 }

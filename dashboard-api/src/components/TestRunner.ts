@@ -1,12 +1,18 @@
 import { Scheduler } from '../components/scheduler';
 import { Docker } from '../components/docker';
+import { Human } from '../components/human';
+import { Workflows } from '../components/workflows';
+
 import { Todo } from '../classes/Todo';
+import { DelayedWorkflow } from '../classes/DelayedWorkflow';
 
 export class TestRunner {
     private running: Todo[];
     constructor(
         private scheduler: Scheduler,
-        private docker: Docker) { }
+        private docker: Docker,
+        private human: Human,
+        private workflows: Workflows) { }
 
     getRunning(): Promise<Todo[]> {
         return new Promise<Todo[]>(resolve => resolve(this.running));
@@ -22,9 +28,7 @@ export class TestRunner {
             new Todo('Start humans', 5),
             new Todo('Upload workflow', 6),
             new Todo('Wait for humans finished', 7),
-            new Todo('Reset workers', 8),
-            new Todo('Delete all workflows', 9),
-            new Todo('Set policy to Off', 10),
+            new Todo('Set policy to Off', 8),
         ];
     }
 
@@ -56,23 +60,48 @@ export class TestRunner {
         }
     }
 
-    private async resetWorkers(): Promise<boolean> {
-        try {
-            await this.docker.delete_workers();
-            await this.docker.create_workers();
-            return new Promise<boolean>(resolve => resolve(true));
-        } catch (error) {
-            return new Promise<boolean>((resolve, reject) => reject(error));
-        }
+    private async waitForHumans(): Promise<boolean> {
+        const info = await this.human.get_info();
+        console.log(info);
+        return new Promise<boolean>(resolve => {
+            setTimeout(() => {
+                resolve(true);
+            }, info.totalTime); // TODO: Can improve this to take startTime into account
+        });
     }
 
     private async startExecution(policy: string, target: number) {
+        const humanParams = {
+            on: 2,
+            off: 2,
+            init: 1,
+            total: 5,
+            amount: 5
+        };
+
+        const delayedWorkflows = [
+            {
+                'nodes': 'A:CC:S, B:CN:M, C:CI:M, D:CC:L',
+                'edges': 'A:CC:S -> B:CN:M, A:CC:S -> C:CI:M, B:CN:M -> D:CC:L, C:CI:M -> D:CC:L',
+                'name': 'TestFlow1',
+                'owner': 'johannes',
+                'delay': 0
+            },
+            {
+                'nodes': 'A:CC:S, B:CN:M, C:CI:M, D:CC:L',
+                'edges': 'A:CC:S -> B:CN:M, A:CC:S -> C:CI:M, B:CN:M -> D:CC:L, C:CI:M -> D:CC:L',
+                'name': 'TestFlow2',
+                'owner': 'johannes',
+                'delay': 10000
+            }
+        ];
+
         try {
             // Set Policy
             this.running[0].setBusy();
             const newPolicy = await this.scheduler.set_policy({ policy: policy });
             if (newPolicy !== policy) {
-                this.running[0].setError();
+                this.running[0].setError('Policy mismatch!');
                 throw new Error('Policy mismatch!');
             }
             this.running[0].setDone();
@@ -81,7 +110,7 @@ export class TestRunner {
             this.running[1].setBusy();
             const amountOfMachines = await this.waitForMachines(target);
             if (amountOfMachines !== target) {
-                this.running[1].setError();
+                this.running[1].setError('Amount of machines mismatch!');
                 throw new Error('Amount of machines mismatch!');
             }
             this.running[1].setDone();
@@ -90,20 +119,71 @@ export class TestRunner {
             this.running[2].setBusy();
             const amountOfNodes = await this.waitForNodes(target);
             if (amountOfNodes !== target) {
-                this.running[2].setError();
+                this.running[2].setError('Amount of nodes mismatch!');
                 throw new Error('Amount of nodes mismatch!');
             }
             this.running[2].setDone();
 
             // Reset workers
             this.running[3].setBusy();
-            const workersReset = await this.resetWorkers();
-            if (!workersReset) {
-                this.running[3].setError();
+            try {
+                await this.docker.delete_workers();
+                await this.docker.create_workers();
+            } catch (workersResetError) {
+                this.running[3].setError('Workers not reset!');
                 throw new Error('Workers not reset!');
             }
             this.running[3].setDone();
 
+            // TODO: Scale workers
+            this.running[4].setBusy();
+            this.running[4].setDone();
+
+            // Start humans
+            this.running[5].setBusy();
+            try {
+                const info = await this.human.start_humans(humanParams);
+                if (info !== 'ok') {
+                    this.running[5].setError('Humans not started! Error: ' + info);
+                    throw new Error('Humans not started! Error: ' + info);
+                }
+            } catch (startHumanError) {
+                this.running[5].setError('Humans not started!');
+                throw new Error('Humans not started!');
+            }
+            this.running[5].setDone();
+
+            // TODO: Upload workflow file
+            this.running[6].setBusy();
+            try {
+                const uploadWorkflowResult = await this.workflows.post_multiple_workflows(delayedWorkflows);
+                if (uploadWorkflowResult !== 'ok') {
+                    this.running[6].setError('Workflows not created! ' + uploadWorkflowResult);
+                    throw new Error('Workflows not created!' + uploadWorkflowResult);
+                }
+            } catch (uploadWorkflowError) {
+                this.running[6].setError('Workflows not created! ' + uploadWorkflowError);
+                throw new Error('Workflows not created!' + uploadWorkflowError);
+            }
+            this.running[6].setDone();
+
+            // Wait for humans finished
+            this.running[7].setBusy();
+            const humansFinished = await this.waitForHumans();
+            if (!humansFinished) {
+                this.running[7].setError('Humans not finished!');
+                throw new Error('Humans not finished!');
+            }
+            this.running[7].setDone();
+
+            // Set policy to Off
+            this.running[8].setBusy();
+            const offPolicy = await this.scheduler.set_policy({ policy: 'Off' });
+            if (offPolicy !== 'Off') {
+                this.running[8].setError('Policy not set to Off!');
+                throw new Error('Policy not set to Off!');
+            }
+            this.running[8].setDone();
 
         } catch (error) {
             console.log(error);
