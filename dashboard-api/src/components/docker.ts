@@ -136,9 +136,7 @@ export class Docker {
                     }
                 });
 
-            req.on('error', (error: any) => {
-                reject('error: ' + error);
-            });
+            req.on('error', (error: any) => reject('error: ' + error));
         });
     };
 
@@ -153,9 +151,7 @@ export class Docker {
                     }
                 });
 
-            req.on('error', (error: any) => {
-                reject('error: ' + error);
-            });
+            req.on('error', (error: any) => reject('error: ' + error));
         });
     };
 
@@ -170,9 +166,7 @@ export class Docker {
                     }
                 });
 
-            req.on('error', (error: any) => {
-                reject('Error: ' + error);
-            });
+            req.on('error', (error: any) => reject('error: ' + error));
         });
     };
 }

@@ -32,7 +32,7 @@ class App {
 
     // Run configuration methods on the Express instance.
     constructor() {
-        this.testRunner = new TestRunner(this.scheduler);
+        this.testRunner = new TestRunner(this.scheduler, this.docker);
         this.express = express();
         this.middleware();
         this.routes();

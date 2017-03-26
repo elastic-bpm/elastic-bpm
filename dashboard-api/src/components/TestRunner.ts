@@ -1,9 +1,12 @@
 import { Scheduler } from '../components/scheduler';
+import { Docker } from '../components/docker';
 import { Todo } from '../classes/Todo';
 
 export class TestRunner {
     private running: Todo[];
-    constructor(private scheduler: Scheduler) { }
+    constructor(
+        private scheduler: Scheduler,
+        private docker: Docker) { }
 
     getRunning(): Promise<Todo[]> {
         return new Promise<Todo[]>(resolve => resolve(this.running));
@@ -53,6 +56,15 @@ export class TestRunner {
         }
     }
 
+    private async resetWorkers(): Promise<boolean> {
+        try {
+            await this.docker.delete_workers();
+            await this.docker.create_workers();
+            return new Promise<boolean>(resolve => resolve(true));
+        } catch (error) {
+            return new Promise<boolean>((resolve, reject) => reject(error));
+        }
+    }
 
     private async startExecution(policy: string, target: number) {
         try {
@@ -65,6 +77,7 @@ export class TestRunner {
             }
             this.running[0].setDone();
 
+            // Wait for machines
             this.running[1].setBusy();
             const amountOfMachines = await this.waitForMachines(target);
             if (amountOfMachines !== target) {
@@ -73,6 +86,7 @@ export class TestRunner {
             }
             this.running[1].setDone();
 
+            // Wait for nodes
             this.running[2].setBusy();
             const amountOfNodes = await this.waitForNodes(target);
             if (amountOfNodes !== target) {
@@ -80,6 +94,16 @@ export class TestRunner {
                 throw new Error('Amount of nodes mismatch!');
             }
             this.running[2].setDone();
+
+            // Reset workers
+            this.running[3].setBusy();
+            const workersReset = await this.resetWorkers();
+            if (!workersReset) {
+                this.running[3].setError();
+                throw new Error('Workers not reset!');
+            }
+            this.running[3].setDone();
+
 
         } catch (error) {
             console.log(error);
