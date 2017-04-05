@@ -2,7 +2,8 @@
 
 var Docker = require('dockerode');
 var docker_local = new Docker();
-var docker_remote = new Docker({host: 'http://master-01.westeurope.cloudapp.azure.com', port: 4243});
+var docker_remote_host = process.env.DOCKER_HOST || "localhost";
+var docker_remote = new Docker({host: docker_remote_host, port: 4243});
 
 var bodyParser = require('body-parser');
 var express = require('express'),
