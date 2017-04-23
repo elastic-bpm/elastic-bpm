@@ -1,9 +1,11 @@
 /*jshint esversion: 6 */
 
 var Docker = require('dockerode');
-var docker_local = new Docker();
-var docker_remote_host = process.env.DOCKER_HOST || "localhost";
-var docker_remote = new Docker({host: docker_remote_host, port: 4243});
+var docker_local = new Docker({socketPath: '/var/run/docker.sock'});
+var docker_remote = new Docker({socketPath: '/var/run/docker.sock'});
+
+// var docker_remote_host = process.env.DOCKER_HOST || "localhost";
+// var docker_remote = new Docker({host: docker_remote_host, port: 4243});
 
 var bodyParser = require('body-parser');
 var express = require('express'),
