@@ -212,7 +212,7 @@ export class ResourceManager {
                 //     machines.forEach(machine => console.log(machine.name));
                 //     return machines;
                 // })
-                .then(machines => resolve(machines.filter(machine => machine.name !== 'master-01')))
+                .then(machines => resolve(machines.filter(machine => machine.name !== 'master')))
                 .catch(err => reject(err));
         });
     }
