@@ -7,12 +7,15 @@ app.use(bodyParser.json());
 
 const os = require('os');
 var log4js = require('log4js');
+
+var elastic_host = process.env.ELASTIC_HOST || "localhost";
+var elastic_port = process.env.ELASTIC_PORT || 12201;
 log4js.configure({
     appenders: [
         { type: 'console' },
         {
-            "host": "137.116.195.67",
-            "port": 12201,
+            "host": elastic_host,
+            "port": elastic_port,
             "type": "gelf",
             "hostname": "elastic-api@" + os.hostname(),
             "layout": {

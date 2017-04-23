@@ -7,6 +7,9 @@ var docker_remote = new Docker({socketPath: '/var/run/docker.sock'});
 // var docker_remote_host = process.env.DOCKER_HOST || "localhost";
 // var docker_remote = new Docker({host: docker_remote_host, port: 4243});
 
+var elastic_host = process.env.ELASTIC_HOST || "localhost";
+var elastic_port = process.env.ELASTIC_PORT || 12201;
+
 var bodyParser = require('body-parser');
 var express = require('express'),
     app = express();
@@ -18,8 +21,8 @@ log4js.configure({
     appenders: [
         { type: 'console' },
         {
-            "host": "137.116.195.67",
-            "port": 12201,
+            "host": elastic_host,
+            "port": elastic_port,
             "type": "gelf",
             "hostname": "elastic-docker@" + os.hostname(),
             "layout": {

@@ -1,9 +1,11 @@
 import * as elasticsearch from 'elasticsearch';
 
 export class Elastic {
-    elastic_host = process.env.ELASTIC_HOST || '137.116.195.67';
+    elastic_host = process.env.ELASTIC_HOST || 'localhost';
+    elastic_port = process.env.ELASTIC_API_PORT || 9200;
+
     client = new elasticsearch.Client({
-        host: this.elastic_host + ':9200',
+        host: this.elastic_host + ':' + this.elastic_port,
         log: 'info'
     });
 

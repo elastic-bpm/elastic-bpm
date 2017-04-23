@@ -6,14 +6,17 @@ import 'source-map-support/register';
 
 import App from './App';
 
+const elastic_host = process.env.ELASTIC_HOST || 'localhost';
+const elastic_port = process.env.ELASTIC_PORT || 12201;
+
 debug('ts-express:server');
 log4js.configure({
   appenders: [
     { type: 'console' },
     {
       type: 'gelf',
-      host: '137.116.195.67',
-      port: 12201,
+      host: elastic_host,
+      port: elastic_port,
       hostname: 'elastic-scheduler@' + os.hostname(),
       layout: {
         type: 'pattern',
