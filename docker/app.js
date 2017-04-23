@@ -36,7 +36,7 @@ const service_amount = 15;
 var services = {};
 for (var i = 1; i <= service_amount; i++) {
     var i_str = i < 10 ? "0" + i : i;
-    services["elastic-workers-" + i_str] = "node-"+i_str;
+    services["elastic-workers-" + i_str] = "node"+i_str;
 }
 
 getServiceArray = function() {
