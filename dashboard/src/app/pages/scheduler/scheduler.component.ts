@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SchedulerService } from 'app/services/scheduler.service';
 import { DockerService } from 'app/services/docker.service';
-import { DropdownModule } from 'ng2-bootstrap/dropdown';
+import { BsDropdownModule } from 'ng2-bootstrap/dropdown';
 import { HistoryChartComponent } from './history-chart/history-chart.component';
 import { Info } from '../../classes/info.class';
 
