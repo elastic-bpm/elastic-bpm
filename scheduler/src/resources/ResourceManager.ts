@@ -135,9 +135,9 @@ export class ResourceManager {
 
             console.log(`Policy set to ${this.policy}. (${activeMachineCount} of ${desiredAmount} machines active)`);
             const diff = desiredAmount - activeMachineCount;
-            if (diff !== 0) {
-                this.scaleTo(desiredAmount);
-            } else {
+            // if (diff !== 0) {
+            //     this.scaleTo(desiredAmount);
+            // } else {
 
                 switch (this.policy) {
                     case 'Static':
@@ -150,7 +150,7 @@ export class ResourceManager {
                     case 'Off':
                         break;
                 }
-            }
+            // }
 
         } catch (err) {
             console.log('Error in checkResources: ' + err);
