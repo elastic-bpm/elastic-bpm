@@ -1,4 +1,4 @@
-FROM  node:7-slim
+FROM  node:7-slim as temp
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
@@ -12,6 +12,8 @@ RUN yarn install
 
 COPY . /usr/src/app
 
-RUN echo '{ "/api": { "target": "http://dashboardapi:8080",  "secure": false } }' > /usr/src/app/proxy.conf.json
+RUN yarn build
 
-CMD [ "yarn", "start" ]
+FROM nginx:1-alpine as final
+COPY ./default.conf /etc/nginx/conf.d/default.conf
+COPY --from=temp /usr/src/app/dist /usr/share/nginx/html

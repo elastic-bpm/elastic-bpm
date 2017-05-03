@@ -5,8 +5,7 @@
      env_file:
       - ../global-variables.env
      ports:
-      - "4200:4200"
-      - "35729:35729"
+      - "4200:80"
      depends_on:
       - dashboardapi
    dashboardapi:
