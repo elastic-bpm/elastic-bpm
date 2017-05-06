@@ -77,7 +77,6 @@ class App {
        this.getJsonResult(this.resourceManager.setAmount(req.params.policy, parseInt(req.params.amount, 0)), req, res);
     });
 
-    this.express.get('/machinecount', (req, res) => this.getJsonResult(this.resourceManager.getActiveMachineCount(), req, res));
     this.express.get('/info', (req, res) => this.getJsonResult(this.resourceManager.getInfo(), req, res));
   }
 

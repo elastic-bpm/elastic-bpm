@@ -3,12 +3,14 @@ import * as moment from 'moment';
 import { VirtualMachine } from '../classes/VirtualMachine';
 import { Node } from '../classes/Node';
 import { Todo } from '../classes/Todo';
+import { MachineManager } from './machines/MachineManager';
+import { NodeManager } from './nodes/NodeManager';
 
 export class ResourceManager {
-    private scaling_host: number = process.env.SCALING || 'localhost';
-    private docker_host: number = process.env.DOCKER || 'localhost';
     private amount: any = {};
     private history: any = { Target: [], Active: [], Nodes: [] };
+    private machineManager: MachineManager;
+    private nodeManager: NodeManager;
 
     constructor(private policy: string,
         staticAmount: number,
@@ -19,6 +21,9 @@ export class ResourceManager {
         this.amount['Static'] = staticAmount;
         this.amount['OnDemand'] = onDemandAmount;
         this.amount['Learning'] = learningAmount;
+        this.machineManager = new MachineManager();
+        this.nodeManager = new NodeManager();
+
         this.checkResources(intervalAmount);
     }
 
@@ -45,8 +50,8 @@ export class ResourceManager {
     }
 
     async getInfo(): Promise<any> {
-        const activeMachines = await this.getActiveMachineCount();
-        const activeNodes = await this.getActiveNodeCount();
+        const activeMachines = await this.machineManager.getActiveMachineCount();
+        const activeNodes = await this.nodeManager.getActiveNodeCount();
         return new Promise<any>(resolve => resolve({
             amount: {
                 Off: 0,
@@ -74,30 +79,6 @@ export class ResourceManager {
                 }
             ]
         }));
-    }
-
-    private async scaleTo(desiredAmount: number) {
-        const allMachines = await this.getMachines();
-        if (desiredAmount === 0) {
-
-            console.log('Shutting down all running machines.');
-            allMachines.forEach(machine => {
-                this.shutdownMachine(machine);
-            });
-
-        } else {
-
-            const machinesToActivate = allMachines.slice(0, desiredAmount);
-            machinesToActivate.forEach(machine => {
-                this.startMachine(machine);
-            });
-
-            const machinesToShutdown = allMachines.slice(desiredAmount);
-            machinesToShutdown.forEach(machine => {
-                this.shutdownMachine(machine);
-            });
-
-        }
     }
 
     private addToHistory(target: number, amount: any) {
@@ -128,101 +109,35 @@ export class ResourceManager {
     private async checkResources(interval: number) {
         // Lets check amount of running machines
         try {
-            const activeMachineCount = await this.getActiveMachineCount();
-            const activeNodes = await this.getActiveNodeCount();
+            const activeMachineCount = await this.machineManager.getActiveMachineCount();
+            const activeNodes = await this.nodeManager.getActiveNodeCount();
             const desiredAmount = this.amount[this.policy];
             this.addToHistory(desiredAmount, { active: activeMachineCount, nodes: activeNodes });
 
             console.log(`Policy set to ${this.policy}. (${activeMachineCount} of ${desiredAmount} machines active)`);
-            const diff = desiredAmount - activeMachineCount;
-            // if (diff !== 0) {
-            //     this.scaleTo(desiredAmount);
-            // } else {
+            
+            // if (activeMachineCount !== desiredAmount) {
+            //     this.machineManager.scaleTo(desiredAmount);
+            // } 
 
-                switch (this.policy) {
-                    case 'Static':
-                        break;
-                    case 'OnDemand':
-                        break;
-                    case 'Learning':
-                        break;
-                    default:
-                    case 'Off':
-                        break;
-                }
-            // }
+            // TODO: Scale amount of nodes, or do this in the policy??
+
+            switch (this.policy) {
+                case 'Static':
+                    break;
+                case 'OnDemand':
+                    break;
+                case 'Learning':
+                    break;
+                default:
+                case 'Off':
+                    break;
+            }
 
         } catch (err) {
             console.log('Error in checkResources: ' + err);
         } finally {
             setTimeout(() => this.checkResources(interval), interval);
         }
-    }
-
-    async getActiveNodeCount(): Promise<number> {
-        try {
-            const nodes = await this.getNodes();
-            const activeNodes = nodes.filter(node => node.availability === 'active' && node.status === 'ready');
-            const length = activeNodes.length;
-            return new Promise<number>(resolve => resolve(length));
-        } catch (err) {
-            console.log(err);
-            return new Promise<number>((resolve, reject) => reject(err));
-        }
-    }
-
-    async getActiveMachineCount(): Promise<number> {
-        try {
-            const virtualMachines = await this.getMachines();
-            const activeMachines = virtualMachines.filter(machine => machine.powerState === 'VM running');
-            const length = activeMachines.length;
-            return new Promise<number>(resolve => resolve(length));
-        } catch (err) {
-            return new Promise<number>((resolve, reject) => reject(err));
-        }
-    }
-
-    private startMachine(machine: VirtualMachine): Promise<boolean> {
-        return new Promise<boolean>((resolve, reject) => {
-            fetch('http://' + this.scaling_host + ':8888/virtualmachines/' + machine.resourceGroupName + '/' + machine.name,
-                { method: 'post' })
-                .then(res => res.text())
-                .then(res => res === '"ok"') // YES, need the quotes
-                .then(res => resolve(res))
-                .catch(err => reject(err));
-        });
-    };
-
-    private shutdownMachine(machine: VirtualMachine): Promise<boolean> {
-        return new Promise<boolean>((resolve, reject) => {
-            fetch('http://' + this.scaling_host + ':8888/virtualmachines/' + machine.resourceGroupName + '/' + machine.name,
-                { method: 'delete' })
-                .then(res => res.text())
-                .then(res => res === '"ok"') // YES, need the quotes
-                .then(res => resolve(res))
-                .catch(err => reject(err));
-        });
-    };
-
-    private getMachines(): Promise<VirtualMachine[]> {
-        return new Promise<VirtualMachine[]>((resolve, reject) => {
-            fetch('http://' + this.scaling_host + ':8888/virtualmachines')
-                .then(res => res.json<VirtualMachine[]>())
-                // .then(machines => {
-                //     machines.forEach(machine => console.log(machine.name));
-                //     return machines;
-                // })
-                .then(machines => resolve(machines.filter(machine => machine.name !== 'master')))
-                .catch(err => reject(err));
-        });
-    }
-
-    private getNodes(): Promise<Node[]> {
-        return new Promise<Node[]>((resolve, reject) => {
-            fetch('http://' + this.docker_host + ':4444/nodes')
-                .then(res => res.json<Node[]>())
-                .then(nodes => resolve(nodes))
-                .catch(err => reject(err));
-        });
     }
 }
