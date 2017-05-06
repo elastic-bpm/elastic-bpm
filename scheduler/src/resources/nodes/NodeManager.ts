@@ -1,4 +1,5 @@
 import { VirtualMachine } from '../../classes/VirtualMachine';
+import { Node } from '../../classes/Node';
 import fetch from 'node-fetch';
 
 export class NodeManager {

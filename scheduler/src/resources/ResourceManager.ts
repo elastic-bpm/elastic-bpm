@@ -1,4 +1,3 @@
-import fetch from 'node-fetch';
 import * as moment from 'moment';
 import { VirtualMachine } from '../classes/VirtualMachine';
 import { Node } from '../classes/Node';
@@ -115,11 +114,10 @@ export class ResourceManager {
             this.addToHistory(desiredAmount, { active: activeMachineCount, nodes: activeNodes });
 
             console.log(`Policy set to ${this.policy}. (${activeMachineCount} of ${desiredAmount} machines active)`);
-            
+
             // if (activeMachineCount !== desiredAmount) {
             //     this.machineManager.scaleTo(desiredAmount);
-            // } 
-
+            // }
             // TODO: Scale amount of nodes, or do this in the policy??
 
             switch (this.policy) {
