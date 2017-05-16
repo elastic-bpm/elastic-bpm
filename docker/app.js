@@ -328,7 +328,7 @@ create_workers = function(req, res) {
         "LogDriver": {
             "Name": "gelf",
             "Options": {
-                "gelf-address": "udp://137.116.195.67:12201"
+                "gelf-address": "udp://" + elastic_host + ":" + elastic_port
             }
         }
       },
