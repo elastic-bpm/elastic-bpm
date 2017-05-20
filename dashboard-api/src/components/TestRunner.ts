@@ -76,12 +76,20 @@ export class TestRunner {
         });
     }
 
-    private async startExecution(policy: string, target: number) {
+    private async startExecution(policy: string) {
         const policyParams = {
             Static: 15,
             OnDemand: 15,
             Learning: 15
         };
+
+        const amountStatic = await this.scheduler.set_amount({ policy: 'Static', amount: policyParams.Static });
+        const amountOnDemand = await this.scheduler.set_amount({ policy: 'Learning', amount: policyParams.Learning });
+        const amountLearning = await this.scheduler.set_amount({ policy: 'OnDemand', amount: policyParams.OnDemand });
+
+        const info = await this.scheduler.get_info();
+        const target = info.amount[policy];
+        this.resetRunning(policy, target);
 
         const humanParams = {
             on: 2,
@@ -111,9 +119,6 @@ export class TestRunner {
         try {
             // Set Policy
             this.running[0].setBusy();
-            const amountStatic = await this.scheduler.set_amount({ policy: 'Static', amount: policyParams.Static });
-            const amountOnDemand = await this.scheduler.set_amount({ policy: 'Learning', amount: policyParams.Learning });
-            const amountLearning = await this.scheduler.set_amount({ policy: 'OnDemand', amount: policyParams.OnDemand });
             const newPolicy = await this.scheduler.set_policy({ policy: policy });
             if (newPolicy !== policy) {
                 this.running[0].setError('Policy mismatch!');
@@ -216,10 +221,7 @@ export class TestRunner {
 
     async runTest(body: any): Promise<any> {
         const policy = body.policy;
-        const info = await this.scheduler.get_info();
-        const target = info.amount[policy];
-        this.resetRunning(policy, target);
-        setTimeout(() => this.startExecution(policy, target), 2000);
+        setTimeout(() => this.startExecution(policy), 2000);
 
         return new Promise<any>(resolve => resolve(body));
     }
