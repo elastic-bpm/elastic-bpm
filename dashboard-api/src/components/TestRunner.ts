@@ -77,6 +77,12 @@ export class TestRunner {
     }
 
     private async startExecution(policy: string, target: number) {
+        const policyParams = {
+            Static: 15,
+            OnDemand: 15,
+            Learning: 15
+        };
+
         const humanParams = {
             on: 2,
             off: 2,
@@ -105,6 +111,9 @@ export class TestRunner {
         try {
             // Set Policy
             this.running[0].setBusy();
+            const amountStatic = await this.scheduler.set_amount({ policy: 'Static', amount: policyParams.Static });
+            const amountOnDemand = await this.scheduler.set_amount({ policy: 'Learning', amount: policyParams.Learning });
+            const amountLearning = await this.scheduler.set_amount({ policy: 'OnDemand', amount: policyParams.OnDemand });
             const newPolicy = await this.scheduler.set_policy({ policy: policy });
             if (newPolicy !== policy) {
                 this.running[0].setError('Policy mismatch!');
