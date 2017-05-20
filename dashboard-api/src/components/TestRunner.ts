@@ -91,12 +91,11 @@ export class TestRunner {
             OnDemand: 15,
             Learning: 15
         };
+        await this.scheduler.set_amount({ policy: 'Static', amount: policyParams.Static });
+        await this.scheduler.set_amount({ policy: 'Learning', amount: policyParams.Learning });
+        await this.scheduler.set_amount({ policy: 'OnDemand', amount: policyParams.OnDemand });
 
-        const amountStatic = await this.scheduler.set_amount({ policy: 'Static', amount: policyParams.Static });
-        const amountOnDemand = await this.scheduler.set_amount({ policy: 'Learning', amount: policyParams.Learning });
-        const amountLearning = await this.scheduler.set_amount({ policy: 'OnDemand', amount: policyParams.OnDemand });
         await this.sleep(5);
-
         const policyInfo = await this.scheduler.get_info();
         const target = policyInfo.amount[policy];
         this.resetRunning(policy, target);
