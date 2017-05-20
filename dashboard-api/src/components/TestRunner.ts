@@ -18,6 +18,15 @@ export class TestRunner {
         return new Promise<Todo[]>(resolve => resolve(this.running));
     }
 
+    testDone(): Promise<string> {
+        if (this.running.length > 0 &&
+            this.running.filter(todo => todo.order === 8)[0].endTime != null) {
+            return new Promise<string>(resolve => resolve('Ok'));
+        } else {
+            return new Promise<string>(resolve => resolve(''));
+        }
+    }
+
     private resetRunning(policy: string, target: number) {
         this.running = [
             new Todo('Set policy to ' + policy, 0),

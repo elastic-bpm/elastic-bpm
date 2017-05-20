@@ -131,6 +131,8 @@ class App {
             this.getJsonResult(this.testRunner.runTest(req.body), req, res));
         this.express.get('/api/running', (req: any, res: any) =>
             this.getJsonResult(this.testRunner.getRunning(), req, res));
+        this.express.get('/api/testDone', (req: any, res: any) =>
+            this.getJsonResult(this.testRunner.testDone(), req, res));
 
         this.express.get('/api/elastic/status', (req: any, res: any) =>
             this.getJsonResult(this.elastic.check_status(), req, res));
