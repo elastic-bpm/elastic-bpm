@@ -32,6 +32,12 @@ export class TestRunner {
         ];
     }
 
+    private async sleep(seconds: number): Promise<number> {
+        return new Promise<number>(resolve => {
+            setTimeout(() => { resolve(seconds); }, seconds * 1000);
+        });
+    }
+
     private async waitForMachines(amount: number): Promise<number> {
         const info = await this.scheduler.get_info();
         const activeMachines = info.machines.active;
@@ -104,6 +110,7 @@ export class TestRunner {
                 this.running[0].setError('Policy mismatch!');
                 throw new Error('Policy mismatch!');
             }
+            await this.sleep(5);
             this.running[0].setDone();
 
             // Wait for machines
@@ -113,6 +120,7 @@ export class TestRunner {
                 this.running[1].setError('Amount of machines mismatch!');
                 throw new Error('Amount of machines mismatch!');
             }
+            await this.sleep(5);
             this.running[1].setDone();
 
             // Wait for nodes
@@ -122,6 +130,7 @@ export class TestRunner {
                 this.running[2].setError('Amount of nodes mismatch!');
                 throw new Error('Amount of nodes mismatch!');
             }
+            await this.sleep(5);
             this.running[2].setDone();
 
             // Reset workers
@@ -133,10 +142,12 @@ export class TestRunner {
                 this.running[3].setError('Workers not reset!');
                 throw new Error('Workers not reset!');
             }
+            await this.sleep(5);
             this.running[3].setDone();
 
             // TODO: Scale workers
             this.running[4].setBusy();
+            await this.sleep(5);
             this.running[4].setDone();
 
             // Start humans
@@ -151,6 +162,7 @@ export class TestRunner {
                 this.running[5].setError('Humans not started!');
                 throw new Error('Humans not started!');
             }
+            await this.sleep(5);
             this.running[5].setDone();
 
             // TODO: Upload workflow file
@@ -165,6 +177,7 @@ export class TestRunner {
                 this.running[6].setError('Workflows not created! ' + uploadWorkflowError);
                 throw new Error('Workflows not created!' + uploadWorkflowError);
             }
+            await this.sleep(5);
             this.running[6].setDone();
 
             // Wait for humans finished
@@ -174,6 +187,7 @@ export class TestRunner {
                 this.running[7].setError('Humans not finished!');
                 throw new Error('Humans not finished!');
             }
+            await this.sleep(5);
             this.running[7].setDone();
 
             // Set policy to Off
@@ -183,6 +197,7 @@ export class TestRunner {
                 this.running[8].setError('Policy not set to Off!');
                 throw new Error('Policy not set to Off!');
             }
+            await this.sleep(5);
             this.running[8].setDone();
 
         } catch (error) {
