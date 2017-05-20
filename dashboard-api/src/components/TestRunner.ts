@@ -23,7 +23,7 @@ export class TestRunner {
             this.running.filter(todo => todo.order === 8)[0].endTime != null) {
             return new Promise<string>(resolve => resolve('Ok'));
         } else {
-            return new Promise<string>(resolve => resolve(''));
+            return new Promise<string>(reject => reject('Not done yet'));
         }
     }
 
