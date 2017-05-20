@@ -161,10 +161,15 @@ export class TestRunner {
             this.running[3].setBusy();
             try {
                 await this.docker.delete_workers();
+            } catch (workersDeleteError) {
+                // Not deleting the workers is not an error
+            }
+
+            try {
                 await this.docker.create_workers();
             } catch (workersResetError) {
-                this.running[3].setError('Workers not reset!');
-                throw new Error('Workers not reset!');
+                this.running[3].setError('Workers not created!');
+                throw new Error('Workers not created!');
             }
             await this.sleep(5);
             this.running[3].setDone();
