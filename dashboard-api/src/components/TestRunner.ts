@@ -108,22 +108,23 @@ export class TestRunner {
             amount: 5
         };
 
-        const delayedWorkflows = [
-            {
-                'nodes': 'A:CC:S, B:CN:M, C:CI:M, D:CC:L',
-                'edges': 'A:CC:S -> B:CN:M, A:CC:S -> C:CI:M, B:CN:M -> D:CC:L, C:CI:M -> D:CC:L',
-                'name': 'TestFlow1',
-                'owner': 'johannes',
-                'delay': 0
-            },
-            {
-                'nodes': 'A:CC:S, B:CN:M, C:CI:M, D:CC:L',
-                'edges': 'A:CC:S -> B:CN:M, A:CC:S -> C:CI:M, B:CN:M -> D:CC:L, C:CI:M -> D:CC:L',
-                'name': 'TestFlow2',
-                'owner': 'johannes',
-                'delay': 10000
-            }
-        ];
+        // const delayedWorkflows = [
+        //     {
+        //         'nodes': 'A:CC:S, B:CN:M, C:CI:M, D:CC:L',
+        //         'edges': 'A:CC:S -> B:CN:M, A:CC:S -> C:CI:M, B:CN:M -> D:CC:L, C:CI:M -> D:CC:L',
+        //         'name': 'TestFlow1',
+        //         'owner': 'johannes',
+        //         'delay': 0
+        //     },
+        //     {
+        //         'nodes': 'A:CC:S, B:CN:M, C:CI:M, D:CC:L',
+        //         'edges': 'A:CC:S -> B:CN:M, A:CC:S -> C:CI:M, B:CN:M -> D:CC:L, C:CI:M -> D:CC:L',
+        //         'name': 'TestFlow2',
+        //         'owner': 'johannes',
+        //         'delay': 10000
+        //     }
+        // ];
+        const delayedWorkflows = require('../workflows/wf1.json');
 
         try {
             // Set Policy
