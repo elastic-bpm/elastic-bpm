@@ -166,7 +166,7 @@ export class TestRunner {
             }
 
             try {
-                await this.docker.create_workers();
+                await this.docker.create_workers(workers);
             } catch (workersResetError) {
                 this.running[3].setError('Workers not created!');
                 throw new Error('Workers not created!');

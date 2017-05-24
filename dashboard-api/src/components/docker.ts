@@ -155,9 +155,13 @@ export class Docker {
         });
     };
 
-    create_workers = function () {
+    create_workers = function (workers: number = 4) {
         return new Promise<any>((resolve, reject) => {
-            const req = this.client.post('http://' + this.docker_host + ':4444/services/workers',
+            const args = {
+                data: {workers: workers},
+                headers: { 'Content-Type': 'application/json' }
+            };
+            const req = this.client.post('http://' + this.docker_host + ':4444/services/workers', args,
                 (data: any, response: any) => {
                     if (response.statusCode === 200) {
                         resolve(data);

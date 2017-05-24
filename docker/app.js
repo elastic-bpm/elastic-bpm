@@ -304,6 +304,8 @@ delete_workers = function(req, res) {
 };
 
 create_workers = function(req, res) {
+    console.log(req.body);
+    console.log(req.body.workers);
     var scheduler_host = process.env.SCHEDULER_ENV_DOCKERCLOUD_CONTAINER_FQDN || "localhost";
     opts = {
       "Name": "elastic-workers-01",
