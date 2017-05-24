@@ -85,7 +85,7 @@ export class TestRunner {
         });
     }
 
-    private async startExecution(policy: string) {
+    private async startExecution(policy: string, workers: number = 4) {
         const policyParams = {
             Static: 15,
             OnDemand: 15,
@@ -235,8 +235,22 @@ export class TestRunner {
     }
 
     async runTest(body: any): Promise<any> {
-        const policy = body.policy;
-        setTimeout(() => this.startExecution(policy), 2000);
+        const run = body.run || 'test';
+        switch (run) {
+            case 'a':
+                {
+                    const policy = body.policy;
+                    const workers = body.workers;
+                    setTimeout(() => this.startExecution(policy, workers), 2000);
+                    break;
+                }
+            default:
+                {
+                    const policy = body.policy;
+                    setTimeout(() => this.startExecution(policy), 2000);
+                    break;
+                }
+        }
 
         return new Promise<any>(resolve => resolve(body));
     }
