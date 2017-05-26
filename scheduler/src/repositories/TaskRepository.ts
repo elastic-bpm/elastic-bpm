@@ -1,4 +1,5 @@
 import fetch from 'node-fetch';
+import * as moment from 'moment';
 
 import { Task } from '../classes/Task';
 import { Workflow } from '../classes/Workflow';
@@ -73,6 +74,9 @@ export class TaskRepository {
                         workflow.todo_nodes = this.removeFromArray(workflow.todo_nodes, task.task_id);
                         workflow.busy_nodes.push(task.task_id);
                         task.task_status = 'busy';
+                        if (workflow.start_time === undefined) {
+                            workflow.start_time = moment().toJSON();
+                        }
                         console.log(JSON.stringify(workflow));
                         fetch('http://' + this.host + ':3000/workflows/' + task.workflow_id, {
                             method: 'patch',
@@ -98,6 +102,7 @@ export class TaskRepository {
                         workflow.busy_nodes = this.removeFromArray(workflow.busy_nodes, task.task_id);
                         workflow.done_nodes.push(task.task_id);
                         task.task_status = 'done';
+                        workflow.finish_time = moment().toJSON();
                         console.log(JSON.stringify(workflow));
                         fetch('http://' + this.host + ':3000/workflows/' + task.workflow_id, {
                             method: 'patch',
