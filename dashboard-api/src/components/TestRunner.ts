@@ -100,30 +100,23 @@ export class TestRunner {
         const target = policyInfo.amount[policy];
         this.resetRunning(policy, target);
 
+        // const humanParams = {
+        //     on: 2,
+        //     off: 2,
+        //     init: 1,
+        //     total: 5,
+        //     amount: 5
+        // };
+
+        // Realistic values
         const humanParams = {
-            on: 2,
-            off: 2,
-            init: 1,
-            total: 5,
+            on: 9,
+            off: 15,
+            init: 8,
+            total: 41,
             amount: 5
         };
 
-        // const delayedWorkflows = [
-        //     {
-        //         'nodes': 'A:CC:S, B:CN:M, C:CI:M, D:CC:L',
-        //         'edges': 'A:CC:S -> B:CN:M, A:CC:S -> C:CI:M, B:CN:M -> D:CC:L, C:CI:M -> D:CC:L',
-        //         'name': 'TestFlow1',
-        //         'owner': 'johannes',
-        //         'delay': 0
-        //     },
-        //     {
-        //         'nodes': 'A:CC:S, B:CN:M, C:CI:M, D:CC:L',
-        //         'edges': 'A:CC:S -> B:CN:M, A:CC:S -> C:CI:M, B:CN:M -> D:CC:L, C:CI:M -> D:CC:L',
-        //         'name': 'TestFlow2',
-        //         'owner': 'johannes',
-        //         'delay': 10000
-        //     }
-        // ];
         const delayedWorkflows = require('../workflows/wf1.json');
 
         try {
