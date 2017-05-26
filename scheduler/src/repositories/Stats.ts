@@ -149,6 +149,7 @@ export class Stats {
         nodes_info.forEach(node => {
             if (node.node === task) {
                 time = node.finished;
+                console.log('stats:debug - FOUND node.node: ' + node.node + ', task: ' + task, 'time: ' + time);
             } else {
                 console.log('stats:debug - node.node: ' + node.node + ', task: ' + task);
             }
