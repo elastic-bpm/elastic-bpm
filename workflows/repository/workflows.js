@@ -66,6 +66,7 @@ wf_update_workflow = function(workflow, callback) {
         workflow.status = "Done";
         workflow.done = (new Date()).toJSON();
         console.log("workflow:done " + workflow.id + " at " + workflow.done);
+        console.log("workflow:stats " + workflow.id + " " + workflow.type + " " + JSON.stringify(workflow))
     } else {
         workflow.status = "Waiting";
     }
