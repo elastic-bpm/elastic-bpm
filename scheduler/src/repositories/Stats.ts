@@ -80,7 +80,7 @@ export class Stats {
         let endTime = '';
         this.endTimes.forEach(tuple => {
             if (tuple[0] === node && tuple[1] === workflowId) {
-                endTime = tuple[3];
+                endTime = tuple[2];
             }
         });
         return endTime;
