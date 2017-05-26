@@ -21,12 +21,19 @@ export class Stats {
 
     markTaskDone(task: Task, workflow: Workflow): Workflow {
         const now = moment().toJSON();
-        workflow.finished = now;
         this.endTimes.push([task.task_id, workflow.id, now]);
-        return this.fillStatsForWorkflow(workflow);
+
+        if (workflow.todo_nodes.length === 0 && workflow.busy_nodes.length === 0) {
+            workflow.finished = now;
+            return this.fillStatsForWorkflow(workflow);
+        } else {
+            return workflow;
+        }
     }
 
     fillStatsForWorkflow(workflow: Workflow): Workflow {
+        console.log('stats:debug - caclucating stats for workflow with ID ' + workflow.id);
+
         // All stats are in milliseconds
         workflow.makespan = moment(workflow.finished).diff(moment(workflow.started));
         workflow.wait_time = moment(workflow.started).diff(moment(workflow.created));
@@ -77,7 +84,6 @@ export class Stats {
         return endTime;
     }
 
-    // STUB
     private getPreviousTasks(node: string, edges_string: string): string[] {
         const previous_tasks: string[] = [];
         const edge_words = edges_string.split(',').map(w => w.trim());
@@ -88,6 +94,7 @@ export class Stats {
             }
         });
 
+        console.log('stats:debug - previous tasks for ' + node + ' are: ' + JSON.stringify(previous_tasks));
         return previous_tasks;
     }
 
@@ -130,6 +137,7 @@ export class Stats {
         const first_task_started = this.getFirstTaskStarted(nodes_info);
         const last_task_finished = this.getLastTaskFinished(nodes_info);
         const new_makespan = moment(last_task_finished).diff(moment(first_task_started));
+        console.log('stats:debug - (getTimeHumansWaited) wf makespan: ' + workflow.makespan + ', new makespan: ' + new_makespan);
 
         // Finally substract this new makespan from the real makespan and tada! human time
         return workflow.makespan - new_makespan;
@@ -143,6 +151,8 @@ export class Stats {
                 time = node.finished;
             }
         });
+
+        console.log('stats:debug - finishedtimefromlist: ' + time);
         return moment(time);
     };
 
