@@ -11,9 +11,11 @@ import {
     filterTaskIsTodo,
     filterTaskIsWorker
 } from './filters/FilterFunctions';
+import { Stats } from './Stats';
 
 export class TaskRepository {
     host = process.env.WORKFLOWS || 'localhost';
+    stats = new Stats();
 
     constructor() { }
 
@@ -74,9 +76,7 @@ export class TaskRepository {
                         workflow.todo_nodes = this.removeFromArray(workflow.todo_nodes, task.task_id);
                         workflow.busy_nodes.push(task.task_id);
                         task.task_status = 'busy';
-                        if (workflow.start_time === undefined) {
-                            workflow.start_time = moment().toJSON();
-                        }
+                        workflow = this.stats.markTaskBusy(task, workflow);
                         console.log(JSON.stringify(workflow));
                         fetch('http://' + this.host + ':3000/workflows/' + task.workflow_id, {
                             method: 'patch',
@@ -102,7 +102,7 @@ export class TaskRepository {
                         workflow.busy_nodes = this.removeFromArray(workflow.busy_nodes, task.task_id);
                         workflow.done_nodes.push(task.task_id);
                         task.task_status = 'done';
-                        workflow.finish_time = moment().toJSON();
+                        workflow = this.stats.markTaskDone(task, workflow);
                         console.log(JSON.stringify(workflow));
                         fetch('http://' + this.host + ':3000/workflows/' + task.workflow_id, {
                             method: 'patch',
