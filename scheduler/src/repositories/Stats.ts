@@ -78,8 +78,17 @@ export class Stats {
     }
 
     // STUB
-    private getPreviousTasks(node: string, nodes: string): string[] {
-        return [];
+    private getPreviousTasks(node: string, edges_string: string): string[] {
+        const previous_tasks: string[] = [];
+        const edge_words = edges_string.split(',').map(w => w.trim());
+        edge_words.forEach((word) => {
+            const elements = word.split('->').map(w => w.trim());
+            if (node === elements[1]) {
+                previous_tasks.push(elements[0]);
+            }
+        });
+
+        return previous_tasks;
     }
 
     private fillReadyTime(nodes_info: TaskInfo[], workflow: Workflow) {
@@ -126,18 +135,40 @@ export class Stats {
         return workflow.makespan - new_makespan;
     }
 
-    // STUB
-    private fixTimingForCalculation(nodes_info: TaskInfo[], edges: string) {
-        return;
+    // Can be rewritten with LINQ-like firstOrDefault
+    private getFinishedTimeFromList(task: string, nodes_info: TaskInfo[]) {
+        let time = '';
+        nodes_info.forEach(node => {
+            if (node.node === task) {
+                time = node.finished;
+            }
+        });
+        return moment(time);
+    };
+
+    private fixTimingForCalculation(nodes_info: TaskInfo[], edges_string: string): TaskInfo[] {
+        nodes_info.forEach(node => {
+            const prev_tasks = this.getPreviousTasks(node.node, edges_string);
+            const prev_finished_times = prev_tasks.map((task) => this.getFinishedTimeFromList(task, nodes_info));
+            const last_prev_finished_time = moment.max(prev_finished_times);
+            if (last_prev_finished_time.isBefore(moment(node.ready_to_start))) {
+                const timeDiff = moment(node.ready_to_start).diff(last_prev_finished_time);
+                node.ready_to_start = moment(node.ready_to_start).subtract(timeDiff, 'milliseconds').toJSON();
+                node.started = moment(node.started).subtract(timeDiff, 'milliseconds').toJSON();
+                node.finished = moment(node.finished).subtract(timeDiff, 'milliseconds').toJSON();
+            }
+        });
+
+        return nodes_info;
     }
 
-    // STUB
     private getFirstTaskStarted(nodes_info: TaskInfo[]) {
-        return '';
+        const start_moments = nodes_info.map((node) => moment(node.started));
+        return moment.min(start_moments).toJSON();
     }
 
-    // STUB
     private getLastTaskFinished(nodes_info: TaskInfo[]) {
-        return '';
+        const end_moments = nodes_info.map((node) => moment(node.finished));
+        return moment.max(end_moments).toJSON();
     }
 }
