@@ -16,12 +16,14 @@ export class Stats {
             workflow.started = now;
         }
         this.startTimes.push([task.task_id, workflow.id, now]);
+        console.log('stats:debug - task started ' + task.task_id + ' wf: ' + workflow.id + ' now: ' + now);
         return workflow;
     }
 
     markTaskDone(task: Task, workflow: Workflow): Workflow {
         const now = moment().toJSON();
         this.endTimes.push([task.task_id, workflow.id, now]);
+        console.log('stats:debug - task finished ' + task.task_id + ' wf: ' + workflow.id + ' now: ' + now);
 
         if (workflow.todo_nodes.length === 0 && workflow.busy_nodes.length === 0) {
             workflow.finished = now;
