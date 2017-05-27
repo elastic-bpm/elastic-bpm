@@ -100,22 +100,23 @@ export class TestRunner {
         const target = policyInfo.amount[policy];
         this.resetRunning(policy, target);
 
-        // const humanParams = {
-        //     on: 2,
-        //     off: 2,
-        //     init: 1,
-        //     total: 5,
-        //     amount: 5
-        // };
-
-        // Realistic values
+        // Quick test
         const humanParams = {
-            on: 9,
-            off: 15,
-            init: 8,
-            total: 41,
+            on: 2,
+            off: 2,
+            init: 1,
+            total: 5,
             amount: 5
         };
+
+        // Realistic values
+        // const humanParams = {
+        //     on: 9,
+        //     off: 15,
+        //     init: 8,
+        //     total: 41,
+        //     amount: 5
+        // };
 
         const delayedWorkflows = require('../workflows/wf1.json');
 
