@@ -111,11 +111,11 @@ export class TestRunner {
 
             // Wait for machines
             this.running[1].setBusy();
-            const amountOfMachines = await this.waitForMachines(target);
-            if (amountOfMachines !== target) {
-                this.running[1].setError('Amount of machines mismatch!');
-                throw new Error('Amount of machines mismatch!');
-            }
+            // const amountOfMachines = await this.waitForMachines(target);
+            // if (amountOfMachines !== target) {
+            //     this.running[1].setError('Amount of machines mismatch!');
+            //     throw new Error('Amount of machines mismatch!');
+            // }
             await this.sleep(5);
             this.running[1].setDone();
 
