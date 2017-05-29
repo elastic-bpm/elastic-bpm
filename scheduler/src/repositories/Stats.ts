@@ -119,7 +119,7 @@ export class Stats {
         const nodes_info_orig = this.getInfoForWorkflow(workflow);
 
         // This one is complex, we need a deep copy of nodes_info
-        const nodes_info: TaskInfo[] = JSON.parse(JSON.stringify(nodes_info_orig));
+        let nodes_info: TaskInfo[] = JSON.parse(JSON.stringify(nodes_info_orig));
 
         // First - find the human tasks and set them all to 0 time!
         nodes_info.forEach(node => {
@@ -131,8 +131,9 @@ export class Stats {
         });
 
         // Now to correct all the wrongs... N-iterations should do it (probably only need LOG(N) if smart? - this works for me!)
-        for (let i = 0; i < nodes_info.length; i++) {
-            this.fixTimingForCalculation(nodes_info, workflow.edges);
+        const times = nodes_info.length;
+        for (let i = 0; i < times; i++) {
+            nodes_info = this.fixTimingForCalculation(nodes_info, workflow.edges);
         }
 
         // Then calculate the makespan for this scenario
