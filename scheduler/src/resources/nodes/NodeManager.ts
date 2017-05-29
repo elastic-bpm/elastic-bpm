@@ -46,7 +46,7 @@ export class NodeManager {
 
     private setNodeAvailability(hostname: string, availability: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
-            fetch('http://' + this.docker_host + ':4444/node/' + hostname + '/' + availability)
+            fetch('http://' + this.docker_host + ':4444/node/' + hostname + '/' + availability, { method: 'POST'})
                 .then(nodes => resolve())
                 .catch(err => reject(err));
         });
