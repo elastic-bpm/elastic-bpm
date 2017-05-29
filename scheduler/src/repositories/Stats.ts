@@ -27,7 +27,9 @@ export class Stats {
 
         if (workflow.todo_nodes.length === 0 && workflow.busy_nodes.length === 0) {
             workflow.finished = now;
-            return this.fillStatsForWorkflow(workflow);
+            const filledWorkflow = this.fillStatsForWorkflow(workflow);
+            console.log('stats:debug - workflow finished ' + JSON.stringify(filledWorkflow));
+            return filledWorkflow;
         } else {
             return workflow;
         }
@@ -148,7 +150,8 @@ export class Stats {
         const first_task_started = this.getFirstTaskStarted(nodes_info);
         const last_task_finished = this.getLastTaskFinished(nodes_info);
         const new_makespan = moment(last_task_finished).diff(moment(first_task_started));
-        console.log('stats:debug - (getTimeHumansWaited) wf makespan: ' + workflow.makespan + ', new makespan: ' + new_makespan);
+        console.log('stats:debug - getTimeHumansWaited = ' + (workflow.makespan - new_makespan)
+                    + ' makespan: ' + workflow.makespan + ', new makespan: ' + new_makespan);
 
         // Finally substract this new makespan from the real makespan and tada! human time
         return workflow.makespan - new_makespan;
