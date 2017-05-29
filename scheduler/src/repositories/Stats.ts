@@ -70,9 +70,13 @@ export class Stats {
         let startTime = '';
         this.startTimes.forEach(tuple => {
             if (tuple[0] === node && tuple[1] === workflowId) {
-                startTime = tuple[3];
+                startTime = tuple[2];
             }
         });
+
+        if (startTime === '') {
+            console.log('stats:debug - ERROR: startTime for ' + node + ' in wf ' + workflowId + ' not found!');
+        }
         return startTime;
     }
 
@@ -83,6 +87,10 @@ export class Stats {
                 endTime = tuple[2];
             }
         });
+
+        if (endTime === '') {
+            console.log('stats:debug - ERROR: endTime for ' + node + ' in wf ' + workflowId + ' not found!');
+        }
         return endTime;
     }
 
