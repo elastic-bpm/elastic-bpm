@@ -223,7 +223,7 @@ export class TestRunner {
             off: 0,
             init: 0,
             total: 41,
-            amount: 6
+            amount: 2
         };
 
         const schedule_ii = {
@@ -231,7 +231,7 @@ export class TestRunner {
             off: 15,
             init: 8,
             total: 41,
-            amount: 5
+            amount: 6
         };
 
         switch (run) {
