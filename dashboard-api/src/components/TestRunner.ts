@@ -218,8 +218,15 @@ export class TestRunner {
         //     amount: 5
         // };
 
-        // Realistic values
-        const humanParams = {
+        const schedule_i = {
+            on: 41,
+            off: 0,
+            init: 0,
+            total: 41,
+            amount: 6
+        };
+
+        const schedule_ii = {
             on: 9,
             off: 15,
             init: 8,
@@ -242,7 +249,7 @@ export class TestRunner {
 
                     // Variable workers [1 through 8]
                     const workers = body.workers;
-                    setTimeout(() => this.startExecution(policy, humanParams, policyParams, workers), 2000);
+                    setTimeout(() => this.startExecution(policy, schedule_i, policyParams, workers), 2000);
                     break;
                 }
             default:
@@ -253,7 +260,7 @@ export class TestRunner {
                         Learning: 15
                     };
                     const policy = body.policy;
-                    setTimeout(() => this.startExecution(policy, humanParams, policyParams), 2000);
+                    setTimeout(() => this.startExecution(policy, schedule_ii, policyParams), 2000);
                     break;
                 }
         }
