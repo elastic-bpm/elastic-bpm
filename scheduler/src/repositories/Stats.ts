@@ -132,13 +132,13 @@ export class Stats {
         let nodes_info: TaskInfo[] = JSON.parse(JSON.stringify(nodes_info_orig));
 
         // First - find the human tasks and set them all to 0 time!
-        nodes_info.forEach(node => {
-            const elements = node.node.split(':');
+        for (let i = 0; i < nodes_info.length; i++) {
+            const elements = nodes_info[i].node.split(':');
             if (elements[1] === 'HH' || elements[1] === 'HE') {
-                node.started = node.ready_to_start;
-                node.finished = node.ready_to_start;
+                nodes_info[i].started = nodes_info[i].ready_to_start;
+                nodes_info[i].finished = nodes_info[i].ready_to_start;
             }
-        });
+        }
 
         // Now to correct all the wrongs... N-iterations should do it (probably only need LOG(N) if smart? - this works for me!)
         const times = nodes_info.length;
