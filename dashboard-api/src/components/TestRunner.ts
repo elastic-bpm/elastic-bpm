@@ -230,12 +230,17 @@ export class TestRunner {
         switch (run) {
             case 'a':
                 {
+                    // For test 'a', we have 10 nodes
                     const policyParams = {
                         Static: 10,
                         OnDemand: 10,
                         Learning: 10
                     };
-                    const policy = body.policy;
+
+                    // Static policy
+                    const policy = 'Static';
+
+                    // Variable workers [1 through 8]
                     const workers = body.workers;
                     setTimeout(() => this.startExecution(policy, humanParams, policyParams, workers), 2000);
                     break;
