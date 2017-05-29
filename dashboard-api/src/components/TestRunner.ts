@@ -85,12 +85,8 @@ export class TestRunner {
         });
     }
 
-    private async startExecution(policy: string, workers: number = 4) {
-        const policyParams = {
-            Static: 15,
-            OnDemand: 15,
-            Learning: 15
-        };
+    private async startExecution(policy: string, humanParams: any, policyParams: any, workers: number = 4) {
+
         await this.scheduler.set_amount({ policy: 'Static', amount: policyParams.Static });
         await this.scheduler.set_amount({ policy: 'Learning', amount: policyParams.Learning });
         await this.scheduler.set_amount({ policy: 'OnDemand', amount: policyParams.OnDemand });
@@ -99,24 +95,6 @@ export class TestRunner {
         const policyInfo = await this.scheduler.get_info();
         const target = policyInfo.amount[policy];
         this.resetRunning(policy, target);
-
-        // Quick test
-        // const humanParams = {
-        //     on: 2,
-        //     off: 2,
-        //     init: 1,
-        //     total: 5,
-        //     amount: 5
-        // };
-
-        // Realistic values
-        const humanParams = {
-            on: 9,
-            off: 15,
-            init: 8,
-            total: 41,
-            amount: 5
-        };
 
         const delayedWorkflows = require('../workflows/wf1.json');
 
@@ -168,7 +146,7 @@ export class TestRunner {
             await this.sleep(5);
             this.running[3].setDone();
 
-            // TODO: Scale workers
+            // Done during previous step
             this.running[4].setBusy();
             await this.sleep(5);
             this.running[4].setDone();
@@ -230,18 +208,47 @@ export class TestRunner {
 
     async runTest(body: any): Promise<any> {
         const run = body.run || 'test';
+
+        // Quick test
+        // const humanParams = {
+        //     on: 2,
+        //     off: 2,
+        //     init: 1,
+        //     total: 5,
+        //     amount: 5
+        // };
+
+        // Realistic values
+        const humanParams = {
+            on: 9,
+            off: 15,
+            init: 8,
+            total: 41,
+            amount: 5
+        };
+
         switch (run) {
             case 'a':
                 {
+                    const policyParams = {
+                        Static: 10,
+                        OnDemand: 10,
+                        Learning: 10
+                    };
                     const policy = body.policy;
                     const workers = body.workers;
-                    setTimeout(() => this.startExecution(policy, workers), 2000);
+                    setTimeout(() => this.startExecution(policy, humanParams, policyParams, workers), 2000);
                     break;
                 }
             default:
                 {
+                    const policyParams = {
+                        Static: 15,
+                        OnDemand: 15,
+                        Learning: 15
+                    };
                     const policy = body.policy;
-                    setTimeout(() => this.startExecution(policy), 2000);
+                    setTimeout(() => this.startExecution(policy, humanParams, policyParams), 2000);
                     break;
                 }
         }

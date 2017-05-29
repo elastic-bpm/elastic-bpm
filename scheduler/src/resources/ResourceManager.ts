@@ -122,6 +122,10 @@ export class ResourceManager {
 
             switch (this.policy) {
                 case 'Static':
+                    if (activeNodes !== desiredAmount) {
+                        console.log(`Setting active nodes to ${desiredAmount}, currently ${activeNodes}`);
+                        this.nodeManager.setNodeAmount(desiredAmount);
+                    }
                     break;
                 case 'OnDemand':
                     break;
