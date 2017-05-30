@@ -13,7 +13,9 @@ export class Workflow {
     wait_time: number;
     response_time: number;
     human_time: number;
+    human_delay_time: number;
     system_time: number;
+    system_delay_time: number;
 
     todo_nodes: string[];
     busy_nodes: string[];

@@ -46,8 +46,10 @@ export class Stats {
         workflow.makespan = moment(workflow.finished).diff(moment(workflow.started));
         workflow.wait_time = moment(workflow.started).diff(moment(workflow.created));
         workflow.response_time = workflow.makespan + workflow.wait_time;
-        workflow.human_time = this.getTimeHumansWaited(workflow);
-        workflow.system_time = workflow.response_time - workflow.human_time;
+        workflow.human_delay_time = this.getHumanDelay(workflow);
+        workflow.human_time = this.getHumanTime(workflow);
+        workflow.system_delay_time = this.getSystemDelay(workflow);
+        workflow.system_time = this.getSystemTime(workflow);
 
         return workflow;
     };
@@ -139,25 +141,61 @@ export class Stats {
         return nodes_info;
     };
 
-    private getTimeHumansWaited(workflow: Workflow): number {
-        const nodes_info_orig = this.getInfoForWorkflow(workflow);
+    private getHumanTime(workflow: Workflow): number {
+        const nodes_info = this.getInfoForWorkflow(workflow);
 
+        const human_nodes = nodes_info.filter(nodeInfo => this.isHumanNode(nodeInfo));
+        let human_time = 0;
+        human_nodes.forEach(nodeInfo => {
+            human_time += moment(nodeInfo.finished).diff(nodeInfo.started);
+        });
+
+        return human_time;
+    }
+
+    private getSystemTime(workflow: Workflow): number {
+        const nodes_info = this.getInfoForWorkflow(workflow);
+
+        const system_nodes = nodes_info.filter(nodeInfo => !this.isHumanNode(nodeInfo));
+        let system_time = 0;
+        system_nodes.forEach(nodeInfo => {
+            system_time += moment(nodeInfo.finished).diff(nodeInfo.started);
+        });
+
+        return system_time;
+    }
+
+    private getHumanDelay(workflow: Workflow): number {
         // This one is complex, we need a deep copy of nodes_info
+        const nodes_info_orig = this.getInfoForWorkflow(workflow);
         let nodes_info: TaskInfo[] = JSON.parse(JSON.stringify(nodes_info_orig));
-
-        // First - find the human tasks and set them all to 0 time!
-        // for (let i = 0; i < nodes_info.length; i++) {
-        //     const elements = nodes_info[i].node.split(':');
-        //     if (elements[1] === 'HH' || elements[1] === 'HE') {
-        //         nodes_info[i].started = nodes_info[i].ready_to_start;
-        //         nodes_info[i].finished = nodes_info[i].ready_to_start;
-        //     }
-        // }
 
         // Now to correct all the wrongs... N-iterations should do it (probably only need LOG(N) if smart? - this works for me!)
         const times = nodes_info.length;
         for (let i = 0; i < times; i++) {
-            nodes_info = this.fixTimingForCalculation(nodes_info, workflow.edges);
+            nodes_info = this.fixTimingForCalculationHuman(nodes_info, workflow.edges);
+        }
+
+        // Then calculate the makespan for this scenario
+        const first_task_started = this.getFirstTaskStarted(nodes_info);
+        const last_task_finished = this.getLastTaskFinished(nodes_info);
+        const new_makespan = moment(last_task_finished).diff(moment(first_task_started));
+        console.log('stats:debug - getTimeHumansWaited = ' + (workflow.makespan - new_makespan)
+            + ' makespan: ' + workflow.makespan + ', new makespan: ' + new_makespan);
+
+        // Finally substract this new makespan from the real makespan and tada! human time
+        return workflow.makespan - new_makespan;
+    }
+
+    private getSystemDelay(workflow: Workflow): number {
+        // This one is complex, we need a deep copy of nodes_info
+        const nodes_info_orig = this.getInfoForWorkflow(workflow);
+        let nodes_info: TaskInfo[] = JSON.parse(JSON.stringify(nodes_info_orig));
+
+        // Now to correct all the wrongs... N-iterations should do it (probably only need LOG(N) if smart? - this works for me!)
+        const times = nodes_info.length;
+        for (let i = 0; i < times; i++) {
+            nodes_info = this.fixTimingForCalculationSystem(nodes_info, workflow.edges);
         }
 
         // Then calculate the makespan for this scenario
@@ -184,10 +222,36 @@ export class Stats {
         return moment(time);
     };
 
-    private fixTimingForCalculation(nodes_info: TaskInfo[], edges_string: string): TaskInfo[] {
+    private isHumanNode(taskInfo: TaskInfo): boolean {
+        const elements = taskInfo.node.split(':');
+        if (elements[1] === 'HH' || elements[1] === 'HE') {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private fixTimingForCalculationHuman(nodes_info: TaskInfo[], edges_string: string): TaskInfo[] {
         for (let i = 0; i < nodes_info.length; i++) {
-            const elements = nodes_info[i].node.split(':');
-            if (elements[1] === 'HH' || elements[1] === 'HE') {
+            if (this.isHumanNode(nodes_info[i])) {
+                const prev_tasks = this.getPreviousTasks(nodes_info[i].node, edges_string);
+                const prev_finished_times = prev_tasks.map((task) => this.getFinishedTimeFromList(task, nodes_info));
+                const last_prev_finished_time = moment.max(prev_finished_times);
+                if (last_prev_finished_time.isBefore(moment(nodes_info[i].started))) {
+                    const timeDiff = moment(nodes_info[i].started).diff(last_prev_finished_time);
+
+                    nodes_info[i].started = last_prev_finished_time.toJSON();
+                    nodes_info[i].finished = moment(nodes_info[i].finished).subtract(timeDiff, 'milliseconds').toJSON();
+                }
+            }
+        };
+
+        return nodes_info;
+    }
+
+    private fixTimingForCalculationSystem(nodes_info: TaskInfo[], edges_string: string): TaskInfo[] {
+        for (let i = 0; i < nodes_info.length; i++) {
+            if (!this.isHumanNode(nodes_info[i])) {
                 const prev_tasks = this.getPreviousTasks(nodes_info[i].node, edges_string);
                 const prev_finished_times = prev_tasks.map((task) => this.getFinishedTimeFromList(task, nodes_info));
                 const last_prev_finished_time = moment.max(prev_finished_times);
