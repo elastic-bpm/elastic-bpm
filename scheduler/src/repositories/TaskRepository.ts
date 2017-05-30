@@ -67,6 +67,31 @@ export class TaskRepository {
         });
     }
 
+    async flagTaskTodo(task: Task): Promise<Task> {
+        try {
+            return new Promise<Task>((resolve, reject) => {
+                fetch('http://' + this.host + ':3000/workflows/' + task.workflow_id)
+                    .then(res => res.json<Workflow>())
+                    .then(workflow => {
+                        workflow.busy_nodes = this.removeFromArray(workflow.busy_nodes, task.task_id);
+                        workflow.todo_nodes.push(task.task_id);
+                        task.task_status = 'todo';
+                        console.log('taskrepo:debug set workflow back to todo ' + JSON.stringify(workflow));
+                        fetch('http://' + this.host + ':3000/workflows/' + task.workflow_id, {
+                            method: 'patch',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify(workflow)
+                        })
+                            .then(res => resolve(task))
+                            .catch(err => reject(err));
+                    })
+                    .catch(err => reject(err));
+            });
+        } catch (err) {
+            return new Promise<Task>((resolve, reject) => reject(err));
+        }
+    }
+
     async flagTaskBusy(task: Task): Promise<Task> {
         try {
             return new Promise<Task>((resolve, reject) => {
@@ -76,7 +101,7 @@ export class TaskRepository {
                         workflow.todo_nodes = this.removeFromArray(workflow.todo_nodes, task.task_id);
                         workflow.busy_nodes.push(task.task_id);
                         task.task_status = 'busy';
-                        workflow = this.stats.markTaskBusy(task, workflow);
+                        workflow = this.stats.markTaskBusy(task, workflow, this);
                         console.log(JSON.stringify(workflow));
                         fetch('http://' + this.host + ':3000/workflows/' + task.workflow_id, {
                             method: 'patch',

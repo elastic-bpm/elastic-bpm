@@ -3,20 +3,24 @@ import * as moment from 'moment';
 import { Task } from '../classes/Task';
 import { TaskInfo } from '../classes/TaskInfo';
 import { Workflow } from '../classes/Workflow';
+import { TaskRepository } from './TaskRepository';
 
 export class Stats {
     private startTimes: [string, string, string][] = [];
     private endTimes: [string, string, string][] = [];
+    private defaultTimeout = 1000 * 60 * 5; // 5 minutes
 
     constructor() { }
 
-    markTaskBusy(task: Task, workflow: Workflow): Workflow {
+    markTaskBusy(task: Task, workflow: Workflow, taskRepository: TaskRepository): Workflow {
         const now = moment().toJSON();
         if (workflow.started === undefined) {
             workflow.started = now;
         }
         this.startTimes.push([task.task_id, workflow.id, now]);
         console.log('stats:debug - task started ' + task.task_id + ' wf: ' + workflow.id + ' now: ' + now);
+
+        setTimeout(() => this.checkTaskDone(task, workflow, taskRepository), this.defaultTimeout);
         return workflow;
     }
 
@@ -48,6 +52,12 @@ export class Stats {
         return workflow;
     };
 
+    private checkTaskDone(task: Task, workflow: Workflow, taskRepository: TaskRepository): void {
+        const finishTime = this.getFinishTime(task.task_id, workflow.id);
+        if (finishTime === '') {
+            taskRepository.flagTaskTodo(task);
+        }
+    }
 
     private getInfoForWorkflow(workflow: Workflow): TaskInfo[] {
         const nodes_info: TaskInfo[] = [];
