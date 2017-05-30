@@ -20,7 +20,12 @@ export class NodeManager {
     async setNodeAmount(amount: number): Promise<void> {
         try {
             const nodes = await this.getNodes();
-            const active_nodes = nodes.filter(node => node.status === 'ready');
+            const active_nodes = nodes.filter(node => node.status === 'ready').sort(function (a, b) {
+                if (a.hostname < b.hostname) { return -1; };
+                if (a.hostname > b.hostname) { return 1; };
+                return 0;
+            });
+
             for (let i = 0; i < active_nodes.length; i++) {
                 if (i < amount) {
                     await this.setNodeAvailability(nodes[i].hostname, 'active');
@@ -51,7 +56,7 @@ export class NodeManager {
 
     private setNodeAvailability(hostname: string, availability: string): Promise<void> {
         return new Promise<void>((resolve, reject) => {
-            fetch('http://' + this.docker_host + ':4444/node/' + hostname + '/' + availability, { method: 'POST'})
+            fetch('http://' + this.docker_host + ':4444/node/' + hostname + '/' + availability, { method: 'POST' })
                 .then(nodes => resolve())
                 .catch(err => reject(err));
         });
