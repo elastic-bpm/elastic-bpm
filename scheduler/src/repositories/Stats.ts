@@ -53,9 +53,13 @@ export class Stats {
     };
 
     private checkTaskDone(task: Task, workflow: Workflow, taskRepository: TaskRepository): void {
+        console.log('stats:debug - checking if task ' + task.task_id + ' is finished.');
         const finishTime = this.getFinishTime(task.task_id, workflow.id);
         if (finishTime === '') {
+            console.log('stats:debug - NO! Setting task ' + task.task_id + ' back.');
             taskRepository.flagTaskTodo(task);
+        } else {
+            console.log('stats:debug - Yes! Task ' + task.task_id + ' is done.');
         }
     }
 
