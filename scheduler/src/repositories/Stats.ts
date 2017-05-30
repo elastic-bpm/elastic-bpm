@@ -151,7 +151,7 @@ export class Stats {
         const last_task_finished = this.getLastTaskFinished(nodes_info);
         const new_makespan = moment(last_task_finished).diff(moment(first_task_started));
         console.log('stats:debug - getTimeHumansWaited = ' + (workflow.makespan - new_makespan)
-                    + ' makespan: ' + workflow.makespan + ', new makespan: ' + new_makespan);
+            + ' makespan: ' + workflow.makespan + ', new makespan: ' + new_makespan);
 
         // Finally substract this new makespan from the real makespan and tada! human time
         return workflow.makespan - new_makespan;
@@ -172,14 +172,17 @@ export class Stats {
 
     private fixTimingForCalculation(nodes_info: TaskInfo[], edges_string: string): TaskInfo[] {
         for (let i = 0; i < nodes_info.length; i++) {
-            const prev_tasks = this.getPreviousTasks(nodes_info[i].node, edges_string);
-            const prev_finished_times = prev_tasks.map((task) => this.getFinishedTimeFromList(task, nodes_info));
-            const last_prev_finished_time = moment.max(prev_finished_times);
-            if (last_prev_finished_time.isBefore(moment(nodes_info[i].started))) {
-                const timeDiff = moment(nodes_info[i].started).diff(last_prev_finished_time);
+            const elements = nodes_info[i].node.split(':');
+            if (elements[1] === 'HH' || elements[1] === 'HE') {
+                const prev_tasks = this.getPreviousTasks(nodes_info[i].node, edges_string);
+                const prev_finished_times = prev_tasks.map((task) => this.getFinishedTimeFromList(task, nodes_info));
+                const last_prev_finished_time = moment.max(prev_finished_times);
+                if (last_prev_finished_time.isBefore(moment(nodes_info[i].started))) {
+                    const timeDiff = moment(nodes_info[i].started).diff(last_prev_finished_time);
 
-                nodes_info[i].started = last_prev_finished_time.toJSON();
-                nodes_info[i].finished = moment(nodes_info[i].finished).subtract(timeDiff, 'milliseconds').toJSON();
+                    nodes_info[i].started = last_prev_finished_time.toJSON();
+                    nodes_info[i].finished = moment(nodes_info[i].finished).subtract(timeDiff, 'milliseconds').toJSON();
+                }
             }
         };
 
