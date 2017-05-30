@@ -76,7 +76,7 @@ export class TaskRepository {
                         workflow.busy_nodes = this.removeFromArray(workflow.busy_nodes, task.task_id);
                         workflow.todo_nodes.push(task.task_id);
                         task.task_status = 'todo';
-                        console.log('taskrepo:debug set workflow back to todo ' + JSON.stringify(workflow));
+                        console.log('taskrepo:debug set task back to todo ' + JSON.stringify(task));
                         fetch('http://' + this.host + ':3000/workflows/' + task.workflow_id, {
                             method: 'patch',
                             headers: { 'Content-Type': 'application/json' },

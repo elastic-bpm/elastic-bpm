@@ -8,7 +8,7 @@ import { TaskRepository } from './TaskRepository';
 export class Stats {
     private startTimes: [string, string, string][] = [];
     private endTimes: [string, string, string][] = [];
-    private defaultTimeout = 1000 * 60 * 5; // 5 minutes
+    private defaultTimeout = 1000 * 60 * 10; // 10 minutes
 
     constructor() { }
 
