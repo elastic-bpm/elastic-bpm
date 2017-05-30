@@ -171,17 +171,17 @@ export class Stats {
     };
 
     private fixTimingForCalculation(nodes_info: TaskInfo[], edges_string: string): TaskInfo[] {
-        nodes_info.forEach(node => {
-            const prev_tasks = this.getPreviousTasks(node.node, edges_string);
+        for (let i = 0; i < nodes_info.length; i++) {
+            const prev_tasks = this.getPreviousTasks(nodes_info[i].node, edges_string);
             const prev_finished_times = prev_tasks.map((task) => this.getFinishedTimeFromList(task, nodes_info));
             const last_prev_finished_time = moment.max(prev_finished_times);
-            if (last_prev_finished_time.isBefore(moment(node.ready_to_start))) {
-                const timeDiff = moment(node.ready_to_start).diff(last_prev_finished_time);
-                node.ready_to_start = moment(node.ready_to_start).subtract(timeDiff, 'milliseconds').toJSON();
-                node.started = moment(node.started).subtract(timeDiff, 'milliseconds').toJSON();
-                node.finished = moment(node.finished).subtract(timeDiff, 'milliseconds').toJSON();
+            if (last_prev_finished_time.isBefore(moment(nodes_info[i].ready_to_start))) {
+                const timeDiff = moment(nodes_info[i].ready_to_start).diff(last_prev_finished_time);
+                nodes_info[i].ready_to_start = moment(nodes_info[i].ready_to_start).subtract(timeDiff, 'milliseconds').toJSON();
+                nodes_info[i].started = moment(nodes_info[i].started).subtract(timeDiff, 'milliseconds').toJSON();
+                nodes_info[i].finished = moment(nodes_info[i].finished).subtract(timeDiff, 'milliseconds').toJSON();
             }
-        });
+        };
 
         return nodes_info;
     }
