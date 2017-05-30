@@ -20,13 +20,18 @@ export class NodeManager {
     async setNodeAmount(amount: number): Promise<void> {
         try {
             const nodes = await this.getNodes();
-            for (let i = 0; i < nodes.length; i++) {
+            const active_nodes = nodes.filter(node => node.status === 'ready');
+            for (let i = 0; i < active_nodes.length; i++) {
                 if (i < amount) {
                     await this.setNodeAvailability(nodes[i].hostname, 'active');
                 } else {
                     await this.setNodeAvailability(nodes[i].hostname, 'drain');
                 }
             }
+            const down_nodes = nodes.filter(node => node.status !== 'ready');
+            for (let i = 0; i < down_nodes.length; i++) {
+                await this.setNodeAvailability(down_nodes[i].hostname, 'drain');
+            };
 
             return new Promise<void>(resolve => resolve());
         } catch (err) {
