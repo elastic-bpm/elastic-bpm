@@ -175,10 +175,10 @@ export class Stats {
             const prev_tasks = this.getPreviousTasks(nodes_info[i].node, edges_string);
             const prev_finished_times = prev_tasks.map((task) => this.getFinishedTimeFromList(task, nodes_info));
             const last_prev_finished_time = moment.max(prev_finished_times);
-            if (last_prev_finished_time.isBefore(moment(nodes_info[i].ready_to_start))) {
-                const timeDiff = moment(nodes_info[i].ready_to_start).diff(last_prev_finished_time);
-                nodes_info[i].ready_to_start = moment(nodes_info[i].ready_to_start).subtract(timeDiff, 'milliseconds').toJSON();
-                nodes_info[i].started = moment(nodes_info[i].started).subtract(timeDiff, 'milliseconds').toJSON();
+            if (last_prev_finished_time.isBefore(moment(nodes_info[i].started))) {
+                const timeDiff = moment(nodes_info[i].started).diff(last_prev_finished_time);
+                nodes_info[i].ready_to_start = last_prev_finished_time.toJSON();
+                nodes_info[i].started = last_prev_finished_time.toJSON();
                 nodes_info[i].finished = moment(nodes_info[i].finished).subtract(timeDiff, 'milliseconds').toJSON();
             }
         };
