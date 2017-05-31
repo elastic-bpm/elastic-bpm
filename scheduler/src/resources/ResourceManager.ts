@@ -114,6 +114,11 @@ export class ResourceManager {
             this.addToHistory(desiredAmount, { active: activeMachineCount, nodes: activeNodes });
 
             console.log(`Policy set to ${this.policy}. (${activeMachineCount} of ${desiredAmount} machines active)`);
+            console.log('scheduler:info ' + JSON.stringify({
+                active_machines: activeMachineCount,
+                active_nodes: activeNodes,
+                target_nodes: desiredAmount
+            }));
 
             // if (activeMachineCount !== desiredAmount) {
             //     this.machineManager.scaleTo(desiredAmount);
