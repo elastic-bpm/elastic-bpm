@@ -125,9 +125,32 @@ setup_routes = function() {
     app.get('/status', (req, res) => res.send('ok'));
 };
 
+log_current_info = function() {
+    workflows.get_all_workflows((err, workflow_array) => {
+        var todo_tasks = 0;
+        var busy_tasks = 0;
+        var done_tasks = 0;
+        for (var i = 0; i < workflow_array.length; i++) {
+            todo_tasks += workflow_array[i].todo_nodes.length;
+            busy_tasks += workflow_array[i].busy_nodes.length;
+            done_tasks += workflow_array[i].done_nodes.length;
+        }
+
+        var workflow_stats = {
+            workflow_count: workflow_array.length,
+            todo_task_count: todo_tasks,
+            busy_task_count: busy_tasks,
+            done_task_count: done_tasks
+        }
+
+        console.log("workflow:current_info " + JSON.stringify(workflow_stats));
+    });
+}
+
 // Server startup
 start_server = function() {
     app.listen(3000, () => console.log('Elastic Workflow listening on port 3000!'));
+    setInterval(() => {log_current_info();}, 5000); // Log every 5 seconds
 };
 
 // When run directly, serve the API
