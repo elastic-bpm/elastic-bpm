@@ -142,7 +142,7 @@ log_current_info = function () {
 
             if (workflow_array[i].busy_nodes.length === 0 && workflow_array[i].done_nodes.length === 0) {
                 todo_workflows += 1;
-            } else if (workflow_array[i].busy_nodes.length === 0) {
+            } else if (workflow_array[i].busy_nodes.length === 0 && workflow_array[i].todo_nodes.length === 0) {
                 done_workflows += 1;
             } else {
                 busy_workflows += 1;
