@@ -62,7 +62,7 @@ wf_create_multiple_workflows = function(workflows, callback) {
 wf_update_workflow = function(workflow, callback) {
     if (workflow.busy_nodes.length > 0) {
         workflow.status = "Busy";
-    } else if (workflow.todo_nodes.length === 0) {
+    } else if (workflow.busy_nodes.length === 0 && workflow.todo_nodes.length === 0) {
         workflow.status = "Done";
         workflow.done = (new Date()).toJSON();
         console.log("workflow:done " + workflow.id + " at " + workflow.done);
