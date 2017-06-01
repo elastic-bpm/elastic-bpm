@@ -22,7 +22,7 @@ log4js.configure({
                 "type": "pattern",
                 "pattern": "%m"
             },
-            category: [ 'console' ]
+            category: ['console']
         }
     ],
     replaceConsole: true
@@ -31,7 +31,7 @@ log4js.configure({
 
 var workflows = require('./repository/workflows');
 
-post_workflows = function(req, res) {
+post_workflows = function (req, res) {
     workflows.create_workflow(req.body, (err, workflow) => {
         if (err) {
             console.dir(err);
@@ -43,7 +43,7 @@ post_workflows = function(req, res) {
     });
 };
 
-post_multiple_workflows = function(req, res) {
+post_multiple_workflows = function (req, res) {
     workflows.create_multiple_workflows(req.body, (err, workflow) => {
         if (err) {
             console.dir(err);
@@ -86,7 +86,7 @@ delete_workflow = function (req, res) {
     });
 };
 
-update_workflow = function(req, res) {
+update_workflow = function (req, res) {
     workflows.update_workflow(req.body, (err, workflow) => {
         if (err) {
             console.dir(err);
@@ -98,7 +98,7 @@ update_workflow = function(req, res) {
     });
 };
 
-delete_all_workflows = function(req, res) {
+delete_all_workflows = function (req, res) {
     workflows.delete_all_workflows((err, data) => {
         if (err) {
             console.dir(err);
@@ -111,46 +111,67 @@ delete_all_workflows = function(req, res) {
 };
 
 // ROUTING
-setup_routes = function() {
-    app.get('/workflows', get_workflows); 
+setup_routes = function () {
+    app.get('/workflows', get_workflows);
     app.post('/workflows', post_workflows);
     app.post('/workflows/multiple', post_multiple_workflows);
 
     app.get('/workflows/:workflow_id', get_workflow_at);
     app.patch('/workflows/:workflow_id', update_workflow);
-    app.delete('/workflows/:workflow_id',delete_workflow);
+    app.delete('/workflows/:workflow_id', delete_workflow);
 
     app.delete('/workflows', delete_all_workflows);
 
     app.get('/status', (req, res) => res.send('ok'));
 };
 
-log_current_info = function() {
+log_current_info = function () {
     workflows.get_all_workflows((err, workflow_array) => {
         var todo_tasks = 0;
         var busy_tasks = 0;
         var done_tasks = 0;
+
+        var todo_workflows = 0;
+        var busy_workflows = 0;
+        var done_workflows = 0;
+
         for (var i = 0; i < workflow_array.length; i++) {
             todo_tasks += workflow_array[i].todo_nodes.length;
             busy_tasks += workflow_array[i].busy_nodes.length;
             done_tasks += workflow_array[i].done_nodes.length;
+
+            if (workflow_array[i].busy_nodes.length === 0 && workflow_array[i].done_nodes.length === 0) {
+                todo_workflows += 1;
+            } else if (workflow_array[i].busy_nodes.length === 0) {
+                done_workflows += 1;
+            } else {
+                busy_workflows += 1;
+            }
         }
 
         var workflow_stats = {
             workflow_count: workflow_array.length,
+            todo_workflow_count: todo_workflows,
+            busy_workflow_count: busy_workflows,
+            done_workflow_count: done_workflows
+        }
+
+        var task_stats = {
+            task_count: todo_tasks + busy_tasks + done_tasks,
             todo_task_count: todo_tasks,
             busy_task_count: busy_tasks,
             done_task_count: done_tasks
         }
 
-        console.log("workflow:current_info " + JSON.stringify(workflow_stats));
+        console.log("workflows:update " + JSON.stringify(workflow_stats));
+        console.log("tasks:update " + JSON.stringify(task_stats));
     });
 }
 
 // Server startup
-start_server = function() {
+start_server = function () {
     app.listen(3000, () => console.log('Elastic Workflow listening on port 3000!'));
-    setInterval(() => {log_current_info();}, 5000); // Log every 5 seconds
+    setInterval(() => { log_current_info(); }, 5000); // Log every 5 seconds
 };
 
 // When run directly, serve the API
