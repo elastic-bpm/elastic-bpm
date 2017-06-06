@@ -109,7 +109,7 @@ export class ResourceManager {
         // Lets check amount of running machines
         try {
             const activeMachineCount = await this.machineManager.getActiveMachineCount();
-            const activeNodes = await this.nodeManager.getActiveNodeCount();
+            const activeNodeCount = await this.nodeManager.getActiveNodeCount();
             let desiredAmount = this.amount[this.policy];
 
             // if (activeMachineCount !== desiredAmount) {
@@ -125,7 +125,12 @@ export class ResourceManager {
                     {
                         // First determine desiredAmount
                         const virtualMachines = await this.machineManager.getMachines();
-                        const activeMachines = virtualMachines.filter(machine => machine.powerState === 'VM running');
+                        const activeNodes = await this.nodeManager.getNodes();
+                        const activeNodeNames = activeNodes.map(node => node.hostname);
+                        const activeMachines = virtualMachines.filter(machine => {
+                            return machine.powerState === 'VM running' &&
+                                activeNodeNames.indexOf(machine.name) !== undefined;
+                        });
                         console.log('Current active machines: ' + JSON.stringify(activeMachines));
                         let neededMachines = 0;
                         activeMachines.forEach(machine => {
@@ -147,16 +152,16 @@ export class ResourceManager {
             }
 
             // Then scale to desired amount
-            if (activeNodes !== desiredAmount) {
-                console.log(`Setting active nodes to ${desiredAmount}, currently ${activeNodes}`);
+            if (activeNodeCount !== desiredAmount) {
+                console.log(`Setting active nodes to ${desiredAmount}, currently ${activeNodeCount}`);
                 this.nodeManager.setNodeAmount(desiredAmount);
             }
 
-            this.addToHistory(desiredAmount, { active: activeMachineCount, nodes: activeNodes });
+            this.addToHistory(desiredAmount, { active: activeMachineCount, nodes: activeNodeCount });
             console.log(`Policy set to ${this.policy}. (${activeMachineCount} of ${desiredAmount} machines active)`);
             console.log('scheduler:info ' + JSON.stringify({
                 active_machines: activeMachineCount,
-                active_nodes: activeNodes,
+                active_nodes: activeNodeCount,
                 target_nodes: desiredAmount
             }));
 

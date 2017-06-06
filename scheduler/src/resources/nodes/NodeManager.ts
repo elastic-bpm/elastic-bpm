@@ -45,7 +45,7 @@ export class NodeManager {
         }
     }
 
-    private getNodes(): Promise<Node[]> {
+    async getNodes(): Promise<Node[]> {
         return new Promise<Node[]>((resolve, reject) => {
             fetch('http://' + this.docker_host + ':4444/nodes')
                 .then(res => res.json<Node[]>())
