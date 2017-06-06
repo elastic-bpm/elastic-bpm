@@ -119,10 +119,7 @@ export class ResourceManager {
 
             switch (this.policy) {
                 case 'Static':
-                    if (activeNodes !== desiredAmount) {
-                        console.log(`Setting active nodes to ${desiredAmount}, currently ${activeNodes}`);
-                        this.nodeManager.setNodeAmount(desiredAmount);
-                    }
+                    // No changes to desiredAmount
                     break;
                 case 'OnDemand':
                     {
@@ -139,18 +136,20 @@ export class ResourceManager {
                             }
                         });
                         desiredAmount = neededMachines;
-
-                        // Then scale to desired amount
-                        if (activeNodes !== desiredAmount) {
-                            console.log(`Setting active nodes to ${desiredAmount}, currently ${activeNodes}`);
-                        }
                     }
                     break;
                 case 'Learning':
                     break;
                 default:
                 case 'Off':
+                    desiredAmount = 0;
                     break;
+            }
+
+            // Then scale to desired amount
+            if (activeNodes !== desiredAmount) {
+                console.log(`Setting active nodes to ${desiredAmount}, currently ${activeNodes}`);
+                this.nodeManager.setNodeAmount(desiredAmount);
             }
 
             this.addToHistory(desiredAmount, { active: activeMachineCount, nodes: activeNodes });
