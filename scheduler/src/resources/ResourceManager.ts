@@ -131,7 +131,7 @@ export class ResourceManager {
                             return machine.powerState === 'VM running' &&
                                 activeNodeNames.indexOf(machine.name) !== undefined;
                         });
-                        console.log('Current active machines: ' + JSON.stringify(activeMachines));
+                        console.log('Current active machines: ' + JSON.stringify(activeMachines.map(machine => machine.name)));
                         let neededMachines = 0;
                         activeMachines.forEach(machine => {
                             if (machine.load5 >= 2) {
