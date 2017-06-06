@@ -15,6 +15,38 @@ export class MachineManager {
         }
     }
 
+    public getMachines(): Promise<VirtualMachine[]> {
+        // TODO: add load
+        const machineLoads: Map<string, number> = new Map([
+            ['node01', 2.5],
+            ['node02', 2.5],
+            ['node03', 2],
+            ['node04', 2],
+            ['node05', 1.5],
+            ['node06', 1.5],
+            ['node07', 1],
+            ['node08', 1],
+            ['node09', 0.5],
+            ['node10', 0.5],
+            ['node11', 0],
+            ['node12', 0],
+            ['node13', 0],
+            ['node14', 0],
+            ['node15', 0]
+        ]);
+
+        return new Promise<VirtualMachine[]>((resolve, reject) => {
+            fetch('http://' + this.scaling_host + ':8888/virtualmachines')
+                .then(res => res.json<VirtualMachine[]>())
+                .then(machines => {
+                    machines.forEach(machine => machine.load5 = machineLoads.get(machine.name));
+                    return machines;
+                })
+                .then(machines => resolve(machines.filter(machine => machine.name !== 'master')))
+                .catch(err => reject(err));
+        });
+    }
+
     private async scaleTo(desiredAmount: number) {
         const allMachines = await this.getMachines();
         if (desiredAmount === 0) {
@@ -61,17 +93,4 @@ export class MachineManager {
                 .catch(err => reject(err));
         });
     };
-
-    private getMachines(): Promise<VirtualMachine[]> {
-        return new Promise<VirtualMachine[]>((resolve, reject) => {
-            fetch('http://' + this.scaling_host + ':8888/virtualmachines')
-                .then(res => res.json<VirtualMachine[]>())
-                // .then(machines => {
-                //     machines.forEach(machine => console.log(machine.name));
-                //     return machines;
-                // })
-                .then(machines => resolve(machines.filter(machine => machine.name !== 'master')))
-                .catch(err => reject(err));
-        });
-    }
 }

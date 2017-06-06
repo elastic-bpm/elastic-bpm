@@ -4,4 +4,5 @@ export class VirtualMachine {
     powerState: string;
     resourceGroupName: string;
     hardwareProfile: { vmSize: string };
+    load5: number;
 }

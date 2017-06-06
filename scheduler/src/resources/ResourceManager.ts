@@ -110,15 +110,7 @@ export class ResourceManager {
         try {
             const activeMachineCount = await this.machineManager.getActiveMachineCount();
             const activeNodes = await this.nodeManager.getActiveNodeCount();
-            const desiredAmount = this.amount[this.policy];
-            this.addToHistory(desiredAmount, { active: activeMachineCount, nodes: activeNodes });
-
-            console.log(`Policy set to ${this.policy}. (${activeMachineCount} of ${desiredAmount} machines active)`);
-            console.log('scheduler:info ' + JSON.stringify({
-                active_machines: activeMachineCount,
-                active_nodes: activeNodes,
-                target_nodes: desiredAmount
-            }));
+            let desiredAmount = this.amount[this.policy];
 
             // if (activeMachineCount !== desiredAmount) {
             //     this.machineManager.scaleTo(desiredAmount);
@@ -133,6 +125,26 @@ export class ResourceManager {
                     }
                     break;
                 case 'OnDemand':
+                    {
+                        // First determine desiredAmount
+                        const virtualMachines = await this.machineManager.getMachines();
+                        const activeMachines = virtualMachines.filter(machine => machine.powerState === 'VM running');
+                        console.log('Current active machines: ' + JSON.stringify(activeMachines));
+                        let neededMachines = 0;
+                        virtualMachines.forEach(machine => {
+                            if (machine.load5 >= 2) {
+                                neededMachines += 2;
+                            } else if (machine.load5 >= 1) {
+                                neededMachines += 1;
+                            }
+                        });
+                        desiredAmount = neededMachines;
+
+                        // Then scale to desired amount
+                        if (activeNodes !== desiredAmount) {
+                            console.log(`Setting active nodes to ${desiredAmount}, currently ${activeNodes}`);
+                        }
+                    }
                     break;
                 case 'Learning':
                     break;
@@ -140,6 +152,15 @@ export class ResourceManager {
                 case 'Off':
                     break;
             }
+
+            this.addToHistory(desiredAmount, { active: activeMachineCount, nodes: activeNodes });
+            console.log(`Policy set to ${this.policy}. (${activeMachineCount} of ${desiredAmount} machines active)`);
+            console.log('scheduler:info ' + JSON.stringify({
+                active_machines: activeMachineCount,
+                active_nodes: activeNodes,
+                target_nodes: desiredAmount
+            }));
+
 
         } catch (err) {
             console.log('Error in checkResources: ' + err);
