@@ -110,48 +110,53 @@ export class ResourceManager {
         try {
             const activeMachineCount = await this.machineManager.getActiveMachineCount();
             const activeNodeCount = await this.nodeManager.getActiveNodeCount();
-            let desiredAmount = this.amount[this.policy];
-
-            // if (activeMachineCount !== desiredAmount) {
-            //     this.machineManager.scaleTo(desiredAmount);
-            // }
-            // TODO: Scale amount of nodes, or do this in the policy??
+            let desiredAmount = 0;
 
             switch (this.policy) {
                 case 'Static':
-                    // No changes to desiredAmount
+                    desiredAmount = this.amount[this.policy];
                     break;
                 case 'OnDemand':
                     {
-                        // First determine desiredAmount
+                        const upperBound = 2;
+                        const lowerBound = 1;
+
                         const virtualMachines = await this.machineManager.getMachines();
                         const activeNodes = await this.nodeManager.getNodes();
                         const activeNodeNames = activeNodes.map(node => node.hostname);
                         const activeMachines = virtualMachines.filter(machine => {
-                            return machine.powerState === 'VM running' &&
-                                activeNodeNames.indexOf(machine.name) > 0;
+                            return machine.powerState === 'VM running' && activeNodeNames.indexOf(machine.name) > 0;
                         });
                         console.log('Current active machines: ' + JSON.stringify(activeMachines.map(machine => machine.name)));
+
                         let neededMachines = 0;
+                        const machinesToKeep: string[] = [];
+                        const machinesToLose: string[] = [];
                         activeMachines.forEach(machine => {
-                            if (machine.load5 >= 2) {
-                                neededMachines += 2;
-                            } else if (machine.load5 >= 1) {
-                                neededMachines += 1;
+                            if (machine.load5 >= upperBound) {
+                                neededMachines++;
+                                machinesToKeep.push(machine.name);
+                            } else if (machine.load5 > lowerBound) {
+                                machinesToKeep.push(machine.name);
+                            } else {
+                                machinesToLose.push(machine.name);
                             }
                         });
-                        desiredAmount = Math.max(neededMachines, this.amount[this.policy]);
+
+                        // Set desiredAmount to either neededMachines or the minimum for this policy
+                        desiredAmount = Math.max(machinesToKeep.length + neededMachines, this.amount[this.policy]);
                     }
                     break;
                 case 'Learning':
                     break;
                 default:
                 case 'Off':
-                    desiredAmount = 0;
+                    // No changes to desiredAmount
                     break;
             }
 
             // Then scale to desired amount
+            // TODO: Scale this with more precision
             if (activeNodeCount !== desiredAmount) {
                 console.log(`Setting active nodes to ${desiredAmount}, currently ${activeNodeCount}`);
                 this.nodeManager.setNodeAmount(desiredAmount);
