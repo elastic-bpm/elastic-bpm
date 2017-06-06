@@ -128,14 +128,14 @@ export class ResourceManager {
                         const activeMachines = virtualMachines.filter(machine => machine.powerState === 'VM running');
                         console.log('Current active machines: ' + JSON.stringify(activeMachines));
                         let neededMachines = 0;
-                        virtualMachines.forEach(machine => {
+                        activeMachines.forEach(machine => {
                             if (machine.load5 >= 2) {
                                 neededMachines += 2;
                             } else if (machine.load5 >= 1) {
                                 neededMachines += 1;
                             }
                         });
-                        desiredAmount = neededMachines;
+                        desiredAmount = Math.max(neededMachines, this.amount[this.policy]);
                     }
                     break;
                 case 'Learning':
