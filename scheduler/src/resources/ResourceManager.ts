@@ -10,6 +10,7 @@ export class ResourceManager {
     private history: any = { Target: [], Active: [], Nodes: [] };
     private machineManager: MachineManager;
     private nodeManager: NodeManager;
+    private justStarted: string[] = [];
 
     constructor(private policy: string,
         staticAmount: number,
@@ -137,7 +138,7 @@ export class ResourceManager {
                             if (machine.load5 >= upperBound) {
                                 neededMachines++;
                                 machinesToKeep.push(machine.name);
-                            } else if (machine.load5 > lowerBound) {
+                            } else if (machine.load5 > lowerBound || this.justStarted.indexOf(machine.name) > -1) {
                                 machinesToKeep.push(machine.name);
                             } else {
                                 machinesToLose.push(machine.name);
@@ -160,7 +161,11 @@ export class ResourceManager {
             // TODO: Scale this with more precision
             if (activeNodeCount !== desiredAmount) {
                 console.log(`Setting active nodes to ${desiredAmount}, currently ${activeNodeCount}`);
-                this.nodeManager.setNodeAmount(desiredAmount);
+                const started = await this.nodeManager.setNodeAmount(desiredAmount);
+                for (let i = 0; i < started.length; i++) {
+                    this.justStarted.push(started[i]);
+                    setTimeout(() => this.justStarted.filter(s => s !== started[i]), 10000); // 10 second grace time
+                }
             }
 
             this.addToHistory(desiredAmount, { active: activeMachineCount, nodes: activeNodeCount });

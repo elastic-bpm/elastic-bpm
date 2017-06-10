@@ -252,6 +252,25 @@ export class TestRunner {
                     setTimeout(() => this.startExecution(policy, schedule_i, policyParams, workers), 2000);
                     break;
                 }
+            case 'b':
+                {
+                    // For test 'b', we have min 2 nodes
+                    const policyParams = {
+                        Static: 10,
+                        OnDemand: 2,
+                        Learning: 2
+                    };
+
+                    // Policy is either OnDemand or Learning
+                    // Ignoring scaling params for now
+                    const policy = body.policy;
+
+                    // Workers is set to 4
+                    const workers = 4;
+
+                    setTimeout(() => this.startExecution(policy, schedule_i, policyParams, workers), 2000);
+                    break;
+                }
             default:
                 {
                     const policyParams = {

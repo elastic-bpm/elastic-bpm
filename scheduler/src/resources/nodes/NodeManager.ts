@@ -17,8 +17,9 @@ export class NodeManager {
         }
     }
 
-    async setNodeAmount(amount: number): Promise<void> {
+    async setNodeAmount(amount: number): Promise<string[]> {
         try {
+            const startedMachines: string[] = [];
             const nodes = await this.getNodes();
             const active_nodes = nodes.filter(node => node.status === 'ready').sort(function (a, b) {
                 if (a.hostname < b.hostname) { return -1; };
@@ -28,7 +29,10 @@ export class NodeManager {
 
             for (let i = 0; i < active_nodes.length; i++) {
                 if (i < amount) {
-                    await this.setNodeAvailability(nodes[i].hostname, 'active');
+                    if (nodes[i].availability !== 'active') {
+                        await this.setNodeAvailability(nodes[i].hostname, 'active');
+                        startedMachines.push(nodes[i].hostname);
+                    }
                 } else {
                     await this.setNodeAvailability(nodes[i].hostname, 'drain');
                 }
@@ -38,10 +42,10 @@ export class NodeManager {
                 await this.setNodeAvailability(down_nodes[i].hostname, 'drain');
             };
 
-            return new Promise<void>(resolve => resolve());
+            return new Promise<string[]>(resolve => resolve(startedMachines));
         } catch (err) {
             console.log(err);
-            return new Promise<void>((resolve, reject) => reject(err));
+            return new Promise<string[]>((resolve, reject) => reject(err));
         }
     }
 
