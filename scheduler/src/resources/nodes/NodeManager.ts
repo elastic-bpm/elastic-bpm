@@ -1,11 +1,9 @@
 import { VirtualMachine } from '../../classes/VirtualMachine';
 import { Node } from '../../classes/Node';
 import fetch from 'node-fetch';
-import { Elastic } from './elastic';
 
 export class NodeManager {
     private docker_host = process.env.DOCKER || 'localhost';
-    private elastic = new Elastic(1000); // Update each second
 
     async getActiveNodeCount(): Promise<number> {
         try {
@@ -48,19 +46,10 @@ export class NodeManager {
     }
 
     async getNodes(): Promise<Node[]> {
-        const loads: any[] = await this.elastic.get_load();
-        console.log('Loads: ' + JSON.stringify(loads));
-
         return new Promise<Node[]>((resolve, reject) => {
             fetch('http://' + this.docker_host + ':4444/nodes')
                 .then(res => res.json<Node[]>())
-                .then(nodes => {
-                    nodes.forEach(node => {
-                        node.load5 = (loads[node.hostname])['load5'].pop();
-                    });
-                    console.log('NOdes: ' + JSON.stringify(nodes));
-                    return nodes;
-                }).then(nodes => resolve(nodes))
+                .then(nodes => resolve(nodes))
                 .catch(err => reject(err));
         });
     }

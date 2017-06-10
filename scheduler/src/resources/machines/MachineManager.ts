@@ -1,8 +1,10 @@
 import { VirtualMachine } from '../../classes/VirtualMachine';
 import fetch from 'node-fetch';
+import { Elastic } from './elastic';
 
 export class MachineManager {
     private scaling_host = process.env.SCALING || 'localhost';
+    private elastic = new Elastic(1000); // Update each second
 
     async getActiveMachineCount(): Promise<number> {
         try {
@@ -15,25 +17,26 @@ export class MachineManager {
         }
     }
 
-    public getMachines(): Promise<VirtualMachine[]> {
+    public async getMachines(): Promise<VirtualMachine[]> {
+        const loads: any[] = await this.elastic.get_load();
+        console.log('Loads: ' + JSON.stringify(loads));
+
         // TODO: add load
-        const machineLoads: Map<string, number> = new Map([
-            ['node01', 2.5],
-            ['node02', 2.5],
-            ['node03', 2],
-            ['node04', 2],
-            ['node05', 1.5],
-            ['node06', 1.5],
-            ['node07', 1],
-            ['node08', 1],
-            ['node09', 0.5],
-            ['node10', 0.5],
-            ['node11', 0],
-            ['node12', 0],
-            ['node13', 0],
-            ['node14', 0],
-            ['node15', 0]
-        ]);
+        const machineLoads: Map<string, number> = new Map();
+        loads.forEach(load => {
+            console.log('Load: ' + JSON.stringify(load))
+            machineLoads.set(load[0], load['load5']);
+        });
+        console.log('machineLoads: ' + JSON.stringify(machineLoads));
+
+        // Ugly, but works
+        // .then(nodes => {
+        //     nodes.forEach(node => {
+        //         node.load5 = (loads[node.hostname])['load5'].pop();
+        //     });
+        //     console.log('NOdes: ' + JSON.stringify(nodes));
+        //     return nodes;
+        // })
 
         return new Promise<VirtualMachine[]>((resolve, reject) => {
             fetch('http://' + this.scaling_host + ':8888/virtualmachines')
