@@ -22,11 +22,11 @@ export class MachineManager {
         console.log('Loads: ' + JSON.stringify(loads));
 
         // TODO: add load
-        const machineLoads: Map<string, number> = new Map();
-        Object.keys(loads).forEach(load => {
-            machineLoads.set(loads[load], loads[load]['load5']);
-        });
-        console.log('machineLoads: ' + JSON.stringify(machineLoads));
+        // const machineLoads: Map<string, number> = new Map();
+        // Object.keys(loads).forEach(load => {
+        //     machineLoads.set(loads[load], loads[load]['load5']);
+        // });
+        // console.log('machineLoads: ' + JSON.stringify(machineLoads));
 
         // Ugly, but works
         // .then(nodes => {
@@ -41,7 +41,8 @@ export class MachineManager {
             fetch('http://' + this.scaling_host + ':8888/virtualmachines')
                 .then(res => res.json<VirtualMachine[]>())
                 .then(machines => {
-                    machines.forEach(machine => machine.load5 = machineLoads.get(machine.name));
+                    machines.forEach(machine => machine.load5 = loads[machine.name].load5);
+                    console.log('machineLoads: ' + JSON.stringify(machines));
                     return machines;
                 })
                 .then(machines => resolve(machines.filter(machine => machine.name !== 'master')))
