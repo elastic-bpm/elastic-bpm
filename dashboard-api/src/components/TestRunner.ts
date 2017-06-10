@@ -252,9 +252,9 @@ export class TestRunner {
                     setTimeout(() => this.startExecution(policy, schedule_i, policyParams, workers), 2000);
                     break;
                 }
-            case 'b':
+            case 'd':
                 {
-                    // For test 'b', we have min 2 nodes
+                    // For test 'd', we have min 2 nodes
                     const policyParams = {
                         Static: 10,
                         OnDemand: 2,
