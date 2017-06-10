@@ -24,7 +24,7 @@ export class MachineManager {
         // TODO: add load
         const machineLoads: Map<string, number> = new Map();
         loads.forEach(load => {
-            console.log('Load: ' + JSON.stringify(load))
+            console.log('Load: ' + JSON.stringify(load));
             machineLoads.set(load[0], load['load5']);
         });
         console.log('machineLoads: ' + JSON.stringify(machineLoads));
