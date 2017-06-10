@@ -19,23 +19,7 @@ export class MachineManager {
 
     public async getMachines(): Promise<VirtualMachine[]> {
         const loads: any[] = await this.elastic.get_load();
-        console.log('Loads: ' + JSON.stringify(loads));
-
-        // TODO: add load
-        // const machineLoads: Map<string, number> = new Map();
-        // Object.keys(loads).forEach(load => {
-        //     machineLoads.set(loads[load], loads[load]['load5']);
-        // });
-        // console.log('machineLoads: ' + JSON.stringify(machineLoads));
-
-        // Ugly, but works
-        // .then(nodes => {
-        //     nodes.forEach(node => {
-        //         node.load5 = (loads[node.hostname])['load5'].pop();
-        //     });
-        //     console.log('NOdes: ' + JSON.stringify(nodes));
-        //     return nodes;
-        // })
+        // console.log('Loads: ' + JSON.stringify(loads));
 
         return new Promise<VirtualMachine[]>((resolve, reject) => {
             fetch('http://' + this.scaling_host + ':8888/virtualmachines')
@@ -46,7 +30,7 @@ export class MachineManager {
                             machine.load5 = loads[machine.name].load5.pop();
                         }
                     });
-                    console.log('machineLoads: ' + JSON.stringify(machines));
+                    // console.log('machineLoads: ' + JSON.stringify(machines));
                     return machines;
                 })
                 .then(machines => resolve(machines.filter(machine => machine.name !== 'master')))

@@ -118,8 +118,8 @@ export class ResourceManager {
                     break;
                 case 'OnDemand':
                     {
-                        const upperBound = 2;
-                        const lowerBound = 1;
+                        const upperBound = 1;
+                        const lowerBound = 0.5;
 
                         const virtualMachines = await this.machineManager.getMachines();
                         const activeNodes = (await this.nodeManager.getNodes())
