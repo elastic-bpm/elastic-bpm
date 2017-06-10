@@ -56,7 +56,7 @@ export class NodeManager {
                 .then(res => res.json<Node[]>())
                 .then(nodes => {
                     nodes.forEach(node => {
-                        node.load5 = loads[node.hostname].load5.pop();
+                        node.load5 = (loads[node.hostname])['load5'].pop();
                     });
                     console.log('NOdes: ' + JSON.stringify(nodes));
                     return nodes;
