@@ -123,10 +123,10 @@ export class ResourceManager {
 
                         const virtualMachines = await this.machineManager.getMachines();
                         const activeNodes = (await this.nodeManager.getNodes())
-                            .filter(node => node.availability === 'active' && node.status === 'ready');
-                        const activeNodeNames = activeNodes.map(node => node.hostname);
+                            .filter(node => node.availability === 'active' && node.status === 'ready')
+                            .map(node => node.hostname);
                         const activeMachines = virtualMachines.filter(machine => {
-                            return machine.powerState === 'VM running' && activeNodeNames.indexOf(machine.name) > -1;
+                            return machine.powerState === 'VM running' && activeNodes.indexOf(machine.name) > -1;
                         });
                         console.log('Current active machines: ' + JSON.stringify(activeMachines.map(machine => machine.name)));
 
