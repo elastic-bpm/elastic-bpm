@@ -48,13 +48,19 @@ export class NodeManager {
     }
 
     async getNodes(): Promise<Node[]> {
-        const loads = await this.elastic.get_load();
+        const loads: any[] = await this.elastic.get_load();
         console.log('Loads: ' + JSON.stringify(loads));
 
         return new Promise<Node[]>((resolve, reject) => {
             fetch('http://' + this.docker_host + ':4444/nodes')
                 .then(res => res.json<Node[]>())
-                .then(nodes => resolve(nodes))
+                .then(nodes => {
+                    nodes.forEach(node => {
+                        node.load5 = loads[node.hostname].load5.pop();
+                    });
+                    console.log('NOdes: ' + JSON.stringify(nodes));
+                    return nodes;
+                }).then(nodes => resolve(nodes))
                 .catch(err => reject(err));
         });
     }

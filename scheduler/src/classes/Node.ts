@@ -3,4 +3,5 @@ export class Node {
     hostname: string;
     availability: string;
     status: string;
+    load5: number;
 }
