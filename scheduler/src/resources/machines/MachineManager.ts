@@ -41,7 +41,11 @@ export class MachineManager {
             fetch('http://' + this.scaling_host + ':8888/virtualmachines')
                 .then(res => res.json<VirtualMachine[]>())
                 .then(machines => {
-                    machines.forEach(machine => machine.load5 = loads[machine.name].load5);
+                    machines.forEach(machine => {
+                        if (Object.keys(loads).indexOf(machine.name) !== -1) {
+                            machine.load5 = loads[machine.name].load5.pop();
+                        }
+                    });
                     console.log('machineLoads: ' + JSON.stringify(machines));
                     return machines;
                 })
