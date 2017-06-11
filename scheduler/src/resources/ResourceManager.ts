@@ -10,7 +10,7 @@ export class ResourceManager {
     private history: any = { Target: [], Active: [], Nodes: [] };
     private machineManager: MachineManager;
     private nodeManager: NodeManager;
-    private justStarted: string[] = [];
+    private justStarted: Map<string, string> = new Map<string, string>();
     private addedNewMachines = false;
 
     constructor(private policy: string,
@@ -116,7 +116,13 @@ export class ResourceManager {
 
             switch (this.policy) {
                 case 'Static':
-                    desiredAmount = this.amount[this.policy];
+                    {
+                        desiredAmount = this.amount[this.policy];
+                        if (activeNodeCount !== desiredAmount) {
+                            console.log(`Setting active nodes to ${desiredAmount}, currently ${activeNodeCount}`);
+                            await this.nodeManager.setNodeAmount(desiredAmount);
+                        }
+                    }
                     break;
                 case 'OnDemand':
                     {
@@ -132,32 +138,17 @@ export class ResourceManager {
                         });
                         console.log('Current active machines: ' + JSON.stringify(activeMachines.map(machine => machine.name)));
 
-                        let neededMachines = 0;
-                        const machinesToKeep: string[] = [];
-                        const machinesToLose: string[] = [];
-                        if (this.addedNewMachines) {
-                            // Just added new machines, do nothing
-                            desiredAmount = activeMachines.length;
-                        } else {
-                            activeMachines.forEach(machine => {
-                                if (machine.load5 >= upperBound) {
-                                    neededMachines++;
-                                    machinesToKeep.push(machine.name);
-                                } else if (machine.load5 > lowerBound) {
-                                    machinesToKeep.push(machine.name);
-                                } else {
-                                    // Not yet removing machines
-                                    // machinesToLose.push(machine.name);
-                                }
-                            });
-
-                            // Set desiredAmount to either neededMachines or the minimum for this policy
-                            desiredAmount = Math.max(machinesToKeep.length + neededMachines, this.amount[this.policy]);
-                            if (desiredAmount !== activeMachines.length) {
-                                this.addedNewMachines = true;
-                                setTimeout(() => { this.addedNewMachines = false; }, 60000); // 60 seconds grace time
+                        activeMachines.forEach(machine => {
+                            if (machine.load5 >= upperBound) {
+                                // Add new machine
+                                const addedNode = this.nodeManager.addNode();
+                                console.log('scheduler:debug Adding node ' + addedNode + ' for node ' + machine.name);
+                            } else if (machine.load5 > lowerBound) {
+                                // Do nothing
+                            } else {
+                                // Shutdown this machine
                             }
-                        }
+                        });
                     }
                     break;
                 case 'Learning':
@@ -166,21 +157,6 @@ export class ResourceManager {
                 case 'Off':
                     // No changes to desiredAmount
                     break;
-            }
-
-            // Then scale to desired amount
-            // TODO: Scale this with more precision
-            if (activeNodeCount !== desiredAmount) {
-                console.log(`Setting active nodes to ${desiredAmount}, currently ${activeNodeCount}`);
-                const started = await this.nodeManager.setNodeAmount(desiredAmount);
-                console.log('scheduler:debug started: ' + JSON.stringify(started));
-
-                for (let i = 0; i < started.length; i++) {
-                    this.justStarted.push(started[i]);
-                    setTimeout(() => this.justStarted.filter(s => s !== started[i]), 10000); // 10 second grace time
-                }
-                console.log('scheduler:debug this.justStarted: ' + JSON.stringify(this.justStarted));
-
             }
 
             this.addToHistory(desiredAmount, { active: activeMachineCount, nodes: activeNodeCount });

@@ -17,6 +17,25 @@ export class NodeManager {
         }
     }
 
+    async addNode(): Promise<string> {
+        try {
+            const nodes = await this.getNodes();
+            const active_nodes = nodes.filter(node => node.status === 'ready');
+
+            for (let i = 0; i < active_nodes.length; i++) {
+                if (nodes[i].availability !== 'active') {
+                    await this.setNodeAvailability(nodes[i].hostname, 'active');
+                    return new Promise<string>(resolve => resolve(nodes[i].hostname));
+
+                }
+            }
+
+            throw new Error('No nodes available');
+        } catch (err) {
+            return new Promise<string>((resolve, reject) => reject(err));
+        }
+    }
+
     async setNodes(availableNodes: string[], drainNodes: string[]): Promise<void> {
         try {
             const nodes = await this.getNodes();
