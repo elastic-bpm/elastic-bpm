@@ -160,12 +160,19 @@ export class ResourceManager {
                                         setTimeout(() => { this.justStarted.delete(activeMachines[index].name); }, 5 * 60 * 1000);
                                     })(i);
                                 } else if (activeMachines[i].load5 > lowerBound) {
-                                    // Do nothing
+                                    // Do nothing, it can live
                                 } else {
                                     // Check if started by other load
+                                    let isStarted = false;
                                     this.justStarted.forEach((v, k) => {
-                                        console.log('scheduler:debug Value: ' + v + ' Key: ' + k);
+                                        if (v === activeMachines[i].name) {
+                                            isStarted = true;
+                                        }
                                     });
+
+                                    if (!isStarted) {
+                                        this.nodeManager.shutdownNode(activeMachines[i].name);
+                                    }
                                 }
                             };
 

@@ -36,6 +36,15 @@ export class NodeManager {
         }
     }
 
+    async shutdownNode(nodeName: string): Promise<void> {
+        try {
+            await this.setNodeAvailability(nodeName, 'drain');
+            return new Promise<void>(resolve => resolve());
+        } catch (err) {
+            return new Promise<void>((resolve, reject) => reject(err));
+        }
+    }
+
     async setNodes(availableNodes: string[], drainNodes: string[]): Promise<void> {
         try {
             const nodes = await this.getNodes();
