@@ -163,6 +163,7 @@ export class ResourceManager {
                                     // Do nothing, it can live
                                 } else {
                                     // Check if started by other load
+                                    console.log('scheduler:debug Checking if node ' + activeMachines[i].name + ' is started recently');
                                     let isStarted = false;
                                     this.justStarted.forEach((v, k) => {
                                         if (v === activeMachines[i].name) {
@@ -171,7 +172,10 @@ export class ResourceManager {
                                     });
 
                                     if (!isStarted) {
+                                        console.log('scheduler:debug Node ' + activeMachines[i].name + ' is NOT started, shutting down');
                                         this.nodeManager.shutdownNode(activeMachines[i].name);
+                                    } else {
+                                        console.log('scheduler:debug Node ' + activeMachines[i].name + ' is started recently!');
                                     }
                                 }
                             };
