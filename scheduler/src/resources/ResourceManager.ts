@@ -154,7 +154,9 @@ export class ResourceManager {
                                     const addedNode = await this.nodeManager.addNode();
                                     console.log('scheduler:debug Adding node ' + addedNode + ' for node ' + activeMachines[i].name);
                                     this.justStarted.set(activeMachines[i].name, addedNode);
-                                    setTimeout(() => { this.justStarted.delete(activeMachines[i].name); }, 5 * 60 * 1000);
+                                    (function (index) {
+                                        setTimeout(() => { this.justStarted.delete(activeMachines[index].name); }, 5 * 60 * 1000);
+                                    })(i);
                                 } else if (activeMachines[i].load5 > lowerBound) {
                                     // Do nothing
                                 } else {
