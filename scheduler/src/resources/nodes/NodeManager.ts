@@ -17,6 +17,28 @@ export class NodeManager {
         }
     }
 
+    async setNodes(availableNodes: string[], drainNodes: string[]): Promise<void> {
+        try {
+            const nodes = await this.getNodes();
+            const active_nodes = nodes.filter(node => node.status === 'ready');
+
+            for (let i = 0; i < active_nodes.length; i++) {
+                if (availableNodes.indexOf(nodes[i].hostname) !== -1) {
+                    await this.setNodeAvailability(nodes[i].hostname, 'active');
+                }
+
+                if (drainNodes.indexOf(nodes[i].hostname) !== -1) {
+                    await this.setNodeAvailability(nodes[i].hostname, 'drain');
+                }
+            }
+
+            return new Promise<void>(resolve => resolve());
+        } catch (err) {
+            console.log(err);
+            return new Promise<void>((resolve, reject) => reject(err));
+        }
+    }
+
     async setNodeAmount(amount: number): Promise<string[]> {
         try {
             const startedMachines: string[] = [];
