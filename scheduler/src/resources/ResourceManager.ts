@@ -138,17 +138,29 @@ export class ResourceManager {
                         });
                         console.log('Current active machines: ' + JSON.stringify(activeMachines.map(machine => machine.name)));
 
-                        activeMachines.forEach(machine => {
-                            if (machine.load5 >= upperBound) {
-                                // Add new machine
-                                const addedNode = this.nodeManager.addNode();
-                                console.log('scheduler:debug Adding node ' + addedNode + ' for node ' + machine.name);
-                            } else if (machine.load5 > lowerBound) {
-                                // Do nothing
-                            } else {
-                                // Shutdown this machine
+
+                        if (activeMachines.length < this.amount[this.policy]) {
+                            // Start out with 0 machines
+                            const difference = this.amount[this.policy] - activeMachines.length;
+                            for (let i = 0; i < difference; i++) {
+                                await this.nodeManager.addNode();
                             }
-                        });
+                        } else {
+
+                            // After check machine load
+                            activeMachines.forEach(machine => {
+                                if (machine.load5 >= upperBound) {
+                                    // Add new machine
+                                    const addedNode = this.nodeManager.addNode();
+                                    console.log('scheduler:debug Adding node ' + addedNode + ' for node ' + machine.name);
+                                } else if (machine.load5 > lowerBound) {
+                                    // Do nothing
+                                } else {
+                                    // Shutdown this machine
+                                }
+                            });
+
+                        }
                     }
                     break;
                 case 'Learning':
