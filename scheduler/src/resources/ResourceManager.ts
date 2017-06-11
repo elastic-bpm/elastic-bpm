@@ -149,6 +149,7 @@ export class ResourceManager {
 
                             // After check machine load
                             for (let i = 0; i < activeMachines.length; i++) {
+                                console.log('scheduler:debug Node ' + activeMachines[i].name + ' has load: ' + activeMachines[i].load5);
                                 if (activeMachines[i].load5 >= upperBound && !this.justStarted.has(activeMachines[i].name)) {
                                     // Add new machine for this one
                                     const addedNode = await this.nodeManager.addNode();
@@ -156,9 +157,9 @@ export class ResourceManager {
                                     this.justStarted.set(activeMachines[i].name, addedNode);
 
                                     // Calling setTimeout in for-loops: https://stackoverflow.com/a/5226335/1086634
-                                    (function (index) {
+                                    (function (that, index) {
                                         setTimeout(() => { this.justStarted.delete(activeMachines[index].name); }, 5 * 60 * 1000);
-                                    })(i);
+                                    })(this, i);
                                 } else if (activeMachines[i].load5 > lowerBound) {
                                     // Do nothing, it can live
                                 } else {
@@ -175,7 +176,7 @@ export class ResourceManager {
                                         console.log('scheduler:debug Node ' + activeMachines[i].name + ' is NOT started, shutting down');
                                         this.nodeManager.shutdownNode(activeMachines[i].name);
                                     } else {
-                                        console.log('scheduler:debug Node ' + activeMachines[i].name + ' is started recently!');
+                                        console.log('scheduler:debug Node ' + activeMachines[i].name + ' is started recently, ignoring');
                                     }
                                 }
                             };
