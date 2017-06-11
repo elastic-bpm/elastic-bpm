@@ -148,17 +148,22 @@ export class ResourceManager {
                         } else {
 
                             // After check machine load
-                            activeMachines.forEach(machine => {
-                                if (machine.load5 >= upperBound) {
-                                    // Add new machine
-                                    const addedNode = this.nodeManager.addNode();
-                                    console.log('scheduler:debug Adding node ' + addedNode + ' for node ' + machine.name);
-                                } else if (machine.load5 > lowerBound) {
+                            for (let i = 0; i < activeMachines.length; i++) {
+                                if (activeMachines[i].load5 >= upperBound && !this.justStarted.has(activeMachines[i].name)) {
+                                    // Add new machine for this one
+                                    const addedNode = await this.nodeManager.addNode();
+                                    console.log('scheduler:debug Adding node ' + addedNode + ' for node ' + activeMachines[i].name);
+                                    this.justStarted.set(activeMachines[i].name, addedNode);
+                                    setTimeout(() => { this.justStarted.delete(activeMachines[i].name); }, 5 * 60 * 1000);
+                                } else if (activeMachines[i].load5 > lowerBound) {
                                     // Do nothing
                                 } else {
-                                    // Shutdown this machine
+                                    // Check if started by other load
+                                    this.justStarted.forEach((v, k) => {
+                                        console.log('scheduler:debug Value: ' + v + ' Key: ' + k);
+                                    });
                                 }
-                            });
+                            };
 
                         }
                     }
