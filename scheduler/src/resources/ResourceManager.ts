@@ -11,6 +11,7 @@ export class ResourceManager {
     private machineManager: MachineManager;
     private nodeManager: NodeManager;
     private justStarted: string[] = [];
+    private addedNewMachines = false;
 
     constructor(private policy: string,
         staticAmount: number,
@@ -134,19 +135,29 @@ export class ResourceManager {
                         let neededMachines = 0;
                         const machinesToKeep: string[] = [];
                         const machinesToLose: string[] = [];
-                        activeMachines.forEach(machine => {
-                            if (machine.load5 >= upperBound) {
-                                neededMachines++;
-                                machinesToKeep.push(machine.name);
-                            } else if (machine.load5 > lowerBound || this.justStarted.indexOf(machine.name) > -1) {
-                                machinesToKeep.push(machine.name);
-                            } else {
-                                machinesToLose.push(machine.name);
-                            }
-                        });
+                        if (this.addedNewMachines) {
+                            // Just added new machines, do nothing
+                            desiredAmount = activeMachines.length;
+                        } else {
+                            activeMachines.forEach(machine => {
+                                if (machine.load5 >= upperBound) {
+                                    neededMachines++;
+                                    machinesToKeep.push(machine.name);
+                                } else if (machine.load5 > lowerBound) {
+                                    machinesToKeep.push(machine.name);
+                                } else {
+                                    // Not yet removing machines
+                                    // machinesToLose.push(machine.name);
+                                }
+                            });
 
-                        // Set desiredAmount to either neededMachines or the minimum for this policy
-                        desiredAmount = Math.max(machinesToKeep.length + neededMachines, this.amount[this.policy]);
+                            // Set desiredAmount to either neededMachines or the minimum for this policy
+                            desiredAmount = Math.max(machinesToKeep.length + neededMachines, this.amount[this.policy]);
+                            if (desiredAmount !== activeMachines.length) {
+                                this.addedNewMachines = true;
+                                setTimeout(() => { this.addedNewMachines = false; }, 60000); // 60 seconds grace time
+                            }
+                        }
                     }
                     break;
                 case 'Learning':
@@ -162,10 +173,14 @@ export class ResourceManager {
             if (activeNodeCount !== desiredAmount) {
                 console.log(`Setting active nodes to ${desiredAmount}, currently ${activeNodeCount}`);
                 const started = await this.nodeManager.setNodeAmount(desiredAmount);
+                console.log('scheduler:debug started: ' + JSON.stringify(started));
+
                 for (let i = 0; i < started.length; i++) {
                     this.justStarted.push(started[i]);
                     setTimeout(() => this.justStarted.filter(s => s !== started[i]), 10000); // 10 second grace time
                 }
+                console.log('scheduler:debug this.justStarted: ' + JSON.stringify(this.justStarted));
+
             }
 
             this.addToHistory(desiredAmount, { active: activeMachineCount, nodes: activeNodeCount });
