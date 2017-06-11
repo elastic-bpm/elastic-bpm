@@ -158,7 +158,7 @@ export class ResourceManager {
 
                                     // Calling setTimeout in for-loops: https://stackoverflow.com/a/5226335/1086634
                                     (function (that, index) {
-                                        setTimeout(() => { this.justStarted.delete(activeMachines[index].name); }, 5 * 60 * 1000);
+                                        setTimeout(() => { that.justStarted.delete(activeMachines[index].name); }, 5 * 60 * 1000);
                                     })(this, i);
                                 } else if (activeMachines[i].load5 > lowerBound) {
                                     // Do nothing, it can live
