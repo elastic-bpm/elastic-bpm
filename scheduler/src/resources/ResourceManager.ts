@@ -162,7 +162,9 @@ export class ResourceManager {
                                     })(this, i);
                                 } else if (activeMachines[i].load5 > lowerBound) {
                                     // Do nothing, it can live
-                                } else {
+                                } else if (activeMachines.length > this.amount[this.policy]) {
+                                    // Only scale down if machines able to scale down
+
                                     // Check if started by other load
                                     console.log('scheduler:debug Checking if node ' + activeMachines[i].name + ' is started recently');
                                     let isStarted = false;
