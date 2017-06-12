@@ -195,7 +195,13 @@ export class ResourceManager {
                     break;
                 default:
                 case 'Off':
-                    // No changes to desiredAmount
+                    {
+                        // No changes to desiredAmount
+                        if (activeNodeCount !== desiredAmount) {
+                            console.log(`Setting active nodes to ${desiredAmount}, currently ${activeNodeCount}`);
+                            await this.nodeManager.setNodeAmount(desiredAmount);
+                        }
+                    }
                     break;
             }
 
