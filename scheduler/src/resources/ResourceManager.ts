@@ -152,22 +152,18 @@ export class ResourceManager {
                             }
                         } else {
 
+                            const toActivateFor: string[] = [];
+                            const toDeactivate: string[] = [];
+
                             // After check machine load
                             for (let i = 0; i < activeMachines.length; i++) {
                                 console.log('scheduler:debug Node ' + activeMachines[i].name + ' has load: ' + activeMachines[i].load5);
                                 if (activeMachines[i].load5 >= upperBound && !this.justStarted.has(activeMachines[i].name)) {
                                     // Add new machine for this one
-                                    const addedNode = await this.nodeManager.addNode();
-                                    console.log('scheduler:debug Adding node ' + addedNode + ' for node ' + activeMachines[i].name);
-                                    this.justStarted.set(activeMachines[i].name, addedNode);
-
-                                    // Calling setTimeout in for-loops: https://stackoverflow.com/a/5226335/1086634
-                                    (function (justStarted, index) {
-                                        setTimeout(() => { justStarted.delete(activeMachines[index].name); }, 5 * 60 * 1000);
-                                    })(this.justStarted, i);
+                                    toActivateFor.push(activeMachines[i].name);
                                 } else if (activeMachines[i].load5 > lowerBound) {
                                     // Do nothing, it can live
-                                } else if (activeMachines.length > this.amount[this.policy]) {
+                                } else if (activeMachines.length) {
                                     // Only scale down if machines able to scale down
 
                                     // Check if started by other load
@@ -181,12 +177,35 @@ export class ResourceManager {
 
                                     if (!isStarted) {
                                         console.log('scheduler:debug Node ' + activeMachines[i].name + ' is NOT started, shutting down');
-                                        this.nodeManager.shutdownNode(activeMachines[i].name);
+                                        toDeactivate.push(activeMachines[i].name);
                                     } else {
                                         console.log('scheduler:debug Node ' + activeMachines[i].name + ' is started recently, ignoring');
                                     }
                                 }
                             };
+
+                            const amountToActivate = toActivateFor.length - toDeactivate.length;
+                            if (amountToActivate > 0) {
+                                for (let i = 0; i < amountToActivate; i++) {
+                                    const addedNode = await this.nodeManager.addNode();
+                                    console.log('scheduler:debug Adding node ' + addedNode + ' for node ' + toActivateFor[i]);
+                                    this.justStarted.set(toActivateFor[i], addedNode);
+
+                                    // Calling setTimeout in for-loops: https://stackoverflow.com/a/5226335/1086634
+                                    (function (justStarted, index) {
+                                        setTimeout(() => { justStarted.delete(toActivateFor[index]); }, 5 * 60 * 1000);
+                                    })(this.justStarted, i);
+                                }
+                            } else if (amountToActivate < 0) {
+                                let amountToDeactivate = toDeactivate.length - toActivateFor.length;
+                                if (activeMachines.length - amountToDeactivate < this.amount[this.policy]) {
+                                    amountToDeactivate = activeMachines.length - this.amount[this.policy];
+                                }
+
+                                for (let i = 0; i < amountToDeactivate; i++) {
+                                    this.nodeManager.shutdownNode(toDeactivate[i]);
+                                }
+                            }
 
                         }
                     }
