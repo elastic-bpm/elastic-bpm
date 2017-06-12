@@ -143,7 +143,12 @@ export class ResourceManager {
                             // Start out with 0 machines
                             const difference = this.amount[this.policy] - activeMachines.length;
                             for (let i = 0; i < difference; i++) {
-                                await this.nodeManager.addNode();
+                                const addedNode = await this.nodeManager.addNode();
+
+                                console.log('scheduler:debug Adding node ' + addedNode + ' for start');
+                                this.justStarted.set('start' + 1, addedNode);
+
+                                setTimeout(() => { this.justStarted.delete('start' + 1); }, 5 * 60 * 1000);
                             }
                         } else {
 
@@ -157,9 +162,9 @@ export class ResourceManager {
                                     this.justStarted.set(activeMachines[i].name, addedNode);
 
                                     // Calling setTimeout in for-loops: https://stackoverflow.com/a/5226335/1086634
-                                    (function (that, index) {
-                                        setTimeout(() => { that.justStarted.delete(activeMachines[index].name); }, 5 * 60 * 1000);
-                                    })(this, i);
+                                    (function (justStarted, index) {
+                                        setTimeout(() => { justStarted.delete(activeMachines[index].name); }, 5 * 60 * 1000);
+                                    })(this.justStarted, i);
                                 } else if (activeMachines[i].load5 > lowerBound) {
                                     // Do nothing, it can live
                                 } else if (activeMachines.length > this.amount[this.policy]) {
