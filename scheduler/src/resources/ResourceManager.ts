@@ -1,15 +1,19 @@
 import * as moment from 'moment';
+
 import { VirtualMachine } from '../classes/VirtualMachine';
 import { Node } from '../classes/Node';
 import { Todo } from '../classes/Todo';
+
 import { MachineManager } from './machines/MachineManager';
 import { NodeManager } from './nodes/NodeManager';
+import { TaskRepository } from '../repositories/TaskRepository';
 
 export class ResourceManager {
     private amount: any = {};
     private history: any = { Target: [], Active: [], Nodes: [] };
     private machineManager: MachineManager;
     private nodeManager: NodeManager;
+    private taskRepository: TaskRepository;
     private justStarted: Map<string, string> = new Map<string, string>();
     private addedNewMachines = false;
     private upperBound = 1;
@@ -28,6 +32,7 @@ export class ResourceManager {
         this.amount['Learning'] = learningAmount;
         this.machineManager = new MachineManager();
         this.nodeManager = new NodeManager();
+        this.taskRepository = new TaskRepository();
 
         this.checkResources(intervalAmount);
     }
@@ -153,9 +158,9 @@ export class ResourceManager {
                                 const addedNode = await this.nodeManager.addNode();
 
                                 console.log('scheduler:debug Adding node ' + addedNode + ' for start');
-                                this.justStarted.set('start' + 1, addedNode);
+                                this.justStarted.set('start' + i, addedNode);
 
-                                setTimeout(() => { this.justStarted.delete('start' + 1); }, 5 * 60 * 1000);
+                                setTimeout(() => { this.justStarted.delete('start' + i); }, 5 * 60 * 1000);
                             }
                         } else {
 
@@ -218,6 +223,77 @@ export class ResourceManager {
                     }
                     break;
                 case 'Learning':
+                    {
+                        const virtualMachines = await this.machineManager.getMachines();
+                        const activeNodes = (await this.nodeManager.getNodes())
+                            .filter(node => node.availability === 'active' && node.status === 'ready')
+                            .map(node => node.hostname);
+                        const activeMachines = virtualMachines.filter(machine => {
+                            return machine.powerState === 'VM running' && activeNodes.indexOf(machine.name) > -1;
+                        });
+                        console.log('Current active machines: ' + JSON.stringify(activeMachines.map(machine => machine.name)));
+
+                        if (activeMachines.length < this.amount[this.policy]) {
+                            // Start out with 0 machines
+                            const difference = this.amount[this.policy] - activeMachines.length;
+                            for (let i = 0; i < difference; i++) {
+                                const addedNode = await this.nodeManager.addNode();
+
+                                console.log('scheduler:debug Adding node ' + addedNode + ' for start');
+                                this.justStarted.set('start' + i, addedNode);
+
+                                setTimeout(() => { this.justStarted.delete('start' + i); }, 5 * 60 * 1000);
+                            }
+                        } else {
+                            // Get all tasks
+                            const workerTasks = await this.taskRepository.getAllWorkerTasks();
+                            const workerTasksCount = workerTasks.length;
+
+                            const freeWorkerTasks = await this.taskRepository.getAllFreeWorkerTasks();
+                            const freeWorkerTasksCount = freeWorkerTasks.length;
+
+                            // Find out what fraction can be started
+                            const freeFraction: number = freeWorkerTasksCount / workerTasksCount;
+                            console.log('scheduler:debug ' +
+                                ' Tasks: ' + workerTasksCount +
+                                ', free: ' + freeWorkerTasksCount +
+                                ', fraction: ' + freeFraction);
+
+                            // Only scale if nothing has been started recently
+                            if (this.justStarted.keys.length === 0) {
+
+                                // Scale up if amount of tasks to start > fraction
+                                if (freeFraction > this.upperBound) {
+                                    const addedNode = await this.nodeManager.addNode();
+
+                                    console.log('scheduler:debug Adding node ' + addedNode + ' because fraction is too high');
+                                    this.justStarted.set('start', addedNode);
+
+                                    setTimeout(() => { this.justStarted.delete('start'); }, 5 * 60 * 1000);
+                                }
+
+                                // Scale down if fraction is too low and we above the minimum threshold
+                                if (freeFraction < this.lowerBound && activeMachines.length > this.amount[this.policy]) {
+                                    // Scale down the least busy machine
+                                    let minLoad = 100;
+                                    let hostname = '';
+                                    for (let i = 0; i < activeMachines.length; i++) {
+                                        console.log('scheduler:debug ' +
+                                            'Node ' + activeMachines[i].name +
+                                            ', has load: ' + activeMachines[i].load5);
+
+                                        if (activeMachines[i].load5 < minLoad) {
+                                            minLoad = activeMachines[i].load5;
+                                            hostname = activeMachines[i].name;
+                                        }
+                                    }
+
+                                    // Found it
+                                    this.nodeManager.shutdownNode(hostname);
+                                }
+                            }
+                        }
+                    }
                     break;
                 default:
                 case 'Off':
