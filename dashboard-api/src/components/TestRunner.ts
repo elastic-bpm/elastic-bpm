@@ -85,11 +85,20 @@ export class TestRunner {
         });
     }
 
-    private async startExecution(policy: string, humanParams: any, policyParams: any, workers: number = 4) {
+    private async startExecution(
+        policy: string,
+        humanParams: any,
+        policyParams: any,
+        workers: number = 4,
+        lowerBound: number = 0.3,
+        upperBound: number = 0.8) {
 
         await this.scheduler.set_amount({ policy: 'Static', amount: policyParams.Static });
         await this.scheduler.set_amount({ policy: 'Learning', amount: policyParams.Learning });
         await this.scheduler.set_amount({ policy: 'OnDemand', amount: policyParams.OnDemand });
+
+        console.log('scheduler:debug lowerBound: ' + lowerBound + ' upperBound: ' + upperBound);
+        await this.scheduler.set_bounds({ lowerBound: lowerBound, upperBound: upperBound });
 
         await this.sleep(5);
         const policyInfo = await this.scheduler.get_info();
@@ -268,7 +277,10 @@ export class TestRunner {
                     // Workers is set to 4
                     const workers = 4;
 
-                    setTimeout(() => this.startExecution(policy, schedule_i, policyParams, workers), 2000);
+                    const lowerBound = body.lowerBound;
+                    const upperBound = body.upperBound;
+
+                    setTimeout(() => this.startExecution(policy, schedule_i, policyParams, workers, lowerBound, upperBound), 2000);
                     break;
                 }
             default:

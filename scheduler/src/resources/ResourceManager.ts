@@ -12,12 +12,16 @@ export class ResourceManager {
     private nodeManager: NodeManager;
     private justStarted: Map<string, string> = new Map<string, string>();
     private addedNewMachines = false;
+    private upperBound = 1;
+    private lowerBound = 0.5;
+
 
     constructor(private policy: string,
         staticAmount: number,
         onDemandAmount: number,
         learningAmount: number,
-        private intervalAmount: number) {
+        private intervalAmount: number
+    ) {
         this.amount['Off'] = 0;
         this.amount['Static'] = staticAmount;
         this.amount['OnDemand'] = onDemandAmount;
@@ -35,6 +39,12 @@ export class ResourceManager {
     setPolicy(newPolicy: string): Promise<string> {
         this.policy = newPolicy;
         return this.getPolicy();
+    }
+
+    setBounds(upperBound: number, lowerBound: number): Promise<string> {
+        this.upperBound = upperBound;
+        this.lowerBound = lowerBound;
+        return new Promise<string>(resolve => resolve('ok'));
     }
 
     getAmount(): Promise<any> {
@@ -126,9 +136,6 @@ export class ResourceManager {
                     break;
                 case 'OnDemand':
                     {
-                        const upperBound = 1;
-                        const lowerBound = 0.5;
-
                         const virtualMachines = await this.machineManager.getMachines();
                         const activeNodes = (await this.nodeManager.getNodes())
                             .filter(node => node.availability === 'active' && node.status === 'ready')
@@ -158,10 +165,10 @@ export class ResourceManager {
                             // After check machine load
                             for (let i = 0; i < activeMachines.length; i++) {
                                 console.log('scheduler:debug Node ' + activeMachines[i].name + ' has load: ' + activeMachines[i].load5);
-                                if (activeMachines[i].load5 >= upperBound && !this.justStarted.has(activeMachines[i].name)) {
+                                if (activeMachines[i].load5 >= this.upperBound && !this.justStarted.has(activeMachines[i].name)) {
                                     // Add new machine for this one
                                     toActivateFor.push(activeMachines[i].name);
-                                } else if (activeMachines[i].load5 > lowerBound) {
+                                } else if (activeMachines[i].load5 > this.lowerBound) {
                                     // Do nothing, it can live
                                 } else if (activeMachines.length) {
                                     // Only scale down if machines able to scale down

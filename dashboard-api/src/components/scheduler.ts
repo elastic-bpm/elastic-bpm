@@ -100,6 +100,26 @@ export class Scheduler {
         });
     }
 
+    set_bounds(body: any) {
+        return new Promise<any>((resolve, reject) => {
+            console.log(body);
+            const args = {
+                data: body,
+                headers: { 'Content-Type': 'application/json' }
+            };
+            const req = this.client.post('http://' + this.scheduler_host + ':3210/bounds', args,
+                (data: any, response: any) => {
+                    if (response.statusCode === 200) {
+                        resolve(data);
+                    } else {
+                        reject('Error: ' + data);
+                    }
+                });
+
+            req.on('error', (error: any) => reject('error: ' + error));
+        });
+    }
+
     set_human_task(body: any) {
         return new Promise<any>((resolve, reject) => {
             console.log(body);
