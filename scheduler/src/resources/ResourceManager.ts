@@ -260,7 +260,7 @@ export class ResourceManager {
                                 ', fraction: ' + fraction);
 
                             // Only scale if nothing has been started recently
-                            if (!this.justStarted.has('start')) {
+                            if (this.justStarted.size === 0) {
 
                                 // Scale up if amount of tasks to start > fraction
                                 if (fraction > this.upperBound) {
