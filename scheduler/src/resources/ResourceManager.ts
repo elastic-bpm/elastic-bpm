@@ -289,6 +289,10 @@ export class ResourceManager {
                                     }
 
                                     // Found it
+                                    console.log('scheduler:debug'
+                                        + ' Shutting down machine ' + hostname
+                                        + ' fraction: ' + fraction
+                                        + ' running machines: ' + activeMachines.length);
                                     this.nodeManager.shutdownNode(hostname);
                                 }
                             }
