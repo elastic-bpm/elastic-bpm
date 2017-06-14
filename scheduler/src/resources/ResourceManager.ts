@@ -246,24 +246,24 @@ export class ResourceManager {
                             }
                         } else {
                             // Get all tasks
-                            const workerTasks = await this.taskRepository.getAllTodoWorkerTasks();
-                            const workerTasksCount = workerTasks.length;
+                            const todoWorkerTasks = await this.taskRepository.getAllTodoWorkerTasks();
+                            const todoWorkerTasksCount = todoWorkerTasks.length;
 
-                            const freeWorkerTasks = await this.taskRepository.getAllFreeWorkerTasks();
-                            const freeWorkerTasksCount = freeWorkerTasks.length;
+                            const busyWorkerTasks = await this.taskRepository.getAllFreeWorkerTasks();
+                            const busyWorkerTasksCount = busyWorkerTasks.length;
 
                             // Find out what fraction can be started
-                            const freeFraction: number = freeWorkerTasksCount / workerTasksCount;
+                            const fraction: number = busyWorkerTasksCount / todoWorkerTasksCount;
                             console.log('scheduler:debug ' +
-                                ' Tasks: ' + workerTasksCount +
-                                ', free: ' + freeWorkerTasksCount +
-                                ', fraction: ' + freeFraction);
+                                ' Tasks todo: ' + todoWorkerTasksCount +
+                                ', busy: ' + busyWorkerTasksCount +
+                                ', fraction: ' + fraction);
 
                             // Only scale if nothing has been started recently
                             if (!this.justStarted.has('start')) {
 
                                 // Scale up if amount of tasks to start > fraction
-                                if (freeFraction > this.upperBound) {
+                                if (fraction > this.upperBound) {
                                     const addedNode = await this.nodeManager.addNode();
 
                                     console.log('scheduler:debug Adding node ' + addedNode + ' because fraction is too high');
@@ -273,7 +273,7 @@ export class ResourceManager {
                                 }
 
                                 // Scale down if fraction is too low and we above the minimum threshold
-                                if (freeFraction < this.lowerBound && activeMachines.length > this.amount[this.policy]) {
+                                if (fraction < this.lowerBound && activeMachines.length > this.amount[this.policy]) {
                                     // Scale down the least busy machine
                                     let minLoad = 100;
                                     let hostname = '';

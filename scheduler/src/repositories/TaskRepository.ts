@@ -52,6 +52,15 @@ export class TaskRepository {
         });
     }
 
+    getAllBusyWorkerTasks(): Promise<Task[]> {
+        return new Promise<Task[]>((resolve, reject) => {
+            this.getAllTasks()
+                .then(tasks => tasks.filter(filterTaskIsWorker))
+                .then(tasks => resolve(tasks.filter(filterTaskIsBusy)))
+                .catch(error => reject(error));
+        });
+    }
+
     getAllHumanTasks(): Promise<Task[]> {
         return new Promise<Task[]>((resolve, reject) => {
             this.getAllTasks()
