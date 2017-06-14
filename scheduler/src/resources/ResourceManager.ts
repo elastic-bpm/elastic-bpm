@@ -246,7 +246,7 @@ export class ResourceManager {
                             }
                         } else {
                             // Get all tasks
-                            const workerTasks = await this.taskRepository.getAllWorkerTasks();
+                            const workerTasks = await this.taskRepository.getAllTodoWorkerTasks();
                             const workerTasksCount = workerTasks.length;
 
                             const freeWorkerTasks = await this.taskRepository.getAllFreeWorkerTasks();
