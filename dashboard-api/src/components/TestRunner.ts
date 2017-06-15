@@ -105,7 +105,7 @@ export class TestRunner {
         const target = policyInfo.amount[policy];
         this.resetRunning(policy, target);
 
-        const delayedWorkflows = require('../workflows/50wfs.json');
+        const delayedWorkflows = require('../workflows/100wfs.json');
 
         try {
             // Set Policy

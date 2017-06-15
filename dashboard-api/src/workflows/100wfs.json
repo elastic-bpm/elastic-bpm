@@ -1,0 +1,802 @@
+[
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:HE:15, E:CN:M, F:CI:M, G:HH:60",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, B:CC:M -> D:HE:15, C:CI:M -> D:HE:15, D:HE:15 -> E:CN:M, D:HE:15 -> F:CI:M, E:CN:M -> G:HH:60, F:CI:M -> G:HH:60",
+    "type": 3,
+    "owner": "Johannes",
+    "delay": 0,
+    "name": "Workflow with 7 nodes starting at 0"
+  },
+  {
+    "nodes": "A:CC:M, B:CC:M, C:CC:L, D:CI:M, E:CC:M, F:CI:L, G:CC:M, H:CN:M, I:CC:M",
+    "edges": "A:CC:M -> B:CC:M, A:CC:M -> C:CC:L, A:CC:M -> D:CI:M, A:CC:M -> E:CC:M, A:CC:M -> F:CI:L, A:CC:M -> G:CC:M, A:CC:M -> H:CN:M, A:CC:M -> I:CC:M",
+    "type": 1,
+    "owner": "Johannes",
+    "delay": 6220,
+    "name": "Workflow with 9 nodes starting at 6220"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:CI:M, E:CN:M, F:CI:M, G:CN:M, H:CC:S",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, A:CI:M -> D:CI:M, B:CC:M -> E:CN:M, C:CI:M -> F:CI:M, D:CI:M -> G:CN:M, E:CN:M -> H:CC:S, F:CI:M -> H:CC:S, G:CN:M -> H:CC:S",
+    "type": 2,
+    "owner": "Johannes",
+    "delay": 53422,
+    "name": "Workflow with 8 nodes starting at 53422"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:CI:M, E:CN:M, F:CI:M, G:CN:M, H:CC:S",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, A:CI:M -> D:CI:M, B:CC:M -> E:CN:M, C:CI:M -> F:CI:M, D:CI:M -> G:CN:M, E:CN:M -> H:CC:S, F:CI:M -> H:CC:S, G:CN:M -> H:CC:S",
+    "type": 2,
+    "owner": "Johannes",
+    "delay": 61314,
+    "name": "Workflow with 8 nodes starting at 61314"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:HE:15, E:CN:M, F:CI:M, G:HH:60",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, B:CC:M -> D:HE:15, C:CI:M -> D:HE:15, D:HE:15 -> E:CN:M, D:HE:15 -> F:CI:M, E:CN:M -> G:HH:60, F:CI:M -> G:HH:60",
+    "type": 3,
+    "owner": "Johannes",
+    "delay": 89088,
+    "name": "Workflow with 7 nodes starting at 89088"
+  },
+  {
+    "nodes": "A:CC:M, B:CC:M, C:CC:L, D:CI:M, E:CC:M, F:CI:L, G:CC:M, H:CN:M, I:CC:M",
+    "edges": "A:CC:M -> B:CC:M, A:CC:M -> C:CC:L, A:CC:M -> D:CI:M, A:CC:M -> E:CC:M, A:CC:M -> F:CI:L, A:CC:M -> G:CC:M, A:CC:M -> H:CN:M, A:CC:M -> I:CC:M",
+    "type": 1,
+    "owner": "Johannes",
+    "delay": 107927,
+    "name": "Workflow with 9 nodes starting at 107927"
+  },
+  {
+    "nodes": "A:CC:M, B:CC:M, C:CC:L, D:CI:M, E:CC:M, F:CI:L, G:CC:M, H:CN:M, I:CC:M",
+    "edges": "A:CC:M -> B:CC:M, A:CC:M -> C:CC:L, A:CC:M -> D:CI:M, A:CC:M -> E:CC:M, A:CC:M -> F:CI:L, A:CC:M -> G:CC:M, A:CC:M -> H:CN:M, A:CC:M -> I:CC:M",
+    "type": 1,
+    "owner": "Johannes",
+    "delay": 124416,
+    "name": "Workflow with 9 nodes starting at 124416"
+  },
+  {
+    "nodes": "A:CC:M, B:CC:M, C:CC:L, D:CI:M, E:CC:M, F:CI:L, G:CC:M, H:CN:M, I:CC:M",
+    "edges": "A:CC:M -> B:CC:M, A:CC:M -> C:CC:L, A:CC:M -> D:CI:M, A:CC:M -> E:CC:M, A:CC:M -> F:CI:L, A:CC:M -> G:CC:M, A:CC:M -> H:CN:M, A:CC:M -> I:CC:M",
+    "type": 1,
+    "owner": "Johannes",
+    "delay": 138674,
+    "name": "Workflow with 9 nodes starting at 138674"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:HE:15, E:CN:M, F:CI:M, G:HH:60",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, B:CC:M -> D:HE:15, C:CI:M -> D:HE:15, D:HE:15 -> E:CN:M, D:HE:15 -> F:CI:M, E:CN:M -> G:HH:60, F:CI:M -> G:HH:60",
+    "type": 3,
+    "owner": "Johannes",
+    "delay": 138795,
+    "name": "Workflow with 7 nodes starting at 138795"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:HE:15, E:CN:M, F:CI:M, G:HH:60",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, B:CC:M -> D:HE:15, C:CI:M -> D:HE:15, D:HE:15 -> E:CN:M, D:HE:15 -> F:CI:M, E:CN:M -> G:HH:60, F:CI:M -> G:HH:60",
+    "type": 3,
+    "owner": "Johannes",
+    "delay": 147344,
+    "name": "Workflow with 7 nodes starting at 147344"
+  },
+  {
+    "nodes": "A:CC:M, B:CC:M, C:CC:L, D:CI:M, E:CC:M, F:CI:L, G:CC:M, H:CN:M, I:CC:M",
+    "edges": "A:CC:M -> B:CC:M, A:CC:M -> C:CC:L, A:CC:M -> D:CI:M, A:CC:M -> E:CC:M, A:CC:M -> F:CI:L, A:CC:M -> G:CC:M, A:CC:M -> H:CN:M, A:CC:M -> I:CC:M",
+    "type": 1,
+    "owner": "Johannes",
+    "delay": 147573,
+    "name": "Workflow with 9 nodes starting at 147573"
+  },
+  {
+    "nodes": "A:CC:M, B:CC:M, C:CC:L, D:CI:M, E:CC:M, F:CI:L, G:CC:M, H:CN:M, I:CC:M",
+    "edges": "A:CC:M -> B:CC:M, A:CC:M -> C:CC:L, A:CC:M -> D:CI:M, A:CC:M -> E:CC:M, A:CC:M -> F:CI:L, A:CC:M -> G:CC:M, A:CC:M -> H:CN:M, A:CC:M -> I:CC:M",
+    "type": 1,
+    "owner": "Johannes",
+    "delay": 163741,
+    "name": "Workflow with 9 nodes starting at 163741"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:CI:M, E:CN:M, F:CI:M, G:CN:M, H:CC:S",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, A:CI:M -> D:CI:M, B:CC:M -> E:CN:M, C:CI:M -> F:CI:M, D:CI:M -> G:CN:M, E:CN:M -> H:CC:S, F:CI:M -> H:CC:S, G:CN:M -> H:CC:S",
+    "type": 2,
+    "owner": "Johannes",
+    "delay": 188425,
+    "name": "Workflow with 8 nodes starting at 188425"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:HE:15, E:CN:M, F:CI:M, G:HH:60",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, B:CC:M -> D:HE:15, C:CI:M -> D:HE:15, D:HE:15 -> E:CN:M, D:HE:15 -> F:CI:M, E:CN:M -> G:HH:60, F:CI:M -> G:HH:60",
+    "type": 3,
+    "owner": "Johannes",
+    "delay": 192785,
+    "name": "Workflow with 7 nodes starting at 192785"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:HE:15, E:CN:M, F:CI:M, G:HH:60",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, B:CC:M -> D:HE:15, C:CI:M -> D:HE:15, D:HE:15 -> E:CN:M, D:HE:15 -> F:CI:M, E:CN:M -> G:HH:60, F:CI:M -> G:HH:60",
+    "type": 3,
+    "owner": "Johannes",
+    "delay": 193722,
+    "name": "Workflow with 7 nodes starting at 193722"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:CI:M, E:CN:M, F:CI:M, G:CN:M, H:CC:S",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, A:CI:M -> D:CI:M, B:CC:M -> E:CN:M, C:CI:M -> F:CI:M, D:CI:M -> G:CN:M, E:CN:M -> H:CC:S, F:CI:M -> H:CC:S, G:CN:M -> H:CC:S",
+    "type": 2,
+    "owner": "Johannes",
+    "delay": 233496,
+    "name": "Workflow with 8 nodes starting at 233496"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:CI:M, E:CN:M, F:CI:M, G:CN:M, H:CC:S",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, A:CI:M -> D:CI:M, B:CC:M -> E:CN:M, C:CI:M -> F:CI:M, D:CI:M -> G:CN:M, E:CN:M -> H:CC:S, F:CI:M -> H:CC:S, G:CN:M -> H:CC:S",
+    "type": 2,
+    "owner": "Johannes",
+    "delay": 252636,
+    "name": "Workflow with 8 nodes starting at 252636"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:CI:M, E:CN:M, F:CI:M, G:CN:M, H:CC:S",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, A:CI:M -> D:CI:M, B:CC:M -> E:CN:M, C:CI:M -> F:CI:M, D:CI:M -> G:CN:M, E:CN:M -> H:CC:S, F:CI:M -> H:CC:S, G:CN:M -> H:CC:S",
+    "type": 2,
+    "owner": "Johannes",
+    "delay": 263129,
+    "name": "Workflow with 8 nodes starting at 263129"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:HE:15, E:CN:M, F:CI:M, G:HH:60",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, B:CC:M -> D:HE:15, C:CI:M -> D:HE:15, D:HE:15 -> E:CN:M, D:HE:15 -> F:CI:M, E:CN:M -> G:HH:60, F:CI:M -> G:HH:60",
+    "type": 3,
+    "owner": "Johannes",
+    "delay": 274207,
+    "name": "Workflow with 7 nodes starting at 274207"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:HE:15, E:CN:M, F:CI:M, G:HH:60",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, B:CC:M -> D:HE:15, C:CI:M -> D:HE:15, D:HE:15 -> E:CN:M, D:HE:15 -> F:CI:M, E:CN:M -> G:HH:60, F:CI:M -> G:HH:60",
+    "type": 3,
+    "owner": "Johannes",
+    "delay": 279496,
+    "name": "Workflow with 7 nodes starting at 279496"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:HE:15, E:CN:M, F:CI:M, G:HH:60",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, B:CC:M -> D:HE:15, C:CI:M -> D:HE:15, D:HE:15 -> E:CN:M, D:HE:15 -> F:CI:M, E:CN:M -> G:HH:60, F:CI:M -> G:HH:60",
+    "type": 3,
+    "owner": "Johannes",
+    "delay": 280731,
+    "name": "Workflow with 7 nodes starting at 280731"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:CI:M, E:CN:M, F:CI:M, G:CN:M, H:CC:S",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, A:CI:M -> D:CI:M, B:CC:M -> E:CN:M, C:CI:M -> F:CI:M, D:CI:M -> G:CN:M, E:CN:M -> H:CC:S, F:CI:M -> H:CC:S, G:CN:M -> H:CC:S",
+    "type": 2,
+    "owner": "Johannes",
+    "delay": 289030,
+    "name": "Workflow with 8 nodes starting at 289030"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:CI:M, E:CN:M, F:CI:M, G:CN:M, H:CC:S",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, A:CI:M -> D:CI:M, B:CC:M -> E:CN:M, C:CI:M -> F:CI:M, D:CI:M -> G:CN:M, E:CN:M -> H:CC:S, F:CI:M -> H:CC:S, G:CN:M -> H:CC:S",
+    "type": 2,
+    "owner": "Johannes",
+    "delay": 301682,
+    "name": "Workflow with 8 nodes starting at 301682"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:CI:M, E:CN:M, F:CI:M, G:CN:M, H:CC:S",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, A:CI:M -> D:CI:M, B:CC:M -> E:CN:M, C:CI:M -> F:CI:M, D:CI:M -> G:CN:M, E:CN:M -> H:CC:S, F:CI:M -> H:CC:S, G:CN:M -> H:CC:S",
+    "type": 2,
+    "owner": "Johannes",
+    "delay": 314837,
+    "name": "Workflow with 8 nodes starting at 314837"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:HE:15, E:CN:M, F:CI:M, G:HH:60",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, B:CC:M -> D:HE:15, C:CI:M -> D:HE:15, D:HE:15 -> E:CN:M, D:HE:15 -> F:CI:M, E:CN:M -> G:HH:60, F:CI:M -> G:HH:60",
+    "type": 3,
+    "owner": "Johannes",
+    "delay": 326125,
+    "name": "Workflow with 7 nodes starting at 326125"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:CI:M, E:CN:M, F:CI:M, G:CN:M, H:CC:S",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, A:CI:M -> D:CI:M, B:CC:M -> E:CN:M, C:CI:M -> F:CI:M, D:CI:M -> G:CN:M, E:CN:M -> H:CC:S, F:CI:M -> H:CC:S, G:CN:M -> H:CC:S",
+    "type": 2,
+    "owner": "Johannes",
+    "delay": 339305,
+    "name": "Workflow with 8 nodes starting at 339305"
+  },
+  {
+    "nodes": "A:CC:M, B:CC:M, C:CC:L, D:CI:M, E:CC:M, F:CI:L, G:CC:M, H:CN:M, I:CC:M",
+    "edges": "A:CC:M -> B:CC:M, A:CC:M -> C:CC:L, A:CC:M -> D:CI:M, A:CC:M -> E:CC:M, A:CC:M -> F:CI:L, A:CC:M -> G:CC:M, A:CC:M -> H:CN:M, A:CC:M -> I:CC:M",
+    "type": 1,
+    "owner": "Johannes",
+    "delay": 351017,
+    "name": "Workflow with 9 nodes starting at 351017"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:HE:15, E:CN:M, F:CI:M, G:HH:60",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, B:CC:M -> D:HE:15, C:CI:M -> D:HE:15, D:HE:15 -> E:CN:M, D:HE:15 -> F:CI:M, E:CN:M -> G:HH:60, F:CI:M -> G:HH:60",
+    "type": 3,
+    "owner": "Johannes",
+    "delay": 374440,
+    "name": "Workflow with 7 nodes starting at 374440"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:HE:15, E:CN:M, F:CI:M, G:HH:60",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, B:CC:M -> D:HE:15, C:CI:M -> D:HE:15, D:HE:15 -> E:CN:M, D:HE:15 -> F:CI:M, E:CN:M -> G:HH:60, F:CI:M -> G:HH:60",
+    "type": 3,
+    "owner": "Johannes",
+    "delay": 457534,
+    "name": "Workflow with 7 nodes starting at 457534"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:HE:15, E:CN:M, F:CI:M, G:HH:60",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, B:CC:M -> D:HE:15, C:CI:M -> D:HE:15, D:HE:15 -> E:CN:M, D:HE:15 -> F:CI:M, E:CN:M -> G:HH:60, F:CI:M -> G:HH:60",
+    "type": 3,
+    "owner": "Johannes",
+    "delay": 476859,
+    "name": "Workflow with 7 nodes starting at 476859"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:CI:M, E:CN:M, F:CI:M, G:CN:M, H:CC:S",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, A:CI:M -> D:CI:M, B:CC:M -> E:CN:M, C:CI:M -> F:CI:M, D:CI:M -> G:CN:M, E:CN:M -> H:CC:S, F:CI:M -> H:CC:S, G:CN:M -> H:CC:S",
+    "type": 2,
+    "owner": "Johannes",
+    "delay": 485153,
+    "name": "Workflow with 8 nodes starting at 485153"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:CI:M, E:CN:M, F:CI:M, G:CN:M, H:CC:S",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, A:CI:M -> D:CI:M, B:CC:M -> E:CN:M, C:CI:M -> F:CI:M, D:CI:M -> G:CN:M, E:CN:M -> H:CC:S, F:CI:M -> H:CC:S, G:CN:M -> H:CC:S",
+    "type": 2,
+    "owner": "Johannes",
+    "delay": 487794,
+    "name": "Workflow with 8 nodes starting at 487794"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:CI:M, E:CN:M, F:CI:M, G:CN:M, H:CC:S",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, A:CI:M -> D:CI:M, B:CC:M -> E:CN:M, C:CI:M -> F:CI:M, D:CI:M -> G:CN:M, E:CN:M -> H:CC:S, F:CI:M -> H:CC:S, G:CN:M -> H:CC:S",
+    "type": 2,
+    "owner": "Johannes",
+    "delay": 504054,
+    "name": "Workflow with 8 nodes starting at 504054"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:CI:M, E:CN:M, F:CI:M, G:CN:M, H:CC:S",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, A:CI:M -> D:CI:M, B:CC:M -> E:CN:M, C:CI:M -> F:CI:M, D:CI:M -> G:CN:M, E:CN:M -> H:CC:S, F:CI:M -> H:CC:S, G:CN:M -> H:CC:S",
+    "type": 2,
+    "owner": "Johannes",
+    "delay": 506361,
+    "name": "Workflow with 8 nodes starting at 506361"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:HE:15, E:CN:M, F:CI:M, G:HH:60",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, B:CC:M -> D:HE:15, C:CI:M -> D:HE:15, D:HE:15 -> E:CN:M, D:HE:15 -> F:CI:M, E:CN:M -> G:HH:60, F:CI:M -> G:HH:60",
+    "type": 3,
+    "owner": "Johannes",
+    "delay": 512903,
+    "name": "Workflow with 7 nodes starting at 512903"
+  },
+  {
+    "nodes": "A:CC:M, B:CC:M, C:CC:L, D:CI:M, E:CC:M, F:CI:L, G:CC:M, H:CN:M, I:CC:M",
+    "edges": "A:CC:M -> B:CC:M, A:CC:M -> C:CC:L, A:CC:M -> D:CI:M, A:CC:M -> E:CC:M, A:CC:M -> F:CI:L, A:CC:M -> G:CC:M, A:CC:M -> H:CN:M, A:CC:M -> I:CC:M",
+    "type": 1,
+    "owner": "Johannes",
+    "delay": 542833,
+    "name": "Workflow with 9 nodes starting at 542833"
+  },
+  {
+    "nodes": "A:CC:M, B:CC:M, C:CC:L, D:CI:M, E:CC:M, F:CI:L, G:CC:M, H:CN:M, I:CC:M",
+    "edges": "A:CC:M -> B:CC:M, A:CC:M -> C:CC:L, A:CC:M -> D:CI:M, A:CC:M -> E:CC:M, A:CC:M -> F:CI:L, A:CC:M -> G:CC:M, A:CC:M -> H:CN:M, A:CC:M -> I:CC:M",
+    "type": 1,
+    "owner": "Johannes",
+    "delay": 544440,
+    "name": "Workflow with 9 nodes starting at 544440"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:HE:15, E:CN:M, F:CI:M, G:HH:60",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, B:CC:M -> D:HE:15, C:CI:M -> D:HE:15, D:HE:15 -> E:CN:M, D:HE:15 -> F:CI:M, E:CN:M -> G:HH:60, F:CI:M -> G:HH:60",
+    "type": 3,
+    "owner": "Johannes",
+    "delay": 562735,
+    "name": "Workflow with 7 nodes starting at 562735"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:HE:15, E:CN:M, F:CI:M, G:HH:60",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, B:CC:M -> D:HE:15, C:CI:M -> D:HE:15, D:HE:15 -> E:CN:M, D:HE:15 -> F:CI:M, E:CN:M -> G:HH:60, F:CI:M -> G:HH:60",
+    "type": 3,
+    "owner": "Johannes",
+    "delay": 571066,
+    "name": "Workflow with 7 nodes starting at 571066"
+  },
+  {
+    "nodes": "A:CC:M, B:CC:M, C:CC:L, D:CI:M, E:CC:M, F:CI:L, G:CC:M, H:CN:M, I:CC:M",
+    "edges": "A:CC:M -> B:CC:M, A:CC:M -> C:CC:L, A:CC:M -> D:CI:M, A:CC:M -> E:CC:M, A:CC:M -> F:CI:L, A:CC:M -> G:CC:M, A:CC:M -> H:CN:M, A:CC:M -> I:CC:M",
+    "type": 1,
+    "owner": "Johannes",
+    "delay": 668481,
+    "name": "Workflow with 9 nodes starting at 668481"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:CI:M, E:CN:M, F:CI:M, G:CN:M, H:CC:S",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, A:CI:M -> D:CI:M, B:CC:M -> E:CN:M, C:CI:M -> F:CI:M, D:CI:M -> G:CN:M, E:CN:M -> H:CC:S, F:CI:M -> H:CC:S, G:CN:M -> H:CC:S",
+    "type": 2,
+    "owner": "Johannes",
+    "delay": 669428,
+    "name": "Workflow with 8 nodes starting at 669428"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:CI:M, E:CN:M, F:CI:M, G:CN:M, H:CC:S",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, A:CI:M -> D:CI:M, B:CC:M -> E:CN:M, C:CI:M -> F:CI:M, D:CI:M -> G:CN:M, E:CN:M -> H:CC:S, F:CI:M -> H:CC:S, G:CN:M -> H:CC:S",
+    "type": 2,
+    "owner": "Johannes",
+    "delay": 723979,
+    "name": "Workflow with 8 nodes starting at 723979"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:CI:M, E:CN:M, F:CI:M, G:CN:M, H:CC:S",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, A:CI:M -> D:CI:M, B:CC:M -> E:CN:M, C:CI:M -> F:CI:M, D:CI:M -> G:CN:M, E:CN:M -> H:CC:S, F:CI:M -> H:CC:S, G:CN:M -> H:CC:S",
+    "type": 2,
+    "owner": "Johannes",
+    "delay": 732319,
+    "name": "Workflow with 8 nodes starting at 732319"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:CI:M, E:CN:M, F:CI:M, G:CN:M, H:CC:S",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, A:CI:M -> D:CI:M, B:CC:M -> E:CN:M, C:CI:M -> F:CI:M, D:CI:M -> G:CN:M, E:CN:M -> H:CC:S, F:CI:M -> H:CC:S, G:CN:M -> H:CC:S",
+    "type": 2,
+    "owner": "Johannes",
+    "delay": 741493,
+    "name": "Workflow with 8 nodes starting at 741493"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:CI:M, E:CN:M, F:CI:M, G:CN:M, H:CC:S",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, A:CI:M -> D:CI:M, B:CC:M -> E:CN:M, C:CI:M -> F:CI:M, D:CI:M -> G:CN:M, E:CN:M -> H:CC:S, F:CI:M -> H:CC:S, G:CN:M -> H:CC:S",
+    "type": 2,
+    "owner": "Johannes",
+    "delay": 744312,
+    "name": "Workflow with 8 nodes starting at 744312"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:CI:M, E:CN:M, F:CI:M, G:CN:M, H:CC:S",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, A:CI:M -> D:CI:M, B:CC:M -> E:CN:M, C:CI:M -> F:CI:M, D:CI:M -> G:CN:M, E:CN:M -> H:CC:S, F:CI:M -> H:CC:S, G:CN:M -> H:CC:S",
+    "type": 2,
+    "owner": "Johannes",
+    "delay": 746955,
+    "name": "Workflow with 8 nodes starting at 746955"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:HE:15, E:CN:M, F:CI:M, G:HH:60",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, B:CC:M -> D:HE:15, C:CI:M -> D:HE:15, D:HE:15 -> E:CN:M, D:HE:15 -> F:CI:M, E:CN:M -> G:HH:60, F:CI:M -> G:HH:60",
+    "type": 3,
+    "owner": "Johannes",
+    "delay": 754573,
+    "name": "Workflow with 7 nodes starting at 754573"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:CI:M, E:CN:M, F:CI:M, G:CN:M, H:CC:S",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, A:CI:M -> D:CI:M, B:CC:M -> E:CN:M, C:CI:M -> F:CI:M, D:CI:M -> G:CN:M, E:CN:M -> H:CC:S, F:CI:M -> H:CC:S, G:CN:M -> H:CC:S",
+    "type": 2,
+    "owner": "Johannes",
+    "delay": 758839,
+    "name": "Workflow with 8 nodes starting at 758839"
+  },
+  {
+    "nodes": "A:CC:M, B:CC:M, C:CC:L, D:CI:M, E:CC:M, F:CI:L, G:CC:M, H:CN:M, I:CC:M",
+    "edges": "A:CC:M -> B:CC:M, A:CC:M -> C:CC:L, A:CC:M -> D:CI:M, A:CC:M -> E:CC:M, A:CC:M -> F:CI:L, A:CC:M -> G:CC:M, A:CC:M -> H:CN:M, A:CC:M -> I:CC:M",
+    "type": 1,
+    "owner": "Johannes",
+    "delay": 764985,
+    "name": "Workflow with 9 nodes starting at 764985"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:CI:M, E:CN:M, F:CI:M, G:CN:M, H:CC:S",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, A:CI:M -> D:CI:M, B:CC:M -> E:CN:M, C:CI:M -> F:CI:M, D:CI:M -> G:CN:M, E:CN:M -> H:CC:S, F:CI:M -> H:CC:S, G:CN:M -> H:CC:S",
+    "type": 2,
+    "owner": "Johannes",
+    "delay": 770807,
+    "name": "Workflow with 8 nodes starting at 770807"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:CI:M, E:CN:M, F:CI:M, G:CN:M, H:CC:S",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, A:CI:M -> D:CI:M, B:CC:M -> E:CN:M, C:CI:M -> F:CI:M, D:CI:M -> G:CN:M, E:CN:M -> H:CC:S, F:CI:M -> H:CC:S, G:CN:M -> H:CC:S",
+    "type": 2,
+    "owner": "Johannes",
+    "delay": 772021,
+    "name": "Workflow with 8 nodes starting at 772021"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:CI:M, E:CN:M, F:CI:M, G:CN:M, H:CC:S",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, A:CI:M -> D:CI:M, B:CC:M -> E:CN:M, C:CI:M -> F:CI:M, D:CI:M -> G:CN:M, E:CN:M -> H:CC:S, F:CI:M -> H:CC:S, G:CN:M -> H:CC:S",
+    "type": 2,
+    "owner": "Johannes",
+    "delay": 802042,
+    "name": "Workflow with 8 nodes starting at 802042"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:HE:15, E:CN:M, F:CI:M, G:HH:60",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, B:CC:M -> D:HE:15, C:CI:M -> D:HE:15, D:HE:15 -> E:CN:M, D:HE:15 -> F:CI:M, E:CN:M -> G:HH:60, F:CI:M -> G:HH:60",
+    "type": 3,
+    "owner": "Johannes",
+    "delay": 837142,
+    "name": "Workflow with 7 nodes starting at 837142"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:HE:15, E:CN:M, F:CI:M, G:HH:60",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, B:CC:M -> D:HE:15, C:CI:M -> D:HE:15, D:HE:15 -> E:CN:M, D:HE:15 -> F:CI:M, E:CN:M -> G:HH:60, F:CI:M -> G:HH:60",
+    "type": 3,
+    "owner": "Johannes",
+    "delay": 870774,
+    "name": "Workflow with 7 nodes starting at 870774"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:CI:M, E:CN:M, F:CI:M, G:CN:M, H:CC:S",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, A:CI:M -> D:CI:M, B:CC:M -> E:CN:M, C:CI:M -> F:CI:M, D:CI:M -> G:CN:M, E:CN:M -> H:CC:S, F:CI:M -> H:CC:S, G:CN:M -> H:CC:S",
+    "type": 2,
+    "owner": "Johannes",
+    "delay": 898473,
+    "name": "Workflow with 8 nodes starting at 898473"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:HE:15, E:CN:M, F:CI:M, G:HH:60",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, B:CC:M -> D:HE:15, C:CI:M -> D:HE:15, D:HE:15 -> E:CN:M, D:HE:15 -> F:CI:M, E:CN:M -> G:HH:60, F:CI:M -> G:HH:60",
+    "type": 3,
+    "owner": "Johannes",
+    "delay": 916172,
+    "name": "Workflow with 7 nodes starting at 916172"
+  },
+  {
+    "nodes": "A:CC:M, B:CC:M, C:CC:L, D:CI:M, E:CC:M, F:CI:L, G:CC:M, H:CN:M, I:CC:M",
+    "edges": "A:CC:M -> B:CC:M, A:CC:M -> C:CC:L, A:CC:M -> D:CI:M, A:CC:M -> E:CC:M, A:CC:M -> F:CI:L, A:CC:M -> G:CC:M, A:CC:M -> H:CN:M, A:CC:M -> I:CC:M",
+    "type": 1,
+    "owner": "Johannes",
+    "delay": 928405,
+    "name": "Workflow with 9 nodes starting at 928405"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:CI:M, E:CN:M, F:CI:M, G:CN:M, H:CC:S",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, A:CI:M -> D:CI:M, B:CC:M -> E:CN:M, C:CI:M -> F:CI:M, D:CI:M -> G:CN:M, E:CN:M -> H:CC:S, F:CI:M -> H:CC:S, G:CN:M -> H:CC:S",
+    "type": 2,
+    "owner": "Johannes",
+    "delay": 940256,
+    "name": "Workflow with 8 nodes starting at 940256"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:HE:15, E:CN:M, F:CI:M, G:HH:60",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, B:CC:M -> D:HE:15, C:CI:M -> D:HE:15, D:HE:15 -> E:CN:M, D:HE:15 -> F:CI:M, E:CN:M -> G:HH:60, F:CI:M -> G:HH:60",
+    "type": 3,
+    "owner": "Johannes",
+    "delay": 954684,
+    "name": "Workflow with 7 nodes starting at 954684"
+  },
+  {
+    "nodes": "A:CC:M, B:CC:M, C:CC:L, D:CI:M, E:CC:M, F:CI:L, G:CC:M, H:CN:M, I:CC:M",
+    "edges": "A:CC:M -> B:CC:M, A:CC:M -> C:CC:L, A:CC:M -> D:CI:M, A:CC:M -> E:CC:M, A:CC:M -> F:CI:L, A:CC:M -> G:CC:M, A:CC:M -> H:CN:M, A:CC:M -> I:CC:M",
+    "type": 1,
+    "owner": "Johannes",
+    "delay": 965828,
+    "name": "Workflow with 9 nodes starting at 965828"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:CI:M, E:CN:M, F:CI:M, G:CN:M, H:CC:S",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, A:CI:M -> D:CI:M, B:CC:M -> E:CN:M, C:CI:M -> F:CI:M, D:CI:M -> G:CN:M, E:CN:M -> H:CC:S, F:CI:M -> H:CC:S, G:CN:M -> H:CC:S",
+    "type": 2,
+    "owner": "Johannes",
+    "delay": 970588,
+    "name": "Workflow with 8 nodes starting at 970588"
+  },
+  {
+    "nodes": "A:CC:M, B:CC:M, C:CC:L, D:CI:M, E:CC:M, F:CI:L, G:CC:M, H:CN:M, I:CC:M",
+    "edges": "A:CC:M -> B:CC:M, A:CC:M -> C:CC:L, A:CC:M -> D:CI:M, A:CC:M -> E:CC:M, A:CC:M -> F:CI:L, A:CC:M -> G:CC:M, A:CC:M -> H:CN:M, A:CC:M -> I:CC:M",
+    "type": 1,
+    "owner": "Johannes",
+    "delay": 973377,
+    "name": "Workflow with 9 nodes starting at 973377"
+  },
+  {
+    "nodes": "A:CC:M, B:CC:M, C:CC:L, D:CI:M, E:CC:M, F:CI:L, G:CC:M, H:CN:M, I:CC:M",
+    "edges": "A:CC:M -> B:CC:M, A:CC:M -> C:CC:L, A:CC:M -> D:CI:M, A:CC:M -> E:CC:M, A:CC:M -> F:CI:L, A:CC:M -> G:CC:M, A:CC:M -> H:CN:M, A:CC:M -> I:CC:M",
+    "type": 1,
+    "owner": "Johannes",
+    "delay": 989310,
+    "name": "Workflow with 9 nodes starting at 989310"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:HE:15, E:CN:M, F:CI:M, G:HH:60",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, B:CC:M -> D:HE:15, C:CI:M -> D:HE:15, D:HE:15 -> E:CN:M, D:HE:15 -> F:CI:M, E:CN:M -> G:HH:60, F:CI:M -> G:HH:60",
+    "type": 3,
+    "owner": "Johannes",
+    "delay": 995635,
+    "name": "Workflow with 7 nodes starting at 995635"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:HE:15, E:CN:M, F:CI:M, G:HH:60",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, B:CC:M -> D:HE:15, C:CI:M -> D:HE:15, D:HE:15 -> E:CN:M, D:HE:15 -> F:CI:M, E:CN:M -> G:HH:60, F:CI:M -> G:HH:60",
+    "type": 3,
+    "owner": "Johannes",
+    "delay": 1001130,
+    "name": "Workflow with 7 nodes starting at 1001130"
+  },
+  {
+    "nodes": "A:CC:M, B:CC:M, C:CC:L, D:CI:M, E:CC:M, F:CI:L, G:CC:M, H:CN:M, I:CC:M",
+    "edges": "A:CC:M -> B:CC:M, A:CC:M -> C:CC:L, A:CC:M -> D:CI:M, A:CC:M -> E:CC:M, A:CC:M -> F:CI:L, A:CC:M -> G:CC:M, A:CC:M -> H:CN:M, A:CC:M -> I:CC:M",
+    "type": 1,
+    "owner": "Johannes",
+    "delay": 1031970,
+    "name": "Workflow with 9 nodes starting at 1031970"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:HE:15, E:CN:M, F:CI:M, G:HH:60",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, B:CC:M -> D:HE:15, C:CI:M -> D:HE:15, D:HE:15 -> E:CN:M, D:HE:15 -> F:CI:M, E:CN:M -> G:HH:60, F:CI:M -> G:HH:60",
+    "type": 3,
+    "owner": "Johannes",
+    "delay": 1050014,
+    "name": "Workflow with 7 nodes starting at 1050014"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:HE:15, E:CN:M, F:CI:M, G:HH:60",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, B:CC:M -> D:HE:15, C:CI:M -> D:HE:15, D:HE:15 -> E:CN:M, D:HE:15 -> F:CI:M, E:CN:M -> G:HH:60, F:CI:M -> G:HH:60",
+    "type": 3,
+    "owner": "Johannes",
+    "delay": 1082093,
+    "name": "Workflow with 7 nodes starting at 1082093"
+  },
+  {
+    "nodes": "A:CC:M, B:CC:M, C:CC:L, D:CI:M, E:CC:M, F:CI:L, G:CC:M, H:CN:M, I:CC:M",
+    "edges": "A:CC:M -> B:CC:M, A:CC:M -> C:CC:L, A:CC:M -> D:CI:M, A:CC:M -> E:CC:M, A:CC:M -> F:CI:L, A:CC:M -> G:CC:M, A:CC:M -> H:CN:M, A:CC:M -> I:CC:M",
+    "type": 1,
+    "owner": "Johannes",
+    "delay": 1106764,
+    "name": "Workflow with 9 nodes starting at 1106764"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:HE:15, E:CN:M, F:CI:M, G:HH:60",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, B:CC:M -> D:HE:15, C:CI:M -> D:HE:15, D:HE:15 -> E:CN:M, D:HE:15 -> F:CI:M, E:CN:M -> G:HH:60, F:CI:M -> G:HH:60",
+    "type": 3,
+    "owner": "Johannes",
+    "delay": 1117132,
+    "name": "Workflow with 7 nodes starting at 1117132"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:HE:15, E:CN:M, F:CI:M, G:HH:60",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, B:CC:M -> D:HE:15, C:CI:M -> D:HE:15, D:HE:15 -> E:CN:M, D:HE:15 -> F:CI:M, E:CN:M -> G:HH:60, F:CI:M -> G:HH:60",
+    "type": 3,
+    "owner": "Johannes",
+    "delay": 1129376,
+    "name": "Workflow with 7 nodes starting at 1129376"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:HE:15, E:CN:M, F:CI:M, G:HH:60",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, B:CC:M -> D:HE:15, C:CI:M -> D:HE:15, D:HE:15 -> E:CN:M, D:HE:15 -> F:CI:M, E:CN:M -> G:HH:60, F:CI:M -> G:HH:60",
+    "type": 3,
+    "owner": "Johannes",
+    "delay": 1141785,
+    "name": "Workflow with 7 nodes starting at 1141785"
+  },
+  {
+    "nodes": "A:CC:M, B:CC:M, C:CC:L, D:CI:M, E:CC:M, F:CI:L, G:CC:M, H:CN:M, I:CC:M",
+    "edges": "A:CC:M -> B:CC:M, A:CC:M -> C:CC:L, A:CC:M -> D:CI:M, A:CC:M -> E:CC:M, A:CC:M -> F:CI:L, A:CC:M -> G:CC:M, A:CC:M -> H:CN:M, A:CC:M -> I:CC:M",
+    "type": 1,
+    "owner": "Johannes",
+    "delay": 1153892,
+    "name": "Workflow with 9 nodes starting at 1153892"
+  },
+  {
+    "nodes": "A:CC:M, B:CC:M, C:CC:L, D:CI:M, E:CC:M, F:CI:L, G:CC:M, H:CN:M, I:CC:M",
+    "edges": "A:CC:M -> B:CC:M, A:CC:M -> C:CC:L, A:CC:M -> D:CI:M, A:CC:M -> E:CC:M, A:CC:M -> F:CI:L, A:CC:M -> G:CC:M, A:CC:M -> H:CN:M, A:CC:M -> I:CC:M",
+    "type": 1,
+    "owner": "Johannes",
+    "delay": 1180348,
+    "name": "Workflow with 9 nodes starting at 1180348"
+  },
+  {
+    "nodes": "A:CC:M, B:CC:M, C:CC:L, D:CI:M, E:CC:M, F:CI:L, G:CC:M, H:CN:M, I:CC:M",
+    "edges": "A:CC:M -> B:CC:M, A:CC:M -> C:CC:L, A:CC:M -> D:CI:M, A:CC:M -> E:CC:M, A:CC:M -> F:CI:L, A:CC:M -> G:CC:M, A:CC:M -> H:CN:M, A:CC:M -> I:CC:M",
+    "type": 1,
+    "owner": "Johannes",
+    "delay": 1181139,
+    "name": "Workflow with 9 nodes starting at 1181139"
+  },
+  {
+    "nodes": "A:CC:M, B:CC:M, C:CC:L, D:CI:M, E:CC:M, F:CI:L, G:CC:M, H:CN:M, I:CC:M",
+    "edges": "A:CC:M -> B:CC:M, A:CC:M -> C:CC:L, A:CC:M -> D:CI:M, A:CC:M -> E:CC:M, A:CC:M -> F:CI:L, A:CC:M -> G:CC:M, A:CC:M -> H:CN:M, A:CC:M -> I:CC:M",
+    "type": 1,
+    "owner": "Johannes",
+    "delay": 1192446,
+    "name": "Workflow with 9 nodes starting at 1192446"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:HE:15, E:CN:M, F:CI:M, G:HH:60",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, B:CC:M -> D:HE:15, C:CI:M -> D:HE:15, D:HE:15 -> E:CN:M, D:HE:15 -> F:CI:M, E:CN:M -> G:HH:60, F:CI:M -> G:HH:60",
+    "type": 3,
+    "owner": "Johannes",
+    "delay": 1195065,
+    "name": "Workflow with 7 nodes starting at 1195065"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:CI:M, E:CN:M, F:CI:M, G:CN:M, H:CC:S",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, A:CI:M -> D:CI:M, B:CC:M -> E:CN:M, C:CI:M -> F:CI:M, D:CI:M -> G:CN:M, E:CN:M -> H:CC:S, F:CI:M -> H:CC:S, G:CN:M -> H:CC:S",
+    "type": 2,
+    "owner": "Johannes",
+    "delay": 1251390,
+    "name": "Workflow with 8 nodes starting at 1251390"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:CI:M, E:CN:M, F:CI:M, G:CN:M, H:CC:S",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, A:CI:M -> D:CI:M, B:CC:M -> E:CN:M, C:CI:M -> F:CI:M, D:CI:M -> G:CN:M, E:CN:M -> H:CC:S, F:CI:M -> H:CC:S, G:CN:M -> H:CC:S",
+    "type": 2,
+    "owner": "Johannes",
+    "delay": 1261109,
+    "name": "Workflow with 8 nodes starting at 1261109"
+  },
+  {
+    "nodes": "A:CC:M, B:CC:M, C:CC:L, D:CI:M, E:CC:M, F:CI:L, G:CC:M, H:CN:M, I:CC:M",
+    "edges": "A:CC:M -> B:CC:M, A:CC:M -> C:CC:L, A:CC:M -> D:CI:M, A:CC:M -> E:CC:M, A:CC:M -> F:CI:L, A:CC:M -> G:CC:M, A:CC:M -> H:CN:M, A:CC:M -> I:CC:M",
+    "type": 1,
+    "owner": "Johannes",
+    "delay": 1265260,
+    "name": "Workflow with 9 nodes starting at 1265260"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:HE:15, E:CN:M, F:CI:M, G:HH:60",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, B:CC:M -> D:HE:15, C:CI:M -> D:HE:15, D:HE:15 -> E:CN:M, D:HE:15 -> F:CI:M, E:CN:M -> G:HH:60, F:CI:M -> G:HH:60",
+    "type": 3,
+    "owner": "Johannes",
+    "delay": 1296480,
+    "name": "Workflow with 7 nodes starting at 1296480"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:CI:M, E:CN:M, F:CI:M, G:CN:M, H:CC:S",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, A:CI:M -> D:CI:M, B:CC:M -> E:CN:M, C:CI:M -> F:CI:M, D:CI:M -> G:CN:M, E:CN:M -> H:CC:S, F:CI:M -> H:CC:S, G:CN:M -> H:CC:S",
+    "type": 2,
+    "owner": "Johannes",
+    "delay": 1302585,
+    "name": "Workflow with 8 nodes starting at 1302585"
+  },
+  {
+    "nodes": "A:CC:M, B:CC:M, C:CC:L, D:CI:M, E:CC:M, F:CI:L, G:CC:M, H:CN:M, I:CC:M",
+    "edges": "A:CC:M -> B:CC:M, A:CC:M -> C:CC:L, A:CC:M -> D:CI:M, A:CC:M -> E:CC:M, A:CC:M -> F:CI:L, A:CC:M -> G:CC:M, A:CC:M -> H:CN:M, A:CC:M -> I:CC:M",
+    "type": 1,
+    "owner": "Johannes",
+    "delay": 1339084,
+    "name": "Workflow with 9 nodes starting at 1339084"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:HE:15, E:CN:M, F:CI:M, G:HH:60",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, B:CC:M -> D:HE:15, C:CI:M -> D:HE:15, D:HE:15 -> E:CN:M, D:HE:15 -> F:CI:M, E:CN:M -> G:HH:60, F:CI:M -> G:HH:60",
+    "type": 3,
+    "owner": "Johannes",
+    "delay": 1391249,
+    "name": "Workflow with 7 nodes starting at 1391249"
+  },
+  {
+    "nodes": "A:CC:M, B:CC:M, C:CC:L, D:CI:M, E:CC:M, F:CI:L, G:CC:M, H:CN:M, I:CC:M",
+    "edges": "A:CC:M -> B:CC:M, A:CC:M -> C:CC:L, A:CC:M -> D:CI:M, A:CC:M -> E:CC:M, A:CC:M -> F:CI:L, A:CC:M -> G:CC:M, A:CC:M -> H:CN:M, A:CC:M -> I:CC:M",
+    "type": 1,
+    "owner": "Johannes",
+    "delay": 1402721,
+    "name": "Workflow with 9 nodes starting at 1402721"
+  },
+  {
+    "nodes": "A:CC:M, B:CC:M, C:CC:L, D:CI:M, E:CC:M, F:CI:L, G:CC:M, H:CN:M, I:CC:M",
+    "edges": "A:CC:M -> B:CC:M, A:CC:M -> C:CC:L, A:CC:M -> D:CI:M, A:CC:M -> E:CC:M, A:CC:M -> F:CI:L, A:CC:M -> G:CC:M, A:CC:M -> H:CN:M, A:CC:M -> I:CC:M",
+    "type": 1,
+    "owner": "Johannes",
+    "delay": 1411174,
+    "name": "Workflow with 9 nodes starting at 1411174"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:CI:M, E:CN:M, F:CI:M, G:CN:M, H:CC:S",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, A:CI:M -> D:CI:M, B:CC:M -> E:CN:M, C:CI:M -> F:CI:M, D:CI:M -> G:CN:M, E:CN:M -> H:CC:S, F:CI:M -> H:CC:S, G:CN:M -> H:CC:S",
+    "type": 2,
+    "owner": "Johannes",
+    "delay": 1415065,
+    "name": "Workflow with 8 nodes starting at 1415065"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:HE:15, E:CN:M, F:CI:M, G:HH:60",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, B:CC:M -> D:HE:15, C:CI:M -> D:HE:15, D:HE:15 -> E:CN:M, D:HE:15 -> F:CI:M, E:CN:M -> G:HH:60, F:CI:M -> G:HH:60",
+    "type": 3,
+    "owner": "Johannes",
+    "delay": 1421598,
+    "name": "Workflow with 7 nodes starting at 1421598"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:CI:M, E:CN:M, F:CI:M, G:CN:M, H:CC:S",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, A:CI:M -> D:CI:M, B:CC:M -> E:CN:M, C:CI:M -> F:CI:M, D:CI:M -> G:CN:M, E:CN:M -> H:CC:S, F:CI:M -> H:CC:S, G:CN:M -> H:CC:S",
+    "type": 2,
+    "owner": "Johannes",
+    "delay": 1469442,
+    "name": "Workflow with 8 nodes starting at 1469442"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:CI:M, E:CN:M, F:CI:M, G:CN:M, H:CC:S",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, A:CI:M -> D:CI:M, B:CC:M -> E:CN:M, C:CI:M -> F:CI:M, D:CI:M -> G:CN:M, E:CN:M -> H:CC:S, F:CI:M -> H:CC:S, G:CN:M -> H:CC:S",
+    "type": 2,
+    "owner": "Johannes",
+    "delay": 1471697,
+    "name": "Workflow with 8 nodes starting at 1471697"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:HE:15, E:CN:M, F:CI:M, G:HH:60",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, B:CC:M -> D:HE:15, C:CI:M -> D:HE:15, D:HE:15 -> E:CN:M, D:HE:15 -> F:CI:M, E:CN:M -> G:HH:60, F:CI:M -> G:HH:60",
+    "type": 3,
+    "owner": "Johannes",
+    "delay": 1515532,
+    "name": "Workflow with 7 nodes starting at 1515532"
+  },
+  {
+    "nodes": "A:CC:M, B:CC:M, C:CC:L, D:CI:M, E:CC:M, F:CI:L, G:CC:M, H:CN:M, I:CC:M",
+    "edges": "A:CC:M -> B:CC:M, A:CC:M -> C:CC:L, A:CC:M -> D:CI:M, A:CC:M -> E:CC:M, A:CC:M -> F:CI:L, A:CC:M -> G:CC:M, A:CC:M -> H:CN:M, A:CC:M -> I:CC:M",
+    "type": 1,
+    "owner": "Johannes",
+    "delay": 1542940,
+    "name": "Workflow with 9 nodes starting at 1542940"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:CI:M, E:CN:M, F:CI:M, G:CN:M, H:CC:S",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, A:CI:M -> D:CI:M, B:CC:M -> E:CN:M, C:CI:M -> F:CI:M, D:CI:M -> G:CN:M, E:CN:M -> H:CC:S, F:CI:M -> H:CC:S, G:CN:M -> H:CC:S",
+    "type": 2,
+    "owner": "Johannes",
+    "delay": 1557977,
+    "name": "Workflow with 8 nodes starting at 1557977"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:HE:15, E:CN:M, F:CI:M, G:HH:60",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, B:CC:M -> D:HE:15, C:CI:M -> D:HE:15, D:HE:15 -> E:CN:M, D:HE:15 -> F:CI:M, E:CN:M -> G:HH:60, F:CI:M -> G:HH:60",
+    "type": 3,
+    "owner": "Johannes",
+    "delay": 1568903,
+    "name": "Workflow with 7 nodes starting at 1568903"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:CI:M, E:CN:M, F:CI:M, G:CN:M, H:CC:S",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, A:CI:M -> D:CI:M, B:CC:M -> E:CN:M, C:CI:M -> F:CI:M, D:CI:M -> G:CN:M, E:CN:M -> H:CC:S, F:CI:M -> H:CC:S, G:CN:M -> H:CC:S",
+    "type": 2,
+    "owner": "Johannes",
+    "delay": 1590073,
+    "name": "Workflow with 8 nodes starting at 1590073"
+  },
+  {
+    "nodes": "A:CI:M, B:CC:M, C:CI:M, D:HE:15, E:CN:M, F:CI:M, G:HH:60",
+    "edges": "A:CI:M -> B:CC:M, A:CI:M -> C:CI:M, B:CC:M -> D:HE:15, C:CI:M -> D:HE:15, D:HE:15 -> E:CN:M, D:HE:15 -> F:CI:M, E:CN:M -> G:HH:60, F:CI:M -> G:HH:60",
+    "type": 3,
+    "owner": "Johannes",
+    "delay": 1597789,
+    "name": "Workflow with 7 nodes starting at 1597789"
+  },
+  {
+    "nodes": "A:CC:M, B:CC:M, C:CC:L, D:CI:M, E:CC:M, F:CI:L, G:CC:M, H:CN:M, I:CC:M",
+    "edges": "A:CC:M -> B:CC:M, A:CC:M -> C:CC:L, A:CC:M -> D:CI:M, A:CC:M -> E:CC:M, A:CC:M -> F:CI:L, A:CC:M -> G:CC:M, A:CC:M -> H:CN:M, A:CC:M -> I:CC:M",
+    "type": 1,
+    "owner": "Johannes",
+    "delay": 1628834,
+    "name": "Workflow with 9 nodes starting at 1628834"
+  },
+  {
+    "nodes": "A:CC:M, B:CC:M, C:CC:L, D:CI:M, E:CC:M, F:CI:L, G:CC:M, H:CN:M, I:CC:M",
+    "edges": "A:CC:M -> B:CC:M, A:CC:M -> C:CC:L, A:CC:M -> D:CI:M, A:CC:M -> E:CC:M, A:CC:M -> F:CI:L, A:CC:M -> G:CC:M, A:CC:M -> H:CN:M, A:CC:M -> I:CC:M",
+    "type": 1,
+    "owner": "Johannes",
+    "delay": 1639148,
+    "name": "Workflow with 9 nodes starting at 1639148"
+  },
+  {
+    "nodes": "A:CC:M, B:CC:M, C:CC:L, D:CI:M, E:CC:M, F:CI:L, G:CC:M, H:CN:M, I:CC:M",
+    "edges": "A:CC:M -> B:CC:M, A:CC:M -> C:CC:L, A:CC:M -> D:CI:M, A:CC:M -> E:CC:M, A:CC:M -> F:CI:L, A:CC:M -> G:CC:M, A:CC:M -> H:CN:M, A:CC:M -> I:CC:M",
+    "type": 1,
+    "owner": "Johannes",
+    "delay": 1640698,
+    "name": "Workflow with 9 nodes starting at 1640698"
+  },
+  {
+    "nodes": "A:CC:M, B:CC:M, C:CC:L, D:CI:M, E:CC:M, F:CI:L, G:CC:M, H:CN:M, I:CC:M",
+    "edges": "A:CC:M -> B:CC:M, A:CC:M -> C:CC:L, A:CC:M -> D:CI:M, A:CC:M -> E:CC:M, A:CC:M -> F:CI:L, A:CC:M -> G:CC:M, A:CC:M -> H:CN:M, A:CC:M -> I:CC:M",
+    "type": 1,
+    "owner": "Johannes",
+    "delay": 1645492,
+    "name": "Workflow with 9 nodes starting at 1645492"
+  }
+]
