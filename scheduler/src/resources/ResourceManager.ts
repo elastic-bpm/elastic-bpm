@@ -15,6 +15,7 @@ export class ResourceManager {
     private nodeManager: NodeManager;
     private taskRepository: TaskRepository;
     private justStarted: Map<string, string> = new Map<string, string>();
+    private amStarting = false;
     private addedNewMachines = false;
     private upperBound = 1;
     private lowerBound = 0.5;
@@ -260,7 +261,8 @@ export class ResourceManager {
                                 ', fraction: ' + fraction);
 
                             // Only scale if nothing has been started recently
-                            if (this.justStarted.size === 0) {
+                            if (this.justStarted.size === 0 && ! this.amStarting) {
+                                this.amStarting = true;
 
                                 // Scale up if amount of tasks to start > fraction
                                 if (fraction > this.upperBound) {
@@ -293,8 +295,10 @@ export class ResourceManager {
                                         + ' Shutting down machine ' + hostname
                                         + ' fraction: ' + fraction
                                         + ' running machines: ' + activeMachines.length);
-                                    this.nodeManager.shutdownNode(hostname);
+                                    const name = await this.nodeManager.shutdownNode(hostname);
                                 }
+
+                                this.amStarting = false;
                             }
                         }
                     }
