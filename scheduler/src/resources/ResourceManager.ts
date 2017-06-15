@@ -264,8 +264,8 @@ export class ResourceManager {
                             if (this.justStarted.size === 0 && ! this.amStarting) {
                                 this.amStarting = true;
 
-                                // Scale up if amount of tasks to start > fraction
-                                if (fraction > this.upperBound) {
+                                // Scale up if amount of tasks busy / todo < fraction
+                                if (fraction < this.lowerBound) {
                                     const addedNode = await this.nodeManager.addNode();
 
                                     console.log('scheduler:debug Adding node ' + addedNode + ' because fraction is too high');
@@ -274,8 +274,8 @@ export class ResourceManager {
                                     setTimeout(() => { this.justStarted.delete('start'); }, 5 * 60 * 1000);
                                 }
 
-                                // Scale down if fraction is too low and we above the minimum threshold
-                                if (fraction < this.lowerBound && activeMachines.length > this.amount[this.policy]) {
+                                // Scale down if we are busy enough and above the minimum threshold
+                                if (fraction > this.upperBound && activeMachines.length > this.amount[this.policy]) {
                                     // Scale down the least busy machine
                                     let minLoad = 100;
                                     let hostname = '';
