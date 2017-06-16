@@ -272,17 +272,17 @@ export class ResourceManager {
                                 this.amStarting = true;
 
                                 // Scale up if amount of tasks busy / todo < fraction
-                                if (fraction < this.lowerBound) {
+                                if (todoWorkerTasksCount > this.upperBound) {
                                     const addedNode = await this.nodeManager.addNode();
 
-                                    console.log('scheduler:debug Adding node ' + addedNode + ' because fraction is too low');
+                                    console.log('scheduler:debug Adding node ' + addedNode + ', ' + todoWorkerTasksCount + ' tasks.');
                                     this.justStarted.set('start', addedNode);
 
                                     setTimeout(() => { this.justStarted.delete('start'); }, 1 * 60 * 1000); // Timeout = 1m for learning
                                 }
 
                                 // Scale down if we are busy enough and above the minimum threshold
-                                if (fraction > this.upperBound && activeMachines.length > this.amount[this.policy]) {
+                                if (todoWorkerTasksCount < this.lowerBound && activeMachines.length > this.amount[this.policy]) {
                                     // Scale down the least busy machine
                                     let minLoad = 100;
                                     let hostname = '';
