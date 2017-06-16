@@ -161,7 +161,10 @@ export class ResourceManager {
                                 console.log('scheduler:debug Adding node ' + addedNode + ' for start');
                                 this.justStarted.set('start' + i, addedNode);
 
-                                setTimeout(() => { this.justStarted.delete('start' + i); }, 5 * 60 * 1000);
+                                // Calling setTimeout in for-loops: https://stackoverflow.com/a/5226335/1086634
+                                (function (justStarted, name) {
+                                    setTimeout(() => { justStarted.delete(name); }, 5 * 60 * 1000);
+                                })(this.justStarted, 'start' + i);
                             }
                         } else {
 
@@ -205,9 +208,9 @@ export class ResourceManager {
                                     this.justStarted.set(toActivateFor[i], addedNode);
 
                                     // Calling setTimeout in for-loops: https://stackoverflow.com/a/5226335/1086634
-                                    (function (justStarted, index) {
-                                        setTimeout(() => { justStarted.delete(toActivateFor[index]); }, 5 * 60 * 1000);
-                                    })(this.justStarted, i);
+                                    (function (justStarted, name) {
+                                        setTimeout(() => { justStarted.delete(name); }, 5 * 60 * 1000);
+                                    })(this.justStarted, toActivateFor[i]);
                                 }
                             } else if (amountToActivate < 0) {
                                 let amountToDeactivate = toDeactivate.length - toActivateFor.length;
@@ -243,7 +246,11 @@ export class ResourceManager {
                                 console.log('scheduler:debug Adding node ' + addedNode + ' for start');
                                 this.justStarted.set('start' + i, addedNode);
 
-                                setTimeout(() => { this.justStarted.delete('start' + i); }, 5 * 60 * 1000);
+                                // Calling setTimeout in for-loops: https://stackoverflow.com/a/5226335/1086634
+                                (function (justStarted, name) {
+                                    setTimeout(() => { justStarted.delete(name); }, 1 * 60 * 1000); // Timeout = 1m for learning
+                                })(this.justStarted, 'start' + i);
+
                             }
                         } else {
                             // Get all tasks
@@ -261,17 +268,17 @@ export class ResourceManager {
                                 ', fraction: ' + fraction);
 
                             // Only scale if nothing has been started recently
-                            if (this.justStarted.size === 0 && ! this.amStarting) {
+                            if (this.justStarted.size === 0 && !this.amStarting) {
                                 this.amStarting = true;
 
                                 // Scale up if amount of tasks busy / todo < fraction
                                 if (fraction < this.lowerBound) {
                                     const addedNode = await this.nodeManager.addNode();
 
-                                    console.log('scheduler:debug Adding node ' + addedNode + ' because fraction is too high');
+                                    console.log('scheduler:debug Adding node ' + addedNode + ' because fraction is too low');
                                     this.justStarted.set('start', addedNode);
 
-                                    setTimeout(() => { this.justStarted.delete('start'); }, 5 * 60 * 1000);
+                                    setTimeout(() => { this.justStarted.delete('start'); }, 1 * 60 * 1000); // Timeout = 1m for learning
                                 }
 
                                 // Scale down if we are busy enough and above the minimum threshold
