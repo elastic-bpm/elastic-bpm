@@ -300,7 +300,8 @@ export class ResourceManager {
                                     // Found it
                                     console.log('scheduler:debug'
                                         + ' Shutting down machine ' + hostname
-                                        + ' fraction: ' + fraction
+                                        + ' todo tasks: ' + todoWorkerTasksCount
+                                        + ' busy tasks: ' + busyWorkerTasksCount
                                         + ' running machines: ' + activeMachines.length);
                                     const name = await this.nodeManager.shutdownNode(hostname);
                                 }
