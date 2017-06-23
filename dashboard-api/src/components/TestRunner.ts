@@ -261,6 +261,23 @@ export class TestRunner {
                     setTimeout(() => this.startExecution(policy, schedule_i, policyParams, workers), 2000);
                     break;
                 }
+            case 'b':
+                {
+                    // For test 'b', we have a variable amount of nodes
+                    const policyParams = {
+                        Static: body.nodes,
+                        OnDemand: 10,
+                        Learning: 10
+                    };
+
+                    // Static policy
+                    const policy = 'Static';
+
+                    // Variable workers [1 through 8]
+                    const workers = body.workers;
+                    setTimeout(() => this.startExecution(policy, schedule_i, policyParams, workers), 2000);
+                    break;
+                }
             case 'd':
                 {
                     // For test 'd', we have min 2 nodes
