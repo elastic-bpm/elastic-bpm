@@ -173,29 +173,35 @@ export class ResourceManager {
 
                             // After check machine load
                             for (let i = 0; i < activeMachines.length; i++) {
-                                console.log('scheduler:debug Node ' + activeMachines[i].name + ' has load: ' + activeMachines[i].load5);
-                                if (activeMachines[i].load5 >= this.upperBound && !this.justStarted.has(activeMachines[i].name)) {
-                                    // Add new machine for this one
-                                    toActivateFor.push(activeMachines[i].name);
-                                } else if (activeMachines[i].load5 > this.lowerBound) {
-                                    // Do nothing, it can live
-                                } else if (activeMachines.length) {
-                                    // Only scale down if machines able to scale down
+                                if (activeMachines[i].load5 !== undefined) {
+                                    console.log('scheduler:debug Node ' + activeMachines[i].name + ' has load: ' + activeMachines[i].load5);
+                                    if (activeMachines[i].load5 >= this.upperBound && !this.justStarted.has(activeMachines[i].name)) {
+                                        // Add new machine for this one
+                                        toActivateFor.push(activeMachines[i].name);
+                                    } else if (activeMachines[i].load5 > this.lowerBound) {
+                                        // Do nothing, it can live
+                                    } else if (activeMachines.length) {
+                                        // Only scale down if machines able to scale down
 
-                                    // Check if started by other load
-                                    console.log('scheduler:debug Checking if node ' + activeMachines[i].name + ' is started recently');
-                                    let isStarted = false;
-                                    this.justStarted.forEach((v, k) => {
-                                        if (v === activeMachines[i].name) {
-                                            isStarted = true;
+                                        // Check if started by other load
+                                        console.log('scheduler:debug Checking if node ' + activeMachines[i].name + ' is started recently');
+                                        let isStarted = false;
+                                        this.justStarted.forEach((v, k) => {
+                                            if (v === activeMachines[i].name) {
+                                                isStarted = true;
+                                            }
+                                        });
+
+                                        if (!isStarted) {
+                                            console.log('scheduler:debug Node '
+                                                + activeMachines[i].name
+                                                + ' is NOT started, shutting down');
+                                            toDeactivate.push(activeMachines[i].name);
+                                        } else {
+                                            console.log('scheduler:debug Node '
+                                                + activeMachines[i].name
+                                                + ' is started recently, ignoring');
                                         }
-                                    });
-
-                                    if (!isStarted) {
-                                        console.log('scheduler:debug Node ' + activeMachines[i].name + ' is NOT started, shutting down');
-                                        toDeactivate.push(activeMachines[i].name);
-                                    } else {
-                                        console.log('scheduler:debug Node ' + activeMachines[i].name + ' is started recently, ignoring');
                                     }
                                 }
                             };
