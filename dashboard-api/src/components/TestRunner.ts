@@ -273,27 +273,23 @@ export class TestRunner {
                     // Static policy
                     const policy = 'Static';
 
-                    // Variable workers [1 through 8]
                     const workers = body.workers;
                     setTimeout(() => this.startExecution(policy, schedule_i, policyParams, workers), 2000);
                     break;
                 }
             case 'd':
                 {
-                    // For test 'd', we have min 2 nodes
+                    // For test 'd', we have min body.nodes nodes
                     const policyParams = {
                         Static: 10,
-                        OnDemand: 2,
-                        Learning: 2
+                        OnDemand: body.nodes,
+                        Learning: body.nodes
                     };
 
                     // Policy is either OnDemand or Learning
-                    // Ignoring scaling params for now
                     const policy = body.policy;
 
-                    // Workers is set to 4
-                    const workers = 4;
-
+                    const workers = body.workers;
                     const lowerBound = body.lowerBound;
                     const upperBound = body.upperBound;
 
