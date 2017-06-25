@@ -91,7 +91,8 @@ export class TestRunner {
         policyParams: any,
         workers: number = 4,
         lowerBound: number = 0.3,
-        upperBound: number = 0.8) {
+        upperBound: number = 0.8,
+        workload: string = '../workflows/50wfs.json') {
 
         await this.scheduler.set_amount({ policy: 'Static', amount: policyParams.Static });
         await this.scheduler.set_amount({ policy: 'Learning', amount: policyParams.Learning });
@@ -105,7 +106,7 @@ export class TestRunner {
         const target = policyInfo.amount[policy];
         this.resetRunning(policy, target);
 
-        const delayedWorkflows = require('../workflows/50wfs.json');
+        const delayedWorkflows = require(workload);
 
         try {
             // Set Policy
@@ -275,6 +276,27 @@ export class TestRunner {
 
                     const workers = body.workers;
                     setTimeout(() => this.startExecution(policy, schedule_i, policyParams, workers), 2000);
+                    break;
+                }
+            case 'c':
+                {
+                    // only the workload is variable for test 'c'
+                    const policyParams = {
+                        Static: body.nodes,
+                        OnDemand: 10,
+                        Learning: 10
+                    };
+
+                    // Static policy
+                    const policy = 'Static';
+
+                    let workload = '../workflows/50wfs.json';
+                    if (body.workload === 2) {
+                        workload = '../workflows/100wfs.json';
+                    }
+
+                    const workers = body.workers;
+                    setTimeout(() => this.startExecution(policy, schedule_i, policyParams, workers, 0, 0, workload), 2000);
                     break;
                 }
             case 'd':
