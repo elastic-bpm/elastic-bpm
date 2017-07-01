@@ -344,16 +344,39 @@ export class TestRunner {
                         Learning: 2
                     };
 
-                    // Policy is either OnDemand or Learning
                     const policy = body.policy;
-
                     const workers = body.workers;
+
                     const lowerBound = body.lowerBound;
                     const upperBound = body.upperBound;
 
                     schedule_i.amount = body.humans;
 
                     setTimeout(() => this.startExecution(policy, schedule_i, policyParams, workers, lowerBound, upperBound), 2000);
+                    break;
+                }
+            case 'g':
+                {
+                    const policyParams = {
+                        Static: 10,
+                        OnDemand: 2,
+                        Learning: 2
+                    };
+
+                    const policy = body.policy;
+                    const workers = body.workers;
+
+                    const lowerBound = body.lowerBound;
+                    const upperBound = body.upperBound;
+
+                    schedule_i.amount = body.humans / 3;
+                    schedule_ii.amount = body.humans;
+
+                    if (body.schedule === 1) {
+                        setTimeout(() => this.startExecution(policy, schedule_i, policyParams, workers, lowerBound, upperBound), 2000);
+                    } else {
+                        setTimeout(() => this.startExecution(policy, schedule_ii, policyParams, workers, lowerBound, upperBound), 2000);
+                    }
                     break;
                 }
             default:
