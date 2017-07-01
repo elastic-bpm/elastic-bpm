@@ -318,6 +318,44 @@ export class TestRunner {
                     setTimeout(() => this.startExecution(policy, schedule_i, policyParams, workers, lowerBound, upperBound), 2000);
                     break;
                 }
+            case 'e':
+                {
+                    const policyParams = {
+                        Static: 10,
+                        OnDemand: 2,
+                        Learning: 2
+                    };
+
+                    // Policy is either OnDemand or Learning
+                    const policy = body.policy;
+
+                    const workers = body.workers;
+                    const lowerBound = body.lowerBound;
+                    const upperBound = body.upperBound;
+
+                    setTimeout(() => this.startExecution(policy, schedule_i, policyParams, workers, lowerBound, upperBound), 2000);
+                    break;
+                }
+            case 'f':
+                {
+                    const policyParams = {
+                        Static: 10,
+                        OnDemand: 2,
+                        Learning: 2
+                    };
+
+                    // Policy is either OnDemand or Learning
+                    const policy = body.policy;
+
+                    const workers = body.workers;
+                    const lowerBound = body.lowerBound;
+                    const upperBound = body.upperBound;
+
+                    schedule_i.amount = body.humans;
+
+                    setTimeout(() => this.startExecution(policy, schedule_i, policyParams, workers, lowerBound, upperBound), 2000);
+                    break;
+                }
             default:
                 {
                     const policyParams = {
