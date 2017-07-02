@@ -300,24 +300,6 @@ export class TestRunner {
                     break;
                 }
             case 'd':
-                {
-                    // For test 'd', we have min body.nodes nodes
-                    const policyParams = {
-                        Static: 10,
-                        OnDemand: body.nodes,
-                        Learning: body.nodes
-                    };
-
-                    // Policy is either OnDemand or Learning
-                    const policy = body.policy;
-
-                    const workers = body.workers;
-                    const lowerBound = body.lowerBound;
-                    const upperBound = body.upperBound;
-
-                    setTimeout(() => this.startExecution(policy, schedule_i, policyParams, workers, lowerBound, upperBound), 2000);
-                    break;
-                }
             case 'e':
                 {
                     const policyParams = {
