@@ -322,8 +322,8 @@ export class TestRunner {
                 {
                     const policyParams = {
                         Static: 10,
-                        OnDemand: 2,
-                        Learning: 2
+                        OnDemand: body.nodes,
+                        Learning: body.nodes
                     };
 
                     // Policy is either OnDemand or Learning
